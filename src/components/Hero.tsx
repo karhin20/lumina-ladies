@@ -1,17 +1,69 @@
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useEffect, useState } from "react";
 import heroImage from "@/assets/hero-image.jpg";
+import lampImage1 from "@/assets/product-lamp-1.jpg";
+import lampImage2 from "@/assets/product-lamp-2.jpg";
+import lampImage3 from "@/assets/product-lamp-3.jpg";
+
+const heroSlides = [
+  { image: heroImage, alt: "Elegant luxury lifestyle with pendant lamp and home decor" },
+  { image: lampImage1, alt: "Modern pendant lamp illuminating elegant space" },
+  { image: lampImage2, alt: "Designer lighting for contemporary interiors" },
+  { image: lampImage3, alt: "Artisan crafted lamp with warm ambiance" },
+];
 
 const Hero = () => {
+  const [api, setApi] = useState<any>();
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (!api) return;
+    
+    setCurrent(api.selectedScrollSnap());
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+      {/* Background Carousel */}
       <div className="absolute inset-0">
-        <img
-          src={heroImage}
-          alt="Elegant luxury lifestyle with pendant lamp and home decor"
-          className="w-full h-full object-cover"
-        />
+        <Carousel
+          setApi={setApi}
+          opts={{ loop: true }}
+          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
+          className="w-full h-full"
+        >
+          <CarouselContent className="h-full -ml-0">
+            {heroSlides.map((slide, index) => (
+              <CarouselItem key={index} className="pl-0 h-full">
+                <img
+                  src={slide.image}
+                  alt={slide.alt}
+                  className="w-full h-screen object-cover transition-transform duration-700"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-transparent" />
+      </div>
+
+      {/* Carousel Indicators */}
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+        {heroSlides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => api?.scrollTo(index)}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              current === index ? "w-8 bg-primary" : "bg-muted-foreground/40"
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
 
       {/* Content */}
