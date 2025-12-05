@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import heroImage from "@/assets/hero-image.jpg";
 import lampImage1 from "@/assets/product-lamp-1.jpg";
 import lampImage2 from "@/assets/product-lamp-2.jpg";
@@ -17,6 +17,7 @@ const heroSlides = [
 const Hero = () => {
   const [api, setApi] = useState<any>();
   const [current, setCurrent] = useState(0);
+  const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
 
   useEffect(() => {
     if (!api) return;
@@ -34,7 +35,7 @@ const Hero = () => {
         <Carousel
           setApi={setApi}
           opts={{ loop: true }}
-          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
+          plugins={[plugin.current]}
           className="w-full h-full"
         >
           <CarouselContent className="h-full -ml-0">
