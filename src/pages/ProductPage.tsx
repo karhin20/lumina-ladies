@@ -101,16 +101,16 @@ const ProductPage = () => {
               
               <div className="flex items-center gap-3 mb-6">
                 <span className="font-display text-2xl md:text-3xl font-semibold text-foreground">
-                  ${product.price.toFixed(2)}
+                  ₵{product.price.toFixed(2)}
                 </span>
                 {product.originalPrice && (
                   <span className="text-lg text-muted-foreground line-through">
-                    ${product.originalPrice.toFixed(2)}
+                    ₵{product.originalPrice.toFixed(2)}
                   </span>
                 )}
                 {product.originalPrice && (
                   <span className="bg-primary/10 text-primary text-sm font-medium px-2 py-1 rounded">
-                    Save ${(product.originalPrice - product.price).toFixed(2)}
+                    Save ₵{(product.originalPrice - product.price).toFixed(2)}
                   </span>
                 )}
               </div>
@@ -166,7 +166,7 @@ const ProductPage = () => {
                   ) : (
                     <>
                       <ShoppingBag className="w-5 h-5" />
-                      Add to Cart — ${(product.price * quantity).toFixed(2)}
+                      Add to Cart — ₵{(product.price * quantity).toFixed(2)}
                     </>
                   )}
                 </Button>
