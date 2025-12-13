@@ -1,56 +1,6 @@
 import { useState } from "react";
 import ProductCard from "./ProductCard";
-import productLamp1 from "@/assets/product-lamp-1.jpg";
-import productLamp2 from "@/assets/product-lamp-2.jpg";
-import productLamp3 from "@/assets/product-lamp-3.jpg";
-import productSkincare from "@/assets/product-skincare.jpg";
-import productJewelry from "@/assets/product-jewelry.jpg";
-import productCandles from "@/assets/product-candles.jpg";
-
-const allProducts = [
-  {
-    name: "Crystal Chandelier Pendant",
-    price: 489.00,
-    image: productLamp1,
-    category: "Lighting",
-    isNew: true,
-  },
-  {
-    name: "Blush Ceramic Table Lamp",
-    price: 189.00,
-    originalPrice: 249.00,
-    image: productLamp2,
-    category: "Lighting",
-  },
-  {
-    name: "Arc Floor Lamp",
-    price: 349.00,
-    image: productLamp3,
-    category: "Lighting",
-  },
-  {
-    name: "Rose Essence Collection",
-    price: 124.00,
-    image: productSkincare,
-    category: "Beauty",
-    isNew: true,
-  },
-  {
-    name: "Pearl Necklace Set",
-    price: 275.00,
-    image: productJewelry,
-    category: "Jewelry",
-  },
-  {
-    name: "Blossom Candle Duo",
-    price: 68.00,
-    originalPrice: 85.00,
-    image: productCandles,
-    category: "Home",
-  },
-];
-
-const categories = ["All", "Lighting", "Beauty", "Jewelry", "Home"];
+import { allProducts, categories } from "@/data/products";
 
 const ProductListing = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");

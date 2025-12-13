@@ -1,8 +1,11 @@
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
+  id: string;
   name: string;
   price: number;
   originalPrice?: number;
@@ -11,11 +14,31 @@ interface ProductCardProps {
   isNew?: boolean;
 }
 
-const ProductCard = ({ name, price, originalPrice, image, category, isNew }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, originalPrice, image, category, isNew }: ProductCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
+  const { toast } = useToast();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toast({
+      title: "Added to cart",
+      description: `${name} added to your cart`,
+    });
+  };
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsLiked(!isLiked);
+    toast({
+      title: isLiked ? "Removed from wishlist" : "Added to wishlist",
+      description: isLiked ? `${name} removed from your wishlist` : `${name} saved to your wishlist`,
+    });
+  };
 
   return (
-    <div className="group">
+    <Link to={`/product/${id}`} className="group block">
       <div className="relative overflow-hidden rounded-lg bg-card mb-4 aspect-square">
         <img
           src={image}
@@ -27,21 +50,21 @@ const ProductCard = ({ name, price, originalPrice, image, category, isNew }: Pro
             New
           </span>
         )}
-        {originalPrice && (
+        {originalPrice && !isNew && (
           <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full">
             Sale
           </span>
         )}
         <button
-          onClick={() => setIsLiked(!isLiked)}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background"
+          onClick={handleLike}
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background hover:scale-110"
         >
           <Heart
             className={`w-4 h-4 transition-colors ${isLiked ? 'fill-primary text-primary' : 'text-foreground'}`}
           />
         </button>
         <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <Button variant="hero" className="w-full">
+          <Button variant="hero" className="w-full" onClick={handleAddToCart}>
             Add to Cart
           </Button>
         </div>
@@ -62,7 +85,7 @@ const ProductCard = ({ name, price, originalPrice, image, category, isNew }: Pro
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
