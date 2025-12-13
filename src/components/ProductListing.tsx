@@ -62,15 +62,6 @@ const ProductListing = () => {
   return (
     <section className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <span className="text-accent font-medium text-sm tracking-widest uppercase">
-            Our Collection
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl font-semibold text-foreground mt-2">
-            Shop All Products
-          </h2>
-        </div>
 
         {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-10">
