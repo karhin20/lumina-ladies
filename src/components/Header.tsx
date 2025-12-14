@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Menu, X, ShoppingBag, Search, User } from "lucide-react";
+import { Menu, X, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import CartDrawer from "@/components/CartDrawer";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,25 +43,17 @@ const Header = () => {
             <Button variant="ghost" size="icon">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
-                3
-              </span>
-            </Button>
+            <Link to="/auth">
+              <Button variant="ghost" size="icon">
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
+            <CartDrawer />
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-2">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
-                3
-              </span>
-            </Button>
+            <CartDrawer />
             <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -83,9 +78,11 @@ const Header = () => {
                 <Button variant="ghost" size="icon">
                   <Search className="h-5 w-5" />
                 </Button>
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
+                <Link to="/auth">
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </nav>

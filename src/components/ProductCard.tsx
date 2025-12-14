@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/CartContext";
 
 interface ProductCardProps {
   id: string;
@@ -17,10 +18,12 @@ interface ProductCardProps {
 const ProductCard = ({ id, name, price, originalPrice, image, category, isNew }: ProductCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
+  const { addToCart } = useCart();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    addToCart({ id, name, price, originalPrice, image, category, isNew, description: '', details: [] });
     toast({
       title: "Added to cart",
       description: `${name} added to your cart`,
