@@ -1,94 +1,110 @@
 import { useState } from "react";
-import { Menu, X, Search, User } from "lucide-react";
+import { Menu, X, Search, Heart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import CartDrawer from "@/components/CartDrawer";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const navLinks = [
-    { name: "Lighting", href: "#lighting" },
-    { name: "Beauty", href: "#beauty" },
-    { name: "Jewelry", href: "#jewelry" },
-    { name: "Home", href: "#home" },
+    { name: "Home", href: "/" },
+    { name: "Contact", href: "#contact" },
     { name: "About", href: "#about" },
+    { name: "Sign Up", href: "/auth" },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <a href="/" className="font-display text-2xl md:text-3xl font-semibold text-foreground tracking-tight">
-            Lumière
-          </a>
+    <>
+      {/* Top Banner */}
+      <div className="bg-foreground text-background text-center py-2 text-xs md:text-sm">
+        <span>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
+        <Link to="#" className="underline ml-2 font-semibold">ShopNow</Link>
+      </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 tracking-wide uppercase"
-              >
-                {link.name}
-              </a>
-            ))}
-          </nav>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <Search className="h-5 w-5" />
-            </Button>
-            <Link to="/auth">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
+      {/* Main Header */}
+      <header className="bg-background border-b border-border sticky top-0 z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            {/* Logo */}
+            <Link to="/" className="font-display text-xl md:text-2xl font-bold text-foreground tracking-tight">
+              Exclusive
             </Link>
-            <CartDrawer />
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-2">
-            <CartDrawer />
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-border animate-fade-in">
-            <div className="flex flex-col gap-4">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
-                  className="text-base font-medium text-foreground py-2 tracking-wide"
-                  onClick={() => setIsMenuOpen(false)}
+                  to={link.href}
+                  className="text-sm font-medium text-foreground hover:text-accent transition-colors"
                 >
                   {link.name}
-                </a>
-              ))}
-              <div className="flex gap-4 pt-4 border-t border-border">
-                <Button variant="ghost" size="icon">
-                  <Search className="h-5 w-5" />
-                </Button>
-                <Link to="/auth">
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
-                  </Button>
                 </Link>
+              ))}
+            </nav>
+
+            {/* Search & Icons */}
+            <div className="hidden md:flex items-center gap-4">
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="What are you looking for?"
+                  className="w-64 pr-10 bg-secondary border-0 text-sm h-10"
+                />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
+              <Button variant="ghost" size="icon" className="hover:bg-transparent">
+                <Heart className="h-5 w-5" />
+              </Button>
+              <CartDrawer />
+              <Link to={user ? "/account" : "/auth"}>
+                <Button variant="ghost" size="icon" className="hover:bg-transparent">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
             </div>
-          </nav>
-        )}
-      </div>
-    </header>
+
+            {/* Mobile Menu Button */}
+            <div className="flex md:hidden items-center gap-2">
+              <CartDrawer />
+              <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <nav className="md:hidden py-4 border-t border-border animate-fade-in">
+              <div className="flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className="text-base font-medium text-foreground py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+                <div className="relative mt-2">
+                  <Input
+                    type="text"
+                    placeholder="What are you looking for?"
+                    className="w-full pr-10 bg-secondary border-0 text-sm"
+                  />
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                </div>
+              </div>
+            </nav>
+          )}
+        </div>
+      </header>
+    </>
   );
 };
 

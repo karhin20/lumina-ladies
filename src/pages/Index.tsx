@@ -1,8 +1,11 @@
 import Header from "@/components/Header";
-import AdvertBanner from "@/components/AdvertBanner";
-import ProductListing from "@/components/ProductListing";
-import AboutSection from "@/components/AboutSection";
-import Newsletter from "@/components/Newsletter";
+import HeroWithSidebar from "@/components/HeroWithSidebar";
+import FlashSales from "@/components/FlashSales";
+import BrowseByCategory from "@/components/BrowseByCategory";
+import BestSelling from "@/components/BestSelling";
+import PromoBanner from "@/components/PromoBanner";
+import ExploreProducts from "@/components/ExploreProducts";
+import NewArrival from "@/components/NewArrival";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -10,10 +13,13 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <AdvertBanner />
-        <ProductListing />
-        <AboutSection />
-        <Newsletter />
+        <HeroWithSidebar />
+        <FlashSales />
+        <BrowseByCategory />
+        <BestSelling />
+        <PromoBanner />
+        <ExploreProducts />
+        <NewArrival />
       </main>
       <Footer />
     </div>
