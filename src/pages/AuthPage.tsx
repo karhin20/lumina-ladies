@@ -1,17 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Phone, Lock, User, ArrowLeft, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);
   const { login, signup } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -92,143 +88,171 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Store
-        </Link>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Left side - Image */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-sky-100 to-sky-200 items-center justify-center p-12">
+        <div className="relative">
+          <img
+            src="https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=600&q=80"
+            alt="Shopping cart with products"
+            className="max-w-md w-full object-contain drop-shadow-2xl"
+          />
+        </div>
+      </div>
 
-        <Card className="border-border/50 shadow-elevated">
-          <CardHeader className="text-center">
-            <CardTitle className="font-display text-2xl">Welcome</CardTitle>
-            <CardDescription>Sign in to your account or create a new one</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Demo credentials notice */}
-            <div className="mb-6 p-3 bg-muted rounded-lg flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
-              <div className="text-xs text-muted-foreground">
-                <p className="font-medium text-foreground mb-1">Demo Mode</p>
-                <p>Admin: 0201234567 / admin123</p>
-                <p>Or create a new customer account</p>
+      {/* Right side - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-16 bg-background">
+        <div className="w-full max-w-md">
+          {!isSignup ? (
+            <>
+              <h1 className="font-display text-3xl lg:text-4xl font-semibold text-foreground mb-2">
+                Log in to Exclusive
+              </h1>
+              <p className="text-muted-foreground mb-8">
+                Enter your details below
+              </p>
+
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <Input
+                    type="tel"
+                    placeholder="Email or Phone Number"
+                    value={loginPhone}
+                    onChange={(e) => setLoginPhone(e.target.value)}
+                    className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center justify-between gap-4 pt-2">
+                  <Button 
+                    type="submit" 
+                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-8"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Logging in...' : 'Log In'}
+                  </Button>
+                  <button 
+                    type="button"
+                    className="text-destructive hover:underline text-sm"
+                  >
+                    Forget Password?
+                  </button>
+                </div>
+              </form>
+
+              <div className="mt-8 text-center">
+                <p className="text-muted-foreground text-sm">
+                  Don't have an account?{' '}
+                  <button 
+                    onClick={() => setIsSignup(true)}
+                    className="text-foreground hover:underline font-medium"
+                  >
+                    Sign Up
+                  </button>
+                </p>
               </div>
-            </div>
 
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
+              {/* Demo credentials */}
+              <div className="mt-8 p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">Demo Mode:</span> Admin: 0201234567 / admin123
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 className="font-display text-3xl lg:text-4xl font-semibold text-foreground mb-2">
+                Create an account
+              </h1>
+              <p className="text-muted-foreground mb-8">
+                Enter your details below
+              </p>
 
-              <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-phone">Phone Number</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="login-phone"
-                        type="tel"
-                        placeholder="0201234567"
-                        value={loginPhone}
-                        onChange={(e) => setLoginPhone(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Signing in...' : 'Sign In'}
-                  </Button>
-                </form>
-              </TabsContent>
+              <form onSubmit={handleSignup} className="space-y-6">
+                <div>
+                  <Input
+                    type="text"
+                    placeholder="Name"
+                    value={signupName}
+                    onChange={(e) => setSignupName(e.target.value)}
+                    className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <Input
+                    type="tel"
+                    placeholder="Email or Phone Number"
+                    value={signupPhone}
+                    onChange={(e) => setSignupPhone(e.target.value)}
+                    className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    value={signupPassword}
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                    className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <Input
+                    type="password"
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
+                    required
+                  />
+                </div>
 
-              <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="signup-name"
-                        type="text"
-                        placeholder="John Doe"
-                        value={signupName}
-                        onChange={(e) => setSignupName(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-phone">Phone Number</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="signup-phone"
-                        type="tel"
-                        placeholder="0201234567"
-                        value={signupPhone}
-                        onChange={(e) => setSignupPhone(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={signupPassword}
-                        onChange={(e) => setSignupPassword(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Creating account...' : 'Create Account'}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                </Button>
+              </form>
+
+              <div className="mt-8 text-center">
+                <p className="text-muted-foreground text-sm">
+                  Already have an account?{' '}
+                  <button 
+                    onClick={() => setIsSignup(false)}
+                    className="text-foreground hover:underline font-medium"
+                  >
+                    Log in
+                  </button>
+                </p>
+              </div>
+            </>
+          )}
+
+          <div className="mt-8">
+            <Link 
+              to="/" 
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
+              ← Back to Store
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
