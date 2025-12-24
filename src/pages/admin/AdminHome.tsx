@@ -7,7 +7,7 @@ import { useAdminStats } from '@/hooks/useAdminStats';
 
 const AdminHome = () => {
   const { data, isLoading } = useAdminStats();
-  const stats = data || mockAdminStats;
+  const stats = data ?? mockAdminStats;
 
   const statCards = [
     {
@@ -95,7 +95,7 @@ const AdminHome = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {(stats.recent_orders || mockAllOrders).slice(0, 5).map((order: any) => (
+              {((stats as any).recent_orders || mockAllOrders).slice(0, 5).map((order: any) => (
                 <div key={order.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                   <div>
                     <p className="font-medium">{order.id}</p>
