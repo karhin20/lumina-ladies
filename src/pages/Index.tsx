@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import HeroWithSidebar from "@/components/HeroWithSidebar";
 import FlashSales from "@/components/FlashSales";
+import BrowseByCategory from "@/components/BrowseByCategory";
 import BestSelling from "@/components/BestSelling";
 import PromoBanner from "@/components/PromoBanner";
 import ExploreProducts from "@/components/ExploreProducts";
@@ -14,6 +15,7 @@ const Index = () => {
       <main>
         <HeroWithSidebar />
         <FlashSales />
+        <BrowseByCategory />
         <BestSelling />
         <PromoBanner />
         <ExploreProducts />
