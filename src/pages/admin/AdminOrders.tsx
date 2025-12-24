@@ -14,24 +14,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Eye, ChevronDown } from 'lucide-react';
-import { mockAllOrders, Order } from '@/data/mockData';
+import { Search, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminOrders } from '@/hooks/useAdminOrders';
+import { api } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AdminOrders = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [orders, setOrders] = useState<Order[]>(mockAllOrders);
   const { toast } = useToast();
+  const { sessionToken } = useAuth();
+  const { data: orders = [], isLoading, refetch } = useAdminOrders();
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.shippingAddress.name.toLowerCase().includes(searchQuery.toLowerCase());
+      (order.shipping?.name || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusColor = (status: Order['status']) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'processing': return 'bg-blue-100 text-blue-800';
@@ -42,14 +45,29 @@ const AdminOrders = () => {
     }
   };
 
-  const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ));
-    toast({
-      title: 'Order updated',
-      description: `Order ${orderId} status changed to ${newStatus}`,
-    });
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    if (!sessionToken) {
+      toast({
+        title: 'Login required',
+        description: 'Sign in as an admin to update orders',
+        variant: 'destructive',
+      });
+      return;
+    }
+    try {
+      await api.updateOrderStatus(orderId, newStatus, sessionToken);
+      toast({
+        title: 'Order updated',
+        description: `Order ${orderId} status changed to ${newStatus}`,
+      });
+      refetch();
+    } catch (error: any) {
+      toast({
+        title: 'Update failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -107,17 +125,29 @@ const AdminOrders = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredOrders.map((order) => (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      Loading orders...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredOrders.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      No orders found
+                    </TableCell>
+                  </TableRow>
+                ) : filteredOrders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.id}</TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{order.shippingAddress.name}</p>
-                        <p className="text-sm text-muted-foreground">{order.shippingAddress.phone}</p>
+                        <p className="font-medium">{order.shipping?.name}</p>
+                        <p className="text-sm text-muted-foreground">{order.shipping?.phone}</p>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {new Date(order.date).toLocaleDateString('en-GB', {
+                      {new Date(order.created_at || '').toLocaleDateString('en-GB', {
                         day: 'numeric',
                         month: 'short',
                         year: 'numeric'

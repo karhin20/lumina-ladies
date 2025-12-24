@@ -8,23 +8,34 @@ import {
   TableHeader, TableRow 
 } from '@/components/ui/table';
 import { Plus, Search, Edit2, Trash2, Eye } from 'lucide-react';
-import { allProducts } from '@/data/products';
 import { useToast } from '@/hooks/use-toast';
+import { useProducts } from '@/hooks/useProducts';
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
 
 const AdminProducts = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
+  const { sessionToken } = useAuth();
+  const { data: products = [], isLoading, refetch } = useProducts();
 
-  const filteredProducts = allProducts.filter(product =>
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = (id: string) => {
-    toast({
-      title: 'Product deleted',
-      description: 'This is a demo. In production, this would delete the product.',
-    });
+  const handleDelete = async (id: string) => {
+    if (!sessionToken) {
+      toast({ title: 'Login required', description: 'Sign in as admin to delete products', variant: 'destructive' });
+      return;
+    }
+    try {
+      await api.deleteProduct(id, sessionToken);
+      toast({ title: 'Product deleted' });
+      refetch();
+    } catch (error: any) {
+      toast({ title: 'Failed to delete', description: error.message, variant: 'destructive' });
+    }
   };
 
   return (
@@ -45,7 +56,7 @@ const AdminProducts = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <CardTitle>All Products</CardTitle>
-              <CardDescription>{allProducts.length} products in catalog</CardDescription>
+              <CardDescription>{products.length} products in catalog</CardDescription>
             </div>
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -71,7 +82,11 @@ const AdminProducts = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredProducts.map((product) => (
+                {isLoading ? (
+                  <div className="p-8 text-center text-muted-foreground">Loading products...</div>
+                ) : filteredProducts.length === 0 ? (
+                  <div className="p-8 text-center text-muted-foreground">No products match your search</div>
+                ) : filteredProducts.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">

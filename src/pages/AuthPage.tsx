@@ -13,11 +13,11 @@ const AuthPage = () => {
   const { toast } = useToast();
 
   // Login form state
-  const [loginPhone, setLoginPhone] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
   // Signup form state
-  const [signupPhone, setSignupPhone] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupName, setSignupName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,7 +26,7 @@ const AuthPage = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const result = await login(loginPhone, loginPassword);
+    const result = await login(loginEmail, loginPassword);
 
     if (result.success) {
       toast({
@@ -68,12 +68,12 @@ const AuthPage = () => {
 
     setIsLoading(true);
 
-    const result = await signup(signupPhone, signupPassword, signupName);
+    const result = await signup(signupEmail, signupPassword, signupName);
 
     if (result.success) {
       toast({
         title: 'Account created!',
-        description: 'Welcome to Luxe Artisan.',
+        description: 'Welcome to Lampo.',
       });
       navigate('/account');
     } else {
@@ -106,7 +106,7 @@ const AuthPage = () => {
           {!isSignup ? (
             <>
               <h1 className="font-display text-3xl lg:text-4xl font-semibold text-foreground mb-2">
-                Log in to Exclusive
+                Log in to Lampo
               </h1>
               <p className="text-muted-foreground mb-8">
                 Enter your details below
@@ -115,10 +115,10 @@ const AuthPage = () => {
               <form onSubmit={handleLogin} className="space-y-6">
                 <div>
                   <Input
-                    type="tel"
-                    placeholder="Email or Phone Number"
-                    value={loginPhone}
-                    onChange={(e) => setLoginPhone(e.target.value)}
+                    type="email"
+                    placeholder="Email"
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
                     className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
                     required
                   />
@@ -163,12 +163,6 @@ const AuthPage = () => {
                 </p>
               </div>
 
-              {/* Demo credentials */}
-              <div className="mt-8 p-4 bg-muted rounded-lg">
-                <p className="text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">Demo Mode:</span> Admin: 0201234567 / admin123
-                </p>
-              </div>
             </>
           ) : (
             <>
@@ -192,10 +186,10 @@ const AuthPage = () => {
                 </div>
                 <div>
                   <Input
-                    type="tel"
-                    placeholder="Email or Phone Number"
-                    value={signupPhone}
-                    onChange={(e) => setSignupPhone(e.target.value)}
+                    type="email"
+                    placeholder="Email"
+                    value={signupEmail}
+                    onChange={(e) => setSignupEmail(e.target.value)}
                     className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
                     required
                   />

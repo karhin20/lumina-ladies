@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
 import { allProducts } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 
 const BestSelling = () => {
-  const bestProducts = allProducts.slice(0, 4);
+  const { data, isLoading } = useProducts();
+  const bestProducts = (data || allProducts).slice(0, 4);
 
   return (
     <section className="container mx-auto px-4 py-12 border-t border-border">
@@ -23,9 +25,13 @@ const BestSelling = () => {
 
       {/* Products */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {bestProducts.map((product) => (
-          <ProductCard key={product.id} {...product} />
-        ))}
+        {isLoading ? (
+          <div className="col-span-full text-center text-muted-foreground">Loading products...</div>
+        ) : (
+          bestProducts.map((product) => (
+            <ProductCard key={product.id} {...product} />
+          ))
+        )}
       </div>
     </section>
   );

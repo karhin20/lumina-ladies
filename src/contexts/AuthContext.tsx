@@ -1,132 +1,123 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { api, ApiUser } from "@/lib/api";
 
 export interface User {
   id: string;
-  phone: string;
+  phone?: string | null;
   name: string;
-  email?: string;
-  role: 'customer' | 'admin';
-  avatar?: string;
-  createdAt: string;
+  email?: string | null;
+  role: "customer" | "admin";
+  avatar?: string | null;
+  createdAt?: string;
 }
 
 interface AuthContextType {
   user: User | null;
+  sessionToken: string | null;
   isLoading: boolean;
-  login: (phone: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signup: (phone: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
-  updateProfile: (updates: Partial<User>) => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
+  updateProfile: (updates: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock user database in localStorage
-const USERS_KEY = 'luxe_users';
-const CURRENT_USER_KEY = 'luxe_current_user';
+const TOKEN_KEY = "lampo_token";
+const USER_KEY = "lampo_user";
 
-// Demo admin account
-const DEMO_ADMIN: User = {
-  id: 'admin-1',
-  phone: '0201234567',
-  name: 'Admin User',
-  email: 'admin@luxe.com',
-  role: 'admin',
-  createdAt: new Date().toISOString(),
-};
-
-const getStoredUsers = (): Record<string, { user: User; password: string }> => {
-  const stored = localStorage.getItem(USERS_KEY);
-  if (!stored) {
-    // Initialize with demo admin
-    const initial = {
-      '0201234567': { user: DEMO_ADMIN, password: 'admin123' }
-    };
-    localStorage.setItem(USERS_KEY, JSON.stringify(initial));
-    return initial;
-  }
-  return JSON.parse(stored);
-};
-
-const saveUsers = (users: Record<string, { user: User; password: string }>) => {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-};
+const mapUser = (u: ApiUser): User => ({
+  id: u.id,
+  email: u.email || null,
+  phone: u.phone || null,
+  name: (u as any).user_metadata?.name || u.name || u.email || "User",
+  role: (u as any).user_metadata?.role || (u.role as "customer" | "admin") || "customer",
+  avatar: (u as any).user_metadata?.avatar_url || u.avatar_url || null,
+  createdAt: (u as any).created_at,
+});
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const storedUser = localStorage.getItem(CURRENT_USER_KEY);
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    const storedUser = localStorage.getItem(USER_KEY);
+
+    if (storedToken) {
+      setSessionToken(storedToken);
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+      api.me(storedToken)
+        .then((remoteUser) => {
+          const mapped = mapUser(remoteUser);
+          setUser(mapped);
+          localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+        })
+        .catch(() => {
+          setUser(null);
+          setSessionToken(null);
+          localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(USER_KEY);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
-  const login = async (phone: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    const users = getStoredUsers();
-    const userData = users[phone];
-
-    if (!userData) {
-      return { success: false, error: 'Phone number not registered' };
+  const login = async (email: string, password: string) => {
+    try {
+      const res = await api.login(email, password);
+      const mapped = mapUser(res.user);
+      setUser(mapped);
+      setSessionToken(res.access_token);
+      localStorage.setItem(TOKEN_KEY, res.access_token);
+      localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message || "Unable to sign in" };
     }
-
-    if (userData.password !== password) {
-      return { success: false, error: 'Incorrect password' };
-    }
-
-    setUser(userData.user);
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(userData.user));
-    return { success: true };
   };
 
-  const signup = async (phone: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
-    const users = getStoredUsers();
-
-    if (users[phone]) {
-      return { success: false, error: 'Phone number already registered' };
+  const signup = async (email: string, password: string, name: string) => {
+    try {
+      const res = await api.signup(email, password, name);
+      const mapped = mapUser(res.user);
+      setUser(mapped);
+      setSessionToken(res.access_token);
+      localStorage.setItem(TOKEN_KEY, res.access_token);
+      localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message || "Unable to sign up" };
     }
-
-    const newUser: User = {
-      id: `user-${Date.now()}`,
-      phone,
-      name,
-      role: 'customer',
-      createdAt: new Date().toISOString(),
-    };
-
-    users[phone] = { user: newUser, password };
-    saveUsers(users);
-
-    setUser(newUser);
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
-    return { success: true };
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
-    localStorage.removeItem(CURRENT_USER_KEY);
+    setSessionToken(null);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
   };
 
-  const updateProfile = (updates: Partial<User>) => {
-    if (!user) return;
-
-    const updatedUser = { ...user, ...updates };
-    setUser(updatedUser);
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
-
-    // Update in users database
-    const users = getStoredUsers();
-    if (users[user.phone]) {
-      users[user.phone].user = updatedUser;
-      saveUsers(users);
-    }
+  const updateProfile = async (updates: Partial<User>) => {
+    if (!sessionToken) return;
+    const res = await api.updateMe(sessionToken, {
+      name: updates.name,
+      avatar_url: updates.avatar || undefined,
+    });
+    const mapped = mapUser(res.user as ApiUser);
+    setUser(mapped);
+    localStorage.setItem(USER_KEY, JSON.stringify(mapped));
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, updateProfile }}>
+    <AuthContext.Provider
+      value={{ user, sessionToken, isLoading, login, signup, logout, updateProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -135,7 +126,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

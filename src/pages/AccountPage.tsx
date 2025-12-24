@@ -12,14 +12,14 @@ import {
   User, Package, Heart, MapPin, LogOut, ArrowLeft, 
   Edit2, Trash2, Plus, ShoppingBag
 } from 'lucide-react';
-import { mockOrders, mockAddresses, mockWishlist, Order, Address, WishlistItem } from '@/data/mockData';
+import { mockAddresses, mockWishlist, Address, WishlistItem } from '@/data/mockData';
+import { useMyOrders } from '@/hooks/useMyOrders';
 
 const AccountPage = () => {
   const { user, isLoading, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
-  const [orders] = useState<Order[]>(mockOrders);
+  const { data: orders = [], isLoading: isLoadingOrders } = useMyOrders();
   const [addresses, setAddresses] = useState<Address[]>(mockAddresses);
   const [wishlist, setWishlist] = useState<WishlistItem[]>(mockWishlist);
   
@@ -52,8 +52,8 @@ const AccountPage = () => {
     return null;
   }
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     toast({
       title: 'Logged out',
       description: 'See you again soon!',
@@ -61,8 +61,8 @@ const AccountPage = () => {
     navigate('/');
   };
 
-  const handleUpdateProfile = () => {
-    updateProfile({ name: editName, email: editEmail });
+  const handleUpdateProfile = async () => {
+    await updateProfile({ name: editName, email: editEmail });
     setIsEditingProfile(false);
     toast({
       title: 'Profile updated',
@@ -173,11 +173,6 @@ const AccountPage = () => {
                         onChange={(e) => setEditEmail(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label>Phone Number</Label>
-                      <Input value={user.phone} disabled className="bg-muted" />
-                      <p className="text-xs text-muted-foreground">Phone number cannot be changed</p>
-                    </div>
                     <div className="flex gap-2">
                       <Button onClick={handleUpdateProfile}>Save Changes</Button>
                       <Button variant="outline" onClick={() => setIsEditingProfile(false)}>Cancel</Button>
@@ -189,10 +184,12 @@ const AccountPage = () => {
                       <Label className="text-muted-foreground">Full Name</Label>
                       <p className="text-lg font-medium">{user.name}</p>
                     </div>
-                    <div>
-                      <Label className="text-muted-foreground">Phone Number</Label>
-                      <p className="text-lg font-medium">{user.phone}</p>
-                    </div>
+                    {user.phone && (
+                      <div>
+                        <Label className="text-muted-foreground">Phone Number</Label>
+                        <p className="text-lg font-medium">{user.phone}</p>
+                      </div>
+                    )}
                     {user.email && (
                       <div>
                         <Label className="text-muted-foreground">Email</Label>
@@ -202,11 +199,13 @@ const AccountPage = () => {
                     <div>
                       <Label className="text-muted-foreground">Member Since</Label>
                       <p className="text-lg font-medium">
-                        {new Date(user.createdAt).toLocaleDateString('en-GB', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
-                        })}
+                        {user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString('en-GB', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric'
+                            })
+                          : '—'}
                       </p>
                     </div>
                   </div>
@@ -223,7 +222,11 @@ const AccountPage = () => {
                 <CardDescription>View and track your orders</CardDescription>
               </CardHeader>
               <CardContent>
-                {orders.length === 0 ? (
+                {isLoadingOrders ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    Loading orders...
+                  </div>
+                ) : orders.length === 0 ? (
                   <div className="text-center py-12">
                     <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground mb-4">No orders yet</p>

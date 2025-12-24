@@ -3,9 +3,11 @@ import { Badge } from '@/components/ui/badge';
 import { DollarSign, ShoppingCart, Users, Package, TrendingUp, ArrowUpRight } from 'lucide-react';
 import { mockAdminStats, mockAllOrders } from '@/data/mockData';
 import { Link } from 'react-router-dom';
+import { useAdminStats } from '@/hooks/useAdminStats';
 
 const AdminHome = () => {
-  const stats = mockAdminStats;
+  const { data, isLoading } = useAdminStats();
+  const stats = data || mockAdminStats;
 
   const statCards = [
     {
@@ -93,12 +95,12 @@ const AdminHome = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {mockAllOrders.slice(0, 5).map((order) => (
+              {(stats.recent_orders || mockAllOrders).slice(0, 5).map((order: any) => (
                 <div key={order.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                   <div>
                     <p className="font-medium">{order.id}</p>
                     <p className="text-sm text-muted-foreground">
-                      {new Date(order.date).toLocaleDateString('en-GB', {
+                      {new Date(order.created_at || order.date).toLocaleDateString('en-GB', {
                         day: 'numeric',
                         month: 'short'
                       })}
@@ -108,7 +110,7 @@ const AdminHome = () => {
                     <Badge className={getStatusColor(order.status)}>
                       {order.status}
                     </Badge>
-                    <span className="font-semibold">₵{order.total.toFixed(2)}</span>
+                    <span className="font-semibold">₵{order.total?.toFixed(2) || order.total}</span>
                   </div>
                 </div>
               ))}

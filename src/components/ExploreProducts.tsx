@@ -2,8 +2,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
 import { allProducts } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 
 const ExploreProducts = () => {
+  const { data, isLoading } = useProducts();
+  const products = data || allProducts;
+
   return (
     <section className="container mx-auto px-4 py-12 border-t border-border">
       {/* Section Header */}
@@ -27,9 +31,13 @@ const ExploreProducts = () => {
 
       {/* Products Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {allProducts.map((product) => (
-          <ProductCard key={product.id} {...product} />
-        ))}
+        {isLoading ? (
+          <div className="col-span-full text-center text-muted-foreground">Loading products...</div>
+        ) : (
+          products.map((product) => (
+            <ProductCard key={product.id} {...product} />
+          ))
+        )}
       </div>
 
       {/* View All Button */}

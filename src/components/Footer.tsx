@@ -6,10 +6,10 @@ const Footer = () => {
   return (
     <footer className="bg-foreground text-background">
       <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-          {/* Exclusive */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {/* Lampo */}
           <div className="col-span-2 md:col-span-1">
-            <h3 className="font-display text-xl font-bold mb-4">Exclusive</h3>
+            <h3 className="font-display text-xl font-bold mb-4">Lampo</h3>
             <p className="font-medium mb-3">Subscribe</p>
             <p className="text-sm text-background/70 mb-4">Get 10% off your first order</p>
             <div className="relative">
@@ -32,9 +32,9 @@ const Footer = () => {
           <div>
             <h4 className="font-medium mb-4">Support</h4>
             <ul className="space-y-3 text-sm text-background/70">
-              <li>111 Bijoy sarani, Dhaka,<br />DH 1515, Bangladesh.</li>
-              <li>exclusive@gmail.com</li>
-              <li>+88015-88888-9999</li>
+              <li>Red Okai Street, Achimota<br />Accra, Ghana.</li>
+              <li>lampo@gmail.com</li>
+              <li>+233 543119117</li>
             </ul>
           </div>
 
@@ -61,32 +61,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Download App */}
-          <div>
-            <h4 className="font-medium mb-4">Download App</h4>
-            <p className="text-xs text-background/50 mb-3">Save $3 with App New User Only</p>
-            <div className="flex gap-2 mb-4">
-              <div className="w-20 h-20 bg-background/20 rounded" />
-              <div className="space-y-2">
-                <div className="bg-background/20 rounded px-2 py-1 text-xs">Get it on Google Play</div>
-                <div className="bg-background/20 rounded px-2 py-1 text-xs">Download on App Store</div>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <a href="#" className="text-background/70 hover:text-background transition-colors">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-background/70 hover:text-background transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-background/70 hover:text-background transition-colors">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-background/70 hover:text-background transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
         </div>
       </div>
 

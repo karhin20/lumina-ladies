@@ -11,7 +11,7 @@ const Newsletter = () => {
     if (email) {
       toast({
         title: "Welcome to Lumière",
-        description: "Thank you for subscribing! Check your inbox for exclusive offers.",
+        description: "Thank you for subscribing! Check your inbox for Lampo offers.",
       });
       setEmail("");
     }
@@ -32,7 +32,7 @@ const Newsletter = () => {
             Join the Lumière Family
           </h2>
           <p className="text-primary-foreground/80 mb-8 max-w-lg mx-auto">
-            Subscribe to receive exclusive offers, early access to new collections, and curated style inspiration delivered to your inbox.
+            Subscribe to receive Lampo offers, early access to new collections, and curated style inspiration delivered to your inbox.
           </p>
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input

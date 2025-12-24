@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
 import { allProducts } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 
 const FlashSales = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -38,7 +39,8 @@ const FlashSales = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const flashProducts = allProducts.filter((p) => p.originalPrice);
+  const { data, isLoading } = useProducts();
+  const flashProducts = (data || allProducts).filter((p) => p.originalPrice);
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -74,9 +76,13 @@ const FlashSales = () => {
 
       {/* Products */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-        {flashProducts.map((product) => (
-          <ProductCard key={product.id} {...product} showDiscount />
-        ))}
+        {isLoading ? (
+          <div className="col-span-full text-center text-muted-foreground">Loading flash sales...</div>
+        ) : (
+          flashProducts.map((product) => (
+            <ProductCard key={product.id} {...product} showDiscount />
+          ))
+        )}
       </div>
 
       {/* View All Button */}

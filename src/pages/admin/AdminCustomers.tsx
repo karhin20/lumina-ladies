@@ -8,15 +8,16 @@ import {
   TableHeader, TableRow 
 } from '@/components/ui/table';
 import { Search, Eye, Mail, User } from 'lucide-react';
-import { mockCustomers } from '@/data/mockData';
+import { useAdminCustomers } from '@/hooks/useAdminCustomers';
 
 const AdminCustomers = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { data: customers = [], isLoading } = useAdminCustomers();
 
-  const filteredCustomers = mockCustomers.filter(customer =>
+  const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    customer.phone.includes(searchQuery) ||
-    customer.email.toLowerCase().includes(searchQuery.toLowerCase())
+    (customer.phone || '').includes(searchQuery) ||
+    (customer.email || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -35,7 +36,7 @@ const AdminCustomers = () => {
                 <User className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{mockCustomers.length}</p>
+                <p className="text-2xl font-bold">{customers.length}</p>
                 <p className="text-sm text-muted-foreground">Total Customers</p>
               </div>
             </div>
@@ -49,7 +50,7 @@ const AdminCustomers = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold">
-                  {mockCustomers.filter(c => c.orders > 0).length}
+                  {customers.filter(c => c.orders > 0).length}
                 </p>
                 <p className="text-sm text-muted-foreground">Active Buyers</p>
               </div>
@@ -64,7 +65,7 @@ const AdminCustomers = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold">
-                  ₵{mockCustomers.reduce((sum, c) => sum + c.totalSpent, 0).toLocaleString()}
+                  ₵{customers.reduce((sum, c) => sum + c.total_spent, 0).toFixed(2)}
                 </p>
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
               </div>
@@ -105,7 +106,19 @@ const AdminCustomers = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredCustomers.map((customer) => (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                      Loading customers...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredCustomers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                      No customers found
+                    </TableCell>
+                  </TableRow>
+                ) : filteredCustomers.map((customer) => (
                   <TableRow key={customer.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -125,10 +138,10 @@ const AdminCustomers = () => {
                       <Badge variant="secondary">{customer.orders} orders</Badge>
                     </TableCell>
                     <TableCell className="font-semibold">
-                      ₵{customer.totalSpent.toFixed(2)}
+                      ₵{customer.total_spent.toFixed(2)}
                     </TableCell>
                     <TableCell>
-                      {new Date(customer.joinedAt).toLocaleDateString('en-GB', {
+                      {new Date(customer.joined_at).toLocaleDateString('en-GB', {
                         day: 'numeric',
                         month: 'short',
                         year: 'numeric'

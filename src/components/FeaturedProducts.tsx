@@ -1,8 +1,10 @@
 import ProductCard from "./ProductCard";
 import { allProducts } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 
 const FeaturedProducts = () => {
-  const featuredProducts = allProducts.slice(0, 6);
+  const { data, isLoading } = useProducts();
+  const featuredProducts = (data || allProducts).slice(0, 6);
 
   return (
     <section className="py-20 md:py-32 bg-secondary/30">
@@ -27,9 +29,13 @@ const FeaturedProducts = () => {
           </a>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
+          {isLoading ? (
+            <div className="col-span-full text-center text-muted-foreground">Loading featured products...</div>
+          ) : (
+            featuredProducts.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))
+          )}
         </div>
       </div>
     </section>

@@ -2,19 +2,29 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Heart, Minus, Plus, ShoppingBag, Check } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getProductById, allProducts } from "@/data/products";
+import { allProducts, getProductById } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
+import { useProducts } from "@/hooks/useProducts";
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
-  const product = getProductById(id || "");
+  const { data: products = [], isLoading } = useProducts();
+  const product = products.find((p) => p.id === id) || getProductById(id || "");
   const [quantity, setQuantity] = useState(1);
   const [isLiked, setIsLiked] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const { toast } = useToast();
+
+  if (isLoading && !product) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Loading product...</div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -33,7 +43,7 @@ const ProductPage = () => {
     );
   }
 
-  const relatedProducts = allProducts
+  const relatedProducts = (products.length ? products : allProducts)
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
