@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Smartphone, Monitor, Watch, Camera, Headphones, Gamepad2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +12,8 @@ const categories = [
 ];
 
 const BrowseByCategory = () => {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   return (
     <section className="container mx-auto px-4 py-12 border-t border-border">
       {/* Section Header */}
@@ -37,8 +40,9 @@ const BrowseByCategory = () => {
         {categories.map((category, index) => (
           <button
             key={category.name}
+            onClick={() => setSelectedIndex(index)}
             className={`flex flex-col items-center justify-center gap-3 p-6 md:p-8 border rounded-sm transition-all hover:bg-accent hover:text-accent-foreground hover:border-accent ${
-              index === 3 ? "bg-accent text-accent-foreground border-accent" : "border-border"
+              selectedIndex === index ? "bg-accent text-accent-foreground border-accent" : "border-border"
             }`}
           >
             <category.icon className="h-8 w-8 md:h-10 md:w-10" />
