@@ -158,7 +158,7 @@ const AdminOrders = () => {
                         {order.items.slice(0, 3).map((item, idx) => (
                           <img
                             key={idx}
-                            src={item.image_url || ''}
+                            src={item.image}
                             alt={item.name}
                             className="w-8 h-8 rounded-full border-2 border-background object-cover"
                           />
@@ -174,7 +174,7 @@ const AdminOrders = () => {
                     <TableCell>
                       <Select
                         value={order.status}
-                        onValueChange={(value: string) => handleStatusChange(order.id, value)}
+                        onValueChange={(value: Order['status']) => handleStatusChange(order.id, value)}
                       >
                         <SelectTrigger className="w-32">
                           <Badge className={getStatusColor(order.status)}>

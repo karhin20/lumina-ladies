@@ -12,7 +12,7 @@ import {
   User, Package, Heart, MapPin, LogOut, ArrowLeft, 
   Edit2, Trash2, Plus, ShoppingBag
 } from 'lucide-react';
-import { mockAddresses, mockWishlist, Address, WishlistItem, Order } from '@/data/mockData';
+import { mockAddresses, mockWishlist, Address, WishlistItem } from '@/data/mockData';
 import { useMyOrders } from '@/hooks/useMyOrders';
 
 const AccountPage = () => {
