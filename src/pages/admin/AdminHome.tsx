@@ -1,39 +1,47 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DollarSign, ShoppingCart, Users, Package, TrendingUp, ArrowUpRight } from 'lucide-react';
-import { mockAdminStats, mockAllOrders } from '@/data/mockData';
 import { Link } from 'react-router-dom';
 import { useAdminStats } from '@/hooks/useAdminStats';
 
 const AdminHome = () => {
-  const { data, isLoading } = useAdminStats();
-  const stats = data || mockAdminStats;
+  const { data: stats, isLoading } = useAdminStats();
+
+  // Ensure stats is defined and has default values if API returns partial data
+  const safeStats = {
+    totalRevenue: stats?.total_revenue ?? 0,
+    totalOrders: stats?.total_orders ?? 0,
+    totalCustomers: stats?.total_customers ?? 0,
+    totalProducts: stats?.total_products ?? 0,
+    recentOrders: stats?.recent_orders ?? [],
+    topProducts: [], // API doesn't seem to return top_products in summary yet, or it's named differently
+  };
 
   const statCards = [
     {
       title: 'Total Revenue',
-      value: `₵${stats.totalRevenue.toLocaleString()}`,
+      value: `₵${(safeStats.totalRevenue || 0).toLocaleString()}`,
       change: '+12.5%',
       icon: DollarSign,
       color: 'text-green-600 bg-green-100',
     },
     {
       title: 'Total Orders',
-      value: stats.totalOrders.toString(),
+      value: (safeStats.totalOrders || 0).toString(),
       change: '+8.2%',
       icon: ShoppingCart,
       color: 'text-blue-600 bg-blue-100',
     },
     {
       title: 'Customers',
-      value: stats.totalCustomers.toString(),
+      value: (safeStats.totalCustomers || 0).toString(),
       change: '+15.3%',
       icon: Users,
       color: 'text-purple-600 bg-purple-100',
     },
     {
       title: 'Products',
-      value: stats.totalProducts.toString(),
+      value: (safeStats.totalProducts || 0).toString(),
       change: '+2',
       icon: Package,
       color: 'text-orange-600 bg-orange-100',
@@ -95,10 +103,10 @@ const AdminHome = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {(stats.recent_orders || mockAllOrders).slice(0, 5).map((order: any) => (
+              {safeStats.recentOrders.slice(0, 5).map((order: any) => (
                 <div key={order.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                   <div>
-                    <p className="font-medium">{order.id}</p>
+                    <p className="font-medium">#{order.id?.slice(0, 8).toUpperCase()}</p>
                     <p className="text-sm text-muted-foreground">
                       {new Date(order.created_at || order.date).toLocaleDateString('en-GB', {
                         day: 'numeric',
@@ -131,8 +139,8 @@ const AdminHome = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {stats.topProducts.map((product, index) => (
-                <div key={product.name} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+              {(safeStats.topProducts || []).map((product: any, index: number) => (
+                <div key={product.name || index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                   <div className="flex items-center gap-3">
                     <span className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-sm font-medium">
                       {index + 1}

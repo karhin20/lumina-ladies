@@ -1,25 +1,29 @@
-import { Heart, Eye } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { getValidImageUrl } from "@/lib/utils";
 
 interface ProductCardProps {
   id: string;
   name: string;
   price: number;
   originalPrice?: number;
-  image: string;
+  image_url?: string | null;
+  images?: string[];
   category: string;
   isNew?: boolean;
   showDiscount?: boolean;
 }
 
-const ProductCard = ({ id, name, price, originalPrice, image, category, isNew, showDiscount }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, originalPrice, image_url, images, category, isNew, showDiscount }: ProductCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
-  const { toast } = useToast();
   const { addToCart } = useCart();
+  const { user, toggleFavorite } = useAuth();
+  const { toast } = useToast();
 
   const discountPercent = originalPrice
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
@@ -28,7 +32,7 @@ const ProductCard = ({ id, name, price, originalPrice, image, category, isNew, s
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart({ id, name, price, originalPrice, image, category, isNew, description: '', details: [] });
+    addToCart({ id, name, price, originalPrice, image: image_url || '', category, isNew, description: '', details: [] });
     toast({
       title: "Added to cart",
       description: `${name} added to your cart`,
@@ -45,46 +49,59 @@ const ProductCard = ({ id, name, price, originalPrice, image, category, isNew, s
     });
   };
 
-  // Generate random rating for display
-  const rating = 4 + Math.random();
-  const reviewCount = Math.floor(Math.random() * 100) + 50;
+  // Generate stable rating based on product ID (so it doesn't change on re-render)
+  const hashCode = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  };
+
+  const hash = hashCode(id);
+  const rating = 3.5 + (hash % 15) / 10; // Rating between 3.5 and 5.0
+  const reviewCount = 50 + (hash % 150); // Review count between 50 and 200
+
+  const handleAddToWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Assuming 'user' and 'toggleFavorite' are available from a context or hook
+    // For this example, we'll use the existing `isLiked` state and `handleLike` logic
+    handleLike(e);
+  };
+
+
 
   return (
     <Link to={`/product/${id}`} className="group block">
-      <div className="relative overflow-hidden bg-secondary rounded-sm mb-3 aspect-square">
-        <img
-          src={image}
-          alt={name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-
+      <div className="relative aspect-square overflow-hidden rounded-sm bg-secondary mb-3">
         {/* Discount Badge */}
         {showDiscount && discountPercent > 0 && (
-          <span className="absolute top-2 left-2 bg-accent text-accent-foreground text-xs font-medium px-2 py-1 rounded-sm">
+          <div className="absolute left-3 top-3 z-10 rounded-sm bg-destructive px-3 py-1 text-xs font-medium text-destructive-foreground">
             -{discountPercent}%
-          </span>
+          </div>
         )}
 
         {/* New Badge */}
         {isNew && !showDiscount && (
-          <span className="absolute top-2 left-2 bg-green-500 text-white text-xs font-medium px-2 py-1 rounded-sm">
+          <div className="absolute left-3 top-3 z-10 rounded-sm bg-green-500 px-3 py-1 text-xs font-medium text-white">
             NEW
-          </span>
+          </div>
         )}
 
         {/* Action Buttons */}
-        <div className="absolute top-2 right-2 flex flex-col gap-2">
-          <button
-            onClick={handleLike}
-            className="w-8 h-8 rounded-full bg-background flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+        <div className="absolute right-3 top-3 z-10 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
+          <Button
+            variant="secondary"
+            size="icon"
+            className={`h-8 w-8 rounded-full shadow-sm hover:bg-background hover:text-destructive transition-colors ${isLiked ? "text-destructive bg-background" : ""}`}
+            onClick={handleAddToWishlist}
           >
-            <Heart
-              className={`w-4 h-4 ${isLiked ? 'fill-accent text-accent' : 'text-foreground'}`}
-            />
-          </button>
-          <button className="w-8 h-8 rounded-full bg-background flex items-center justify-center shadow-sm hover:scale-110 transition-transform">
-            <Eye className="w-4 h-4 text-foreground" />
-          </button>
+            <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
+          </Button>
+
         </div>
 
         {/* Add to Cart Button */}
@@ -96,6 +113,13 @@ const ProductCard = ({ id, name, price, originalPrice, image, category, isNew, s
             Add To Cart
           </Button>
         </div>
+
+        {/* Product Image */}
+        <img
+          src={getValidImageUrl(images || image_url) || '/placeholder.svg'}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Product Info */}
@@ -103,13 +127,35 @@ const ProductCard = ({ id, name, price, originalPrice, image, category, isNew, s
         <h3 className="font-medium text-foreground text-sm mb-1 line-clamp-1">
           {name}
         </h3>
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-semibold text-accent">₵{price.toFixed(2)}</span>
-          {originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              ₵{originalPrice.toFixed(2)}
-            </span>
-          )}
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-accent">₵{price.toFixed(2)}</span>
+            {originalPrice && (
+              <span className="text-sm text-muted-foreground line-through">
+                ₵{originalPrice.toFixed(2)}
+              </span>
+            )}
+          </div>
+          <button
+            onClick={handleAddToCart}
+            className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:scale-110 transition-transform"
+            title="Add to Cart"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-4 h-4 text-foreground"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+          </button>
         </div>
         <div className="flex items-center gap-1">
           <div className="flex">

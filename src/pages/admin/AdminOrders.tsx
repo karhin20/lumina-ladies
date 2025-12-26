@@ -3,9 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Table, TableBody, TableCell, TableHead, 
-  TableHeader, TableRow 
+import {
+  Table, TableBody, TableCell, TableHead,
+  TableHeader, TableRow
 } from '@/components/ui/table';
 import {
   Select,
@@ -17,15 +17,32 @@ import {
 import { Search, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAdminOrders } from '@/hooks/useAdminOrders';
-import { api } from '@/lib/api';
+import { api, ApiOrder } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { useVendor } from '@/hooks/useVendor';
+import { useProducts } from '@/hooks/useProducts';
+import { getValidImageUrl } from '@/lib/utils';
 
 const AdminOrders = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const { toast } = useToast();
   const { sessionToken } = useAuth();
-  const { data: orders = [], isLoading, refetch } = useAdminOrders();
+  const { vendor, isVendorAdmin } = useVendor();
+  const { data: allOrders = [], isLoading, refetch } = useAdminOrders();
+  const { data: products = [] } = useProducts();
+
+  // Get vendor product IDs for filtering
+  const vendorProductIds = isVendorAdmin && vendor
+    ? new Set(products.filter(p => (p as any).vendor_id === vendor.id).map(p => p.id))
+    : null;
+
+  // Filter orders by vendor for vendor_admin users
+  const orders = isVendorAdmin && vendorProductIds
+    ? allOrders.filter(order =>
+      order.items.some(item => vendorProductIds.has(item.product_id))
+    )
+    : allOrders;
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -139,7 +156,11 @@ const AdminOrders = () => {
                   </TableRow>
                 ) : filteredOrders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id}</TableCell>
+                    <TableCell className="font-medium">
+                      <span title={order.id} className="font-mono">
+                        #{order.id.slice(0, 8).toUpperCase()}
+                      </span>
+                    </TableCell>
                     <TableCell>
                       <div>
                         <p className="font-medium">{order.shipping?.name}</p>
@@ -158,7 +179,7 @@ const AdminOrders = () => {
                         {order.items.slice(0, 3).map((item, idx) => (
                           <img
                             key={idx}
-                            src={item.image}
+                            src={getValidImageUrl(item.image_url || (item as any).image) || '/placeholder.svg'}
                             alt={item.name}
                             className="w-8 h-8 rounded-full border-2 border-background object-cover"
                           />
@@ -174,7 +195,7 @@ const AdminOrders = () => {
                     <TableCell>
                       <Select
                         value={order.status}
-                        onValueChange={(value: Order['status']) => handleStatusChange(order.id, value)}
+                        onValueChange={(value: ApiOrder['status']) => handleStatusChange(order.id, value)}
                       >
                         <SelectTrigger className="w-32">
                           <Badge className={getStatusColor(order.status)}>

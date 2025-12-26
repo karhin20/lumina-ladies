@@ -2,27 +2,43 @@ import { useState } from "react";
 import { Menu, X, Search, Heart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import CartDrawer from "@/components/CartDrawer";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMenuOpen(false); // Close mobile menu if open
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   const navLinks = [
     { name: "Home", href: "/" },
+    { name: "Shop", href: "/products" },
     { name: "Contact", href: "#contact" },
     { name: "About", href: "#about" },
-    { name: "Sign Up", href: "/auth" },
   ];
 
   return (
     <>
       {/* Top Banner */}
       <div className="bg-foreground text-background text-center py-2 text-xs md:text-sm">
-        <span>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
-        <Link to="#" className="underline ml-2 font-semibold">ShopNow</Link>
+        <span>New Year Discounted Sale - OFF 30%!</span>
+        <Link to="/products" className="underline ml-2 font-semibold">ShopNow</Link>
       </div>
 
       {/* Main Header */}
@@ -54,14 +70,19 @@ const Header = () => {
                   type="text"
                   placeholder="What are you looking for?"
                   className="w-64 pr-10 bg-secondary border-0 text-sm h-10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <button onClick={() => handleSearch()} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <Search className="h-4 w-4" />
+                </button>
               </div>
               <Button variant="ghost" size="icon" className="hover:bg-transparent">
                 <Heart className="h-5 w-5" />
               </Button>
               <CartDrawer />
-              <Link to={user ? "/account" : "/auth"}>
+              <Link to={user ? (['admin', 'super_admin', 'vendor_admin'].includes(user.role) ? '/admin' : '/account') : "/auth"}>
                 <Button variant="ghost" size="icon" className="hover:bg-transparent">
                   <User className="h-5 w-5" />
                 </Button>
@@ -91,13 +112,46 @@ const Header = () => {
                     {link.name}
                   </Link>
                 ))}
+                {user ? (
+                  <>
+                    <Link
+                      to={user.role === 'admin' ? '/admin' : '/account'}
+                      className="text-base font-medium text-foreground py-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {user.role === 'admin' ? 'Dashboard' : 'Account'}
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-base font-medium text-foreground py-2 text-left"
+                    >
+                      Log Out
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="text-base font-medium text-foreground py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                )}
                 <div className="relative mt-2">
                   <Input
                     type="text"
                     placeholder="What are you looking for?"
                     className="w-full pr-10 bg-secondary border-0 text-sm"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
                   />
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <button onClick={() => handleSearch()} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <Search className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </nav>

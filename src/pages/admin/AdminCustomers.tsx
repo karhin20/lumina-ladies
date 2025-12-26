@@ -3,9 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Table, TableBody, TableCell, TableHead, 
-  TableHeader, TableRow 
+import {
+  Table, TableBody, TableCell, TableHead,
+  TableHeader, TableRow
 } from '@/components/ui/table';
 import { Search, Eye, Mail, User } from 'lucide-react';
 import { useAdminCustomers } from '@/hooks/useAdminCustomers';
@@ -118,8 +118,8 @@ const AdminCustomers = () => {
                       No customers found
                     </TableCell>
                   </TableRow>
-                ) : filteredCustomers.map((customer) => (
-                  <TableRow key={customer.id}>
+                ) : filteredCustomers.map((customer, index) => (
+                  <TableRow key={customer.user_id || index}>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">

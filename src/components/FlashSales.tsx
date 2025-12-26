@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import { allProducts } from "@/data/products";
-import { useProducts } from "@/hooks/useProducts";
+import { useFlashSales } from "@/hooks/useFlashSales";
 
 const FlashSales = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -39,8 +39,7 @@ const FlashSales = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const { data, isLoading } = useProducts();
-  const flashProducts = (data || allProducts).filter((p) => p.originalPrice);
+  const { data: flashProducts = [], isLoading } = useFlashSales();
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -87,9 +86,11 @@ const FlashSales = () => {
 
       {/* View All Button */}
       <div className="text-center mt-10">
-        <Button className="bg-accent hover:bg-accent/90 text-accent-foreground px-12">
-          View All Products
-        </Button>
+        <Link to="/products">
+          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground px-12">
+            View All Products
+          </Button>
+        </Link>
       </div>
     </section>
   );

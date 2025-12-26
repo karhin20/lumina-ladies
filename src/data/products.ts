@@ -15,6 +15,10 @@ export interface Product {
   isNew?: boolean;
   description: string;
   details: string[];
+  images?: string[];
+  isFlashSale?: boolean;
+  isFeatured?: boolean;
+  salesCount?: number;
 }
 
 export const allProducts: Product[] = [

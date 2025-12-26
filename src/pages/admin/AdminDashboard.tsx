@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { 
-  LayoutDashboard, Package, ShoppingCart, Users, 
-  LogOut, ArrowLeft, Settings, Menu
+import {
+  LayoutDashboard, Package, ShoppingCart, Users,
+  LogOut, ArrowLeft, Settings, Menu, Store
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -14,7 +14,9 @@ const navItems = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin/products', icon: Package, label: 'Products' },
   { href: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
-  { href: '/admin/customers', icon: Users, label: 'Customers' },
+  { href: '/admin/customers', icon: Users, label: 'Customers', superAdminOnly: true },
+  { href: '/admin/vendors', icon: Store, label: 'Vendors', superAdminOnly: true },
+  { href: '/admin/vendor-profile', icon: Store, label: 'My Store', vendorAdminOnly: true },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
@@ -25,7 +27,7 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== 'admin')) {
+    if (!isLoading && (!user || !["admin", "super_admin", "vendor_admin"].includes(user.role))) {
       navigate('/auth');
     }
   }, [user, isLoading, navigate]);
@@ -49,29 +51,37 @@ const AdminDashboard = () => {
         <h1 className="font-display text-xl font-semibold">Admin Panel</h1>
         <p className="text-sm text-muted-foreground">Luxe Artisan</p>
       </div>
-      
+
       <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              to={item.href}
-              onClick={() => setSidebarOpen(false)}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
-                isActive 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'hover:bg-muted text-muted-foreground hover:text-foreground'
-              )}
-            >
-              <item.icon className="w-5 h-5" />
-              {item.label}
-            </Link>
-          );
-        })}
+        {navItems
+          .filter((item) => {
+            // Filter out super admin only items for non-super admins
+            if (item.superAdminOnly && user.role !== 'super_admin') return false;
+            // Filter out vendor admin only items for non-vendor admins
+            if (item.vendorAdminOnly && user.role !== 'vendor_admin') return false;
+            return true;
+          })
+          .map((item) => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+                  isActive
+                    ? 'bg-primary text-primary-foreground'
+                    : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                {item.label}
+              </Link>
+            );
+          })}
       </nav>
-      
+
       <div className="p-4 border-t border-border space-y-2">
         <Link
           to="/"

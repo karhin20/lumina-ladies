@@ -67,7 +67,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="border-t border-background/10 py-4">
         <p className="text-center text-sm text-background/40">
-          © Copyright Rimel 2022. All right reserved
+          © Copyright Lampo 2025. All right reserved
         </p>
       </div>
     </footer>

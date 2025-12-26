@@ -1,12 +1,24 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
-import { allProducts } from "@/data/products";
 import { useProducts } from "@/hooks/useProducts";
+import { useRef } from "react";
 
 const ExploreProducts = () => {
-  const { data, isLoading } = useProducts();
-  const products = data || allProducts;
+  const { data: products = [], isLoading } = useProducts();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 400;
+      const newScrollLeft = scrollContainerRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+      scrollContainerRef.current.scrollTo({
+        left: newScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <section className="container mx-auto px-4 py-12 border-t border-border">
@@ -20,31 +32,51 @@ const ExploreProducts = () => {
       <div className="flex items-center justify-between mb-8">
         <h2 className="font-display text-2xl md:text-3xl font-semibold">Explore Our Products</h2>
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" className="rounded-full">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+            onClick={() => scroll('left')}
+          >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" className="rounded-full">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+            onClick={() => scroll('right')}
+          >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {isLoading ? (
-          <div className="col-span-full text-center text-muted-foreground">Loading products...</div>
-        ) : (
-          products.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))
-        )}
+      {/* Products Grid with Horizontal Scroll */}
+      <div
+        ref={scrollContainerRef}
+        className="overflow-x-auto scrollbar-hide pb-4"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
+          {isLoading ? (
+            <div className="w-full text-center text-muted-foreground py-8">Loading products...</div>
+          ) : (
+            products.slice(0, 12).map((product) => (
+              <div key={product.id} className="w-[160px] md:w-[220px] flex-shrink-0">
+                <ProductCard {...product} />
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* View All Button */}
       <div className="text-center mt-10">
-        <Button className="bg-accent hover:bg-accent/90 text-accent-foreground px-12">
-          View All Products
-        </Button>
+        <Link to="/products">
+          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground px-12">
+            View All Products
+          </Button>
+        </Link>
       </div>
     </section>
   );

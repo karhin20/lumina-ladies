@@ -20,6 +20,7 @@ const AuthPage = () => {
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupName, setSignupName] = useState('');
+  const [signupPhone, setSignupPhone] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -28,12 +29,17 @@ const AuthPage = () => {
 
     const result = await login(loginEmail, loginPassword);
 
-    if (result.success) {
+    if (result.success && result.user) {
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
-      navigate('/account');
+      // Redirect based on role
+      if (['admin', 'super_admin', 'vendor_admin'].includes(result.user.role)) {
+        navigate('/admin');
+      } else {
+        navigate('/account');
+      }
     } else {
       toast({
         title: 'Login failed',
@@ -68,7 +74,7 @@ const AuthPage = () => {
 
     setIsLoading(true);
 
-    const result = await signup(signupEmail, signupPassword, signupName);
+    const result = await signup(signupEmail, signupPassword, signupName, signupPhone);
 
     if (result.success) {
       toast({
@@ -135,14 +141,14 @@ const AuthPage = () => {
                 </div>
 
                 <div className="flex items-center justify-between gap-4 pt-2">
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-8"
                     disabled={isLoading}
                   >
                     {isLoading ? 'Logging in...' : 'Log In'}
                   </Button>
-                  <button 
+                  <button
                     type="button"
                     className="text-destructive hover:underline text-sm"
                   >
@@ -154,7 +160,7 @@ const AuthPage = () => {
               <div className="mt-8 text-center">
                 <p className="text-muted-foreground text-sm">
                   Don't have an account?{' '}
-                  <button 
+                  <button
                     onClick={() => setIsSignup(true)}
                     className="text-foreground hover:underline font-medium"
                   >
@@ -214,9 +220,18 @@ const AuthPage = () => {
                     required
                   />
                 </div>
+                <div>
+                  <Input
+                    type="tel"
+                    placeholder="Phone Number (Optional)"
+                    value={signupPhone}
+                    onChange={(e) => setSignupPhone(e.target.value)}
+                    className="border-0 border-b border-border rounded-none px-0 py-3 focus-visible:ring-0 focus-visible:border-foreground bg-transparent"
+                  />
+                </div>
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                   disabled={isLoading}
                 >
@@ -227,7 +242,7 @@ const AuthPage = () => {
               <div className="mt-8 text-center">
                 <p className="text-muted-foreground text-sm">
                   Already have an account?{' '}
-                  <button 
+                  <button
                     onClick={() => setIsSignup(false)}
                     className="text-foreground hover:underline font-medium"
                   >
@@ -239,8 +254,8 @@ const AuthPage = () => {
           )}
 
           <div className="mt-8">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
               ← Back to Store

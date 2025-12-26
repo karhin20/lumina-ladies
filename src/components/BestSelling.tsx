@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import { allProducts } from "@/data/products";
-import { useProducts } from "@/hooks/useProducts";
+import { useBestSelling } from "@/hooks/useBestSelling";
 
 const BestSelling = () => {
-  const { data, isLoading } = useProducts();
-  const bestProducts = (data || allProducts).slice(0, 4);
+  const { data: bestProducts = [], isLoading } = useBestSelling();
 
   return (
     <section className="container mx-auto px-4 py-12 border-t border-border">
@@ -18,9 +17,11 @@ const BestSelling = () => {
       {/* Title */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="font-display text-2xl md:text-3xl font-semibold">Best Selling Products</h2>
-        <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
-          View All
-        </Button>
+        <Link to="/products">
+          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
+            View All
+          </Button>
+        </Link>
       </div>
 
       {/* Products */}

@@ -3,15 +3,13 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const categories = [
-  "Woman's Fashion",
-  "Men's Fashion",
+  "Lightning",
+  "Beauty",
+  "Home",
+  "Accessory",
   "Electronics",
-  "Home & Lifestyle",
-  "Medicine",
-  "Sports & Outdoor",
-  "Baby's & Toys",
-  "Groceries & Pets",
-  "Health & Beauty",
+  "Jewelry",
+  "Other",
 ];
 
 const HeroWithSidebar = () => {
@@ -48,13 +46,11 @@ const HeroWithSidebar = () => {
             {categories.map((category) => (
               <li key={category}>
                 <Link
-                  to="#"
+                  to={`/products?category=${category}`}
                   className="flex items-center justify-between text-sm text-foreground hover:text-accent transition-colors py-1"
                 >
                   {category}
-                  {(category === "Woman's Fashion" || category === "Men's Fashion") && (
-                    <ChevronRight className="h-4 w-4" />
-                  )}
+                  <ChevronRight className="h-4 w-4" />
                 </Link>
               </li>
             ))}
@@ -73,7 +69,7 @@ const HeroWithSidebar = () => {
                 {slides[currentSlide].subtitle}
               </h2>
               <Link
-                to="#"
+                to="/products"
                 className="inline-flex items-center gap-2 text-background border-b border-background pb-1 hover:text-muted-foreground hover:border-muted-foreground transition-colors"
               >
                 Shop Now
@@ -95,9 +91,8 @@ const HeroWithSidebar = () => {
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${
-                  currentSlide === index ? "bg-accent" : "bg-muted-foreground/50"
-                }`}
+                className={`w-3 h-3 rounded-full transition-colors ${currentSlide === index ? "bg-accent" : "bg-muted-foreground/50"
+                  }`}
               />
             ))}
           </div>
