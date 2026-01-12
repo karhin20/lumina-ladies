@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import ProductSkeleton from "@/components/ProductSkeleton";
 import { allProducts } from "@/data/products";
 import { useProducts } from "@/hooks/useProducts";
 import { Separator } from "@/components/ui/separator";
@@ -61,7 +62,7 @@ const Products = () => {
         <div className="min-h-screen bg-background flex flex-col">
             <Header />
 
-            <main className="flex-grow container mx-auto px-4 py-8">
+            <main className="flex-grow container mx-auto px-4 py-8 animate-page-entry">
                 <div className="flex flex-col gap-4 mb-8">
                     <h1 className="font-display text-3xl font-bold">
                         {searchQuery ? `Results for "${searchQuery}"` : (selectedCategory ? `${selectedCategory}` : "All Products")}
@@ -82,7 +83,7 @@ const Products = () => {
                 {isLoading ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {[...Array(8)].map((_, i) => (
-                            <div key={i} className="aspect-square bg-secondary animate-pulse rounded-sm" />
+                            <ProductSkeleton key={i} />
                         ))}
                     </div>
                 ) : (

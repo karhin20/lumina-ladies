@@ -19,6 +19,10 @@ export interface Product {
   isFlashSale?: boolean;
   isFeatured?: boolean;
   salesCount?: number;
+  vendorId?: string;
+  vendorName?: string;
+  vendorSlug?: string;
+  videoUrl?: string;
 }
 
 export const allProducts: Product[] = [

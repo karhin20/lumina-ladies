@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getValidImageUrl } from '@/lib/utils';
+import { getValidImageUrl, getStoragePathFromUrl } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,8 +17,20 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from '@/lib/utils';
 
-import { Plus, Search, Edit2, Trash2, Upload, X } from 'lucide-react';
+import {
+  Search, Plus, MoreVertical, Edit, Trash2,
+  Copy, Filter, ChevronLeft, ChevronRight,
+  TrendingUp, Download, Eye, Upload, X
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useProducts } from '@/hooks/useProducts';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,6 +67,7 @@ const AdminProducts = () => {
     is_featured: false,
     sales_count: '0',
     details: '', // Comma separated
+    video_url: '',
   });
 
   // Image State
@@ -71,7 +84,8 @@ const AdminProducts = () => {
     setFormData({
       name: '', description: '', category: '', price: '',
       original_price: '', is_new: false, is_flash_sale: false,
-      is_featured: false, sales_count: '0', details: ''
+      is_featured: false, sales_count: '0', details: '',
+      video_url: ''
     });
     setExistingImages([]);
     setNewFiles([]);
@@ -94,29 +108,28 @@ const AdminProducts = () => {
       is_new: product.isNew || false,
       is_flash_sale: product.isFlashSale || false,
       is_featured: product.isFeatured || false,
-      sales_count: product.salesCount?.toString() || '0',
-      details: (product.details || []).join(', '),
+      sales_count: (product.salesCount || 0).toString(),
+      details: (product.details || []).join('. '),
+      video_url: (product as any).video_url || '',
     });
-    // Ensure we handle both single image_url (as image) and images array
-    const images = product.images && product.images.length > 0
-      ? product.images
-      : (product.image ? [product.image] : []);
-
-    setExistingImages(images);
+    setExistingImages(product.images || []);
     setNewFiles([]);
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!sessionToken) return;
-    if (!confirm("Are you sure you want to delete this product?")) return;
+  const handleDelete = async (productId: string, productName: string) => {
+    if (!confirm(`Are you sure you want to delete "${productName}"?`)) return;
 
     try {
-      await api.deleteProduct(id, sessionToken);
-      toast({ title: 'Product deleted' });
+      await api.deleteProduct(productId, sessionToken!);
+      toast({ title: "Product deleted" });
       refetch();
     } catch (error: any) {
-      toast({ title: 'Failed to delete', description: error.message, variant: 'destructive' });
+      toast({
+        title: "Error",
+        description: error.message || "Could not delete product",
+        variant: "destructive"
+      });
     }
   };
 
@@ -138,7 +151,29 @@ const AdminProducts = () => {
     setNewFiles(newFiles.filter((_, i) => i !== index));
   };
 
-  const removeExistingImage = (index: number) => {
+  const removeExistingImage = async (index: number) => {
+    const imageUrl = existingImages[index];
+    const storagePath = getStoragePathFromUrl(imageUrl);
+
+    if (storagePath && sessionToken) {
+      if (confirm("This will permanently delete the image from storage. Continue?")) {
+        try {
+          await api.deleteImage(storagePath, sessionToken);
+          toast({ title: "Image deleted from storage" });
+        } catch (error: any) {
+          console.error("Failed to delete from storage:", error);
+          toast({
+            title: "Storage deletion failed",
+            description: "The file might already be gone or you don't have permission.",
+            variant: "destructive"
+          });
+          // Continue to remove from UI anyway so the user can save the product without the broken link
+        }
+      } else {
+        return; // User cancelled
+      }
+    }
+
     setExistingImages(existingImages.filter((_, i) => i !== index));
   };
 
@@ -158,7 +193,8 @@ const AdminProducts = () => {
         is_flash_sale: formData.is_flash_sale,
         is_featured: formData.is_featured,
         sales_count: parseInt(formData.sales_count) || 0,
-        details: formData.details.split(',').map(s => s.trim()).filter(Boolean),
+        details: formData.details.split('.').map(s => s.trim()).filter(Boolean),
+        video_url: formData.video_url || undefined,
         // Automatically set vendor_id for vendor_admin users
         ...(isVendorAdmin && vendor ? { vendor_id: vendor.id } : {}),
       };
@@ -214,19 +250,19 @@ const AdminProducts = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
+        <DialogContent className="sm:max-w-2xl w-[95vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-xl">{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
             <DialogDescription>
               Fill in the details below. You can upload up to 4 images.
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Product Name</Label>
-                <Input id="name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                <Input id="name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="h-10" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
@@ -234,7 +270,7 @@ const AdminProducts = () => {
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -242,6 +278,7 @@ const AdminProducts = () => {
                     <SelectItem value="Fashion">Fashion</SelectItem>
                     <SelectItem value="Home">Home</SelectItem>
                     <SelectItem value="Beauty">Beauty</SelectItem>
+                    <SelectItem value="Jewelry">Jewelry</SelectItem>
                     <SelectItem value="Automotive">Automotive</SelectItem>
                     <SelectItem value="Sports">Sports</SelectItem>
                     <SelectItem value="Other">Other</SelectItem>
@@ -250,14 +287,14 @@ const AdminProducts = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="price">Price</Label>
-                <Input id="price" type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} />
+                <Input id="price" type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="h-10" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="original_price">Original Price (Optional)</Label>
-                <Input id="original_price" type="number" step="0.01" value={formData.original_price} onChange={e => setFormData({ ...formData, original_price: e.target.value })} />
+                <Input id="original_price" type="number" step="0.01" value={formData.original_price} onChange={e => setFormData({ ...formData, original_price: e.target.value })} className="h-10" />
               </div>
             </div>
 
@@ -267,41 +304,47 @@ const AdminProducts = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="details">Details (comma separated)</Label>
-              <Input id="details" value={formData.details} onChange={e => setFormData({ ...formData, details: e.target.value })} />
+              <Label htmlFor="details">Details (separated by full stop '.')</Label>
+              <Input id="details" value={formData.details} placeholder="Example: 100% Cotton. Made in Ghana. Water resistant." onChange={e => setFormData({ ...formData, details: e.target.value })} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="video_url">Video URL (YouTube/Vimeo)</Label>
+              <Input id="video_url" value={formData.video_url} placeholder="e.g. https://www.youtube.com/watch?v=..." onChange={e => setFormData({ ...formData, video_url: e.target.value })} />
+              <p className="text-[10px] text-muted-foreground">Optional: Add a link to a product video to show it in the gallery.</p>
             </div>
 
             {/* Product Flags */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center space-x-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg">
+              <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   id="is_new"
                   checked={formData.is_new}
                   onChange={e => setFormData({ ...formData, is_new: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300"
+                  className="w-5 h-5 rounded border-gray-300 accent-primary"
                 />
-                <Label htmlFor="is_new" className="cursor-pointer">Mark as New</Label>
+                <Label htmlFor="is_new" className="cursor-pointer font-medium">Mark as New</Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   id="is_flash_sale"
                   checked={formData.is_flash_sale}
                   onChange={e => setFormData({ ...formData, is_flash_sale: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300"
+                  className="w-5 h-5 rounded border-gray-300 accent-primary"
                 />
-                <Label htmlFor="is_flash_sale" className="cursor-pointer">Flash Sale Item</Label>
+                <Label htmlFor="is_flash_sale" className="cursor-pointer font-medium">Flash Sale Item</Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   id="is_featured"
                   checked={formData.is_featured}
                   onChange={e => setFormData({ ...formData, is_featured: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300"
+                  className="w-5 h-5 rounded border-gray-300 accent-primary"
                 />
-                <Label htmlFor="is_featured" className="cursor-pointer">Featured (New Arrivals)</Label>
+                <Label htmlFor="is_featured" className="cursor-pointer font-medium">Featured (New Arrivals)</Label>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="sales_count">Sales Count</Label>
@@ -311,6 +354,7 @@ const AdminProducts = () => {
                   min="0"
                   value={formData.sales_count}
                   onChange={e => setFormData({ ...formData, sales_count: e.target.value })}
+                  className="h-10"
                 />
               </div>
             </div>
@@ -375,94 +419,193 @@ const AdminProducts = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Sales</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  <div className="p-8 text-center text-muted-foreground">Loading products...</div>
-                ) : filteredProducts.length === 0 ? (
-                  <div className="p-8 text-center text-muted-foreground">No products match your search</div>
-                ) : filteredProducts.map((product: any) => (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
+          {/* Desktop Table View */}
+          <div className="hidden md:block">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-16">Image</TableHead>
+                    <TableHead>Product</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">
+                        Loading products...
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredProducts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">
+                        No products found
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredProducts.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell>
                         <img
-                          src={getValidImageUrl(product.images || product.image_url || product.image) || '/placeholder.svg'}
+                          src={getValidImageUrl(product.image) || '/placeholder.svg'}
                           alt={product.name}
-                          className="w-12 h-12 object-cover rounded-lg"
+                          className="w-10 h-10 rounded-md object-cover border border-border"
                         />
+                      </TableCell>
+                      <TableCell>
                         <div>
                           <p className="font-medium">{product.name}</p>
-                          <p className="text-sm text-muted-foreground line-clamp-1">
-                            {product.description.substring(0, 50)}...
-                          </p>
+                          <p className="text-sm text-muted-foreground line-clamp-1">{product.description}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="font-normal">
+                          {product.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-bold">₵{product.price.toFixed(2)}</span>
+                          {product.originalPrice && (
+                            <span className="text-xs text-muted-foreground line-through opacity-70">
+                              ₵{product.originalPrice.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {product.isFlashSale && (
+                            <Badge variant="destructive" className="text-[10px] h-4 px-1">Flash</Badge>
+                          )}
+                          {product.isFeatured && (
+                            <Badge className="bg-purple-500 text-[10px] h-4 px-1">Feat</Badge>
+                          )}
+                          {product.isNew && (
+                            <Badge className="bg-green-500 text-[10px] h-4 px-1">New</Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenEdit(product)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDelete(product.id, product.name)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="grid gap-4 md:hidden">
+            {isLoading ? (
+              Array(3).fill(0).map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="h-48 bg-muted/20" />
+                </Card>
+              ))
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-12 bg-card rounded-xl border border-dashed">
+                <p className="text-muted-foreground">No products found</p>
+              </div>
+            ) : (
+              filteredProducts.map((product) => (
+                <Card key={product.id} className="overflow-hidden border-border bg-card/50">
+                  <CardContent className="p-0">
+                    <div className="flex gap-4 p-4">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-border">
+                        <img
+                          src={getValidImageUrl(product.image) || '/placeholder.svg'}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <h3 className="font-bold text-sm line-clamp-1">{product.name}</h3>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{product.category}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="font-bold text-accent text-sm">₵{product.price.toFixed(2)}</p>
+                            {product.originalPrice && (
+                              <p className="text-[10px] text-muted-foreground line-through opacity-70">
+                                ₵{product.originalPrice.toFixed(2)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {product.isFlashSale && (
+                            <Badge variant="destructive" className="text-[10px] h-4 px-1">Flash</Badge>
+                          )}
+                          {product.isFeatured && (
+                            <Badge className="bg-purple-500 text-[10px] h-4 px-1">Feat</Badge>
+                          )}
+                          {product.isNew && (
+                            <Badge className="bg-green-500 text-[10px] h-4 px-1">New</Badge>
+                          )}
                         </div>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{product.category}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">₵{product.price.toFixed(2)}</p>
-                        {(product.originalPrice || product.original_price) && (
-                          <p className="text-sm text-muted-foreground line-through">
-                            ₵{(product.originalPrice || product.original_price).toFixed(2)}
-                          </p>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {product.isFlashSale && (
-                          <Badge variant="destructive" className="text-xs">Flash Sale</Badge>
-                        )}
-                        {product.isFeatured && (
-                          <Badge className="bg-purple-500 text-xs">Featured</Badge>
-                        )}
-                        {product.isNew && (
-                          <Badge className="bg-green-500 text-xs">New</Badge>
-                        )}
-                        {!product.isFlashSale && !product.isFeatured && !product.isNew && (
-                          <span className="text-xs text-muted-foreground">—</span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-sm font-medium">{product.salesCount || 0}</p>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleOpenEdit(product)}
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(product.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+                    <div className="grid grid-cols-2 border-t border-border divide-x divide-border">
+                      <Button
+                        variant="ghost"
+                        className="rounded-none h-10 text-xs gap-2"
+                        onClick={() => handleOpenEdit(product)}
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                        Edit
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="rounded-none h-10 text-xs gap-2">
+                            <MoreVertical className="w-3.5 h-3.5" />
+                            Actions
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem onClick={() => {
+                            navigator.clipboard.writeText(product.id);
+                            toast({ title: "ID Copied", description: "Product ID copied to clipboard" });
+                          }}>
+                            <Copy className="mr-2 h-4 w-4" />
+                            Copy ID
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => handleDelete(product.id, product.name)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete Product
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

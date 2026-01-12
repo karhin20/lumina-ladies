@@ -2,11 +2,35 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Minus, Plus, Trash2, X } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const CartDrawer = () => {
   const { items, totalItems, totalPrice, updateQuantity, removeFromCart } = useCart();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    if (totalItems > 0) {
+      setAnimate(true);
+      const timer = setTimeout(() => setAnimate(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [totalItems]);
+
+  const handleCheckoutClick = () => {
+    setOpen(false);
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to complete your purchase or create an account.",
+      });
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -14,7 +38,7 @@ const CartDrawer = () => {
         <Button variant="ghost" size="icon" className="relative">
           <ShoppingBag className="h-5 w-5" />
           {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 h-4 w-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+            <span className={`absolute -top-1 -right-1 h-4 w-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center ${animate ? 'animate-[pop_0.3s_ease-out]' : ''}`}>
               {totalItems}
             </span>
           )}
@@ -47,7 +71,7 @@ const CartDrawer = () => {
                     <h4 className="font-medium text-foreground truncate">{item.name}</h4>
                     <p className="text-sm text-muted-foreground">{item.category}</p>
                     <p className="font-semibold text-foreground mt-1">₵{item.price.toFixed(2)}</p>
-                    
+
                     <div className="flex items-center gap-2 mt-2">
                       <Button
                         variant="outline"
@@ -85,8 +109,8 @@ const CartDrawer = () => {
                 <span>Total</span>
                 <span>₵{totalPrice.toFixed(2)}</span>
               </div>
-              <Button className="w-full" size="lg">
-                Checkout
+              <Button className="w-full" size="lg" asChild onClick={handleCheckoutClick}>
+                <Link to="/checkout">Checkout</Link>
               </Button>
               <Button variant="outline" className="w-full" onClick={() => setOpen(false)}>
                 Continue Shopping

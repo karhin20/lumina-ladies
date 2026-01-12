@@ -2,10 +2,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { DollarSign, ShoppingCart, Users, Package, TrendingUp, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useAdminStats } from '@/hooks/useAdminStats';
+import { useAuth } from '@/contexts/AuthContext';
+import { api, ApiVendorStat } from '@/lib/api';
 
 const AdminHome = () => {
+  const { user, sessionToken } = useAuth();
+  const queryClient = useQueryClient();
   const { data: stats, isLoading } = useAdminStats();
+
+  useEffect(() => {
+    if (sessionToken) {
+      // Prefetch customers and orders to make tab switching instant
+      queryClient.prefetchQuery({
+        queryKey: ["admin-customers", sessionToken],
+        queryFn: () => api.adminCustomers(sessionToken),
+      });
+      queryClient.prefetchQuery({
+        queryKey: ["admin-orders", sessionToken],
+        queryFn: () => api.adminOrders(sessionToken),
+      });
+    }
+  }, [sessionToken, queryClient]);
+
+  const isSuperAdmin = user?.role === 'super_admin';
 
   // Ensure stats is defined and has default values if API returns partial data
   const safeStats = {
@@ -14,6 +36,7 @@ const AdminHome = () => {
     totalCustomers: stats?.total_customers ?? 0,
     totalProducts: stats?.total_products ?? 0,
     recentOrders: stats?.recent_orders ?? [],
+    vendorStats: stats?.vendor_stats ?? [],
     topProducts: [], // API doesn't seem to return top_products in summary yet, or it's named differently
   };
 
@@ -67,22 +90,22 @@ const AdminHome = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => (
-          <Card key={stat.title}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className={`p-2 rounded-lg ${stat.color}`}>
-                  <stat.icon className="w-5 h-5" />
+          <Card key={stat.title} className="overflow-hidden">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center justify-between gap-2">
+                <div className={`p-1.5 sm:p-2 rounded-lg ${stat.color} flex-shrink-0`}>
+                  <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <span className="flex items-center text-sm text-green-600 font-medium">
+                <span className="flex items-center text-[10px] sm:text-xs text-green-600 font-bold whitespace-nowrap">
                   {stat.change}
-                  <TrendingUp className="w-4 h-4 ml-1" />
+                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5" />
                 </span>
               </div>
-              <div className="mt-4">
-                <p className="text-2xl font-bold">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.title}</p>
+              <div className="mt-3 sm:mt-4">
+                <p className="text-lg sm:text-2xl font-bold truncate">{stat.value}</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">{stat.title}</p>
               </div>
             </CardContent>
           </Card>
@@ -157,6 +180,42 @@ const AdminHome = () => {
           </CardContent>
         </Card>
       </div>
+
+      {isSuperAdmin && safeStats.vendorStats.length > 0 && (
+        <Card id="vendor-performance-section" className="border-primary/20 bg-primary/[0.02]">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              <CardTitle>Vendor Performance</CardTitle>
+            </div>
+            <CardDescription>Revenue and sales breakdown by individual vendor</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <th className="h-10 px-2 text-left align-middle font-medium text-muted-foreground">Vendor</th>
+                    <th className="h-10 px-2 text-right align-middle font-medium text-muted-foreground">Orders</th>
+                    <th className="h-10 px-2 text-right align-middle font-medium text-muted-foreground">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody className="[&_tr:last-child]:border-0">
+                  {safeStats.vendorStats.map((vendor: ApiVendorStat) => (
+                    <tr key={vendor.vendor_id} className="border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                      <td className="p-2 align-middle font-medium text-primary cursor-default">
+                        {vendor.vendor_name}
+                      </td>
+                      <td className="p-2 align-middle text-right">{vendor.total_sales}</td>
+                      <td className="p-2 align-middle text-right font-bold text-green-600">₵{vendor.total_revenue.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

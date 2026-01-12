@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { api, ApiUser } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
 
 export interface User {
   id: string;
@@ -32,15 +33,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const TOKEN_KEY = "lampo_token";
-const USER_KEY = "lampo_user";
+const TOKEN_KEY = "lumigh_token";
+const USER_KEY = "lumigh_user";
 
 const mapUser = (u: ApiUser): User => ({
   id: u.id,
   email: u.email || null,
   phone: u.phone || null,
   name: u.name || (u as any).user_metadata?.name || u.email || "User",
-  role: (u.role as "customer" | "admin") || (u as any).user_metadata?.role || "customer",
+  role: (u.role as User['role']) || (u as any).user_metadata?.role || "customer",
   avatar: (u as any).user_metadata?.avatar_url || u.avatar_url || null,
   favorites: u.favorites || [], // Map favorites
   createdAt: (u as any).created_at,
@@ -53,6 +54,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Check for hash parameters from OAuth redirect
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token")) {
+      const params = new URLSearchParams(hash.substring(1)); // remove #
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
+
+      if (accessToken) {
+        setSessionToken(accessToken);
+        localStorage.setItem(TOKEN_KEY, accessToken);
+        if (refreshToken) {
+          localStorage.setItem("lumigh_refresh_token", refreshToken);
+        }
+
+        // Fetch user data immediately
+        api.me(accessToken)
+          .then((remoteUser) => {
+            const mapped = mapUser(remoteUser);
+            setUser(mapped);
+            localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+            // Clear hash from URL
+            window.history.replaceState(null, "", window.location.pathname);
+          })
+          .catch((err) => {
+            console.error("Failed to fetch user after OAuth:", err);
+            toast({
+              title: "Login Failed",
+              description: "Could not verify Google session.",
+              variant: "destructive"
+            });
+          })
+          .finally(() => setIsLoading(false));
+        return; // Skip normal load
+      }
+    }
+
     const storedToken = localStorage.getItem(TOKEN_KEY);
     const storedUser = localStorage.getItem(USER_KEY);
 
@@ -67,17 +104,65 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser(mapped);
           localStorage.setItem(USER_KEY, JSON.stringify(mapped));
         })
-        .catch(() => {
-          setUser(null);
-          setSessionToken(null);
-          localStorage.removeItem(TOKEN_KEY);
-          localStorage.removeItem(USER_KEY);
+        .catch(async () => {
+          // If me fails (401), try to refresh if we have a refresh token
+          const refreshToken = localStorage.getItem("lumigh_refresh_token");
+          if (refreshToken) {
+            try {
+              const res = await api.refreshSession(refreshToken);
+              const mapped = mapUser(res.user);
+              setUser(mapped);
+              setSessionToken(res.access_token);
+              localStorage.setItem(TOKEN_KEY, res.access_token);
+              localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+              // Note: We normally get a new refresh token too, but our current backend endpoint 
+              // doesn't explicitly return it in the main body unless we adjust it.
+              // Assuming supabase returns the same or rotated one, we might need to update it.
+            } catch (refreshErr) {
+              // Refresh failed, logout
+              console.error("Refresh failed", refreshErr);
+              // Let the global unauthorized handler take care or manual logout
+              setUser(null);
+              setSessionToken(null);
+              localStorage.removeItem(TOKEN_KEY);
+              localStorage.removeItem(USER_KEY);
+              localStorage.removeItem("lumigh_refresh_token");
+            }
+          } else {
+            setIsLoading(false);
+          }
         })
         .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      // Logic handled in global interceptor or main useEffect catch, 
+      // but explicitly clearing here ensures UI sync
+      if (user || sessionToken) {
+        // Attempt refresh? Or just logout. For simplicity, just logout on explicit 401 event
+        // if not handled by the refresh logic above.
+        // Actually, api.ts emits this event. We could try refresh here too?
+        // For now, let's keep it simple: 401 = Logout.
+        toast({
+          title: "Session Expired",
+          description: "Please sign in again to continue.",
+          variant: "destructive",
+        });
+      }
+      setUser(null);
+      setSessionToken(null);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem("lumigh_refresh_token");
+    };
+
+    window.addEventListener("lumigh_unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("lumigh_unauthorized", handleUnauthorized);
+  }, [user, sessionToken]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -88,6 +173,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSessionToken(res.access_token);
       localStorage.setItem(TOKEN_KEY, res.access_token);
       localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+      // Store refresh token if available from response (api currently returns access_token & user)
+      // Supabase python client returns session which has refresh_token, we should update backend to return it if possible
+      // For standard email login, backend might need adjustment if we want persistent refresh logic here too.
       return { success: true, user: mapped };
     } catch (error: any) {
       return { success: false, error: error.message || "Unable to sign in" };
@@ -132,28 +220,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const toggleFavorite = async (productId: string) => {
     if (!sessionToken || !user) return;
 
-    // Optimistic update
-    const isFavorite = user.favorites.includes(productId);
+    // Use current favorites from the most up-to-date state
+    const currentFavorites = user.favorites || [];
+    const isFavorite = currentFavorites.includes(productId);
     const newFavorites = isFavorite
-      ? user.favorites.filter(id => id !== productId)
-      : [...user.favorites, productId];
+      ? currentFavorites.filter(id => id !== productId)
+      : [...currentFavorites, productId];
 
-    const updatedUser = { ...user, favorites: newFavorites };
-    setUser(updatedUser);
-    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser)); // Persist locally for instant feedback
+    // Optimistic update using functional form to be safer
+    setUser(prev => prev ? { ...prev, favorites: newFavorites } : null);
 
     try {
       // Sync with backend
       const confirmedFavorites = await api.toggleFavorite(sessionToken, productId);
-      // Update with source of truth
-      const truthUser = { ...user, favorites: confirmedFavorites };
-      setUser(truthUser);
-      localStorage.setItem(USER_KEY, JSON.stringify(truthUser));
+      // Update with source of truth from backend
+      setUser(prev => prev ? { ...prev, favorites: confirmedFavorites } : null);
+
+      // Update localStorage with updated favorites
+      const storedUser = localStorage.getItem(USER_KEY);
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        parsed.favorites = confirmedFavorites;
+        localStorage.setItem(USER_KEY, JSON.stringify(parsed));
+      }
     } catch (error) {
       // Revert on error
       console.error("Failed to toggle favorite", error);
-      setUser(user); // Revert to old user state
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      setUser(user); // Revert to captured user state
     }
   };
 

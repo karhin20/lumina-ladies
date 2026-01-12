@@ -132,7 +132,7 @@ const AdminVendorProfile = () => {
                             {/* Basic Information */}
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="name" className="flex items-center gap-2">
+                                    <Label htmlFor="name" className="flex items-center gap-2 text-sm font-medium">
                                         <Store className="w-4 h-4" />
                                         Store Name *
                                     </Label>
@@ -140,6 +140,7 @@ const AdminVendorProfile = () => {
                                         id="name"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        className="h-10"
                                         required
                                     />
                                 </div>
@@ -163,24 +164,26 @@ const AdminVendorProfile = () => {
                                     Branding
                                 </h3>
                                 <div className="space-y-2">
-                                    <Label htmlFor="logo_url">Logo URL</Label>
+                                    <Label htmlFor="logo_url" className="text-sm font-medium">Logo URL</Label>
                                     <Input
                                         id="logo_url"
                                         type="url"
                                         value={formData.logo_url}
                                         onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
                                         placeholder="https://example.com/logo.png"
+                                        className="h-10"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="banner_url">Banner URL</Label>
+                                    <Label htmlFor="banner_url" className="text-sm font-medium">Banner URL</Label>
                                     <Input
                                         id="banner_url"
                                         type="url"
                                         value={formData.banner_url}
                                         onChange={(e) => setFormData({ ...formData, banner_url: e.target.value })}
                                         placeholder="https://example.com/banner.png"
+                                        className="h-10"
                                     />
                                 </div>
                             </div>
@@ -191,20 +194,21 @@ const AdminVendorProfile = () => {
                                     <Mail className="w-4 h-4" />
                                     Contact Information
                                 </h3>
-                                <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                     <div className="space-y-2">
-                                        <Label htmlFor="contact_email">Email</Label>
+                                        <Label htmlFor="contact_email" className="text-sm font-medium">Email</Label>
                                         <Input
                                             id="contact_email"
                                             type="email"
                                             value={formData.contact_email}
                                             onChange={(e) => setFormData({ ...formData, contact_email: e.target.value })}
                                             placeholder="store@example.com"
+                                            className="h-10"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="contact_phone" className="flex items-center gap-2">
+                                        <Label htmlFor="contact_phone" className="flex items-center gap-2 text-sm font-medium">
                                             <Phone className="w-4 h-4" />
                                             Phone
                                         </Label>
@@ -214,6 +218,7 @@ const AdminVendorProfile = () => {
                                             value={formData.contact_phone}
                                             onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
                                             placeholder="+233 XX XXX XXXX"
+                                            className="h-10"
                                         />
                                     </div>
                                 </div>
@@ -241,9 +246,9 @@ const AdminVendorProfile = () => {
                                         />
                                     </div>
 
-                                    <div className="grid gap-4 sm:grid-cols-3">
+                                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
                                         <div className="space-y-2">
-                                            <Label htmlFor="city">City</Label>
+                                            <Label htmlFor="city" className="text-sm font-medium">City</Label>
                                             <Input
                                                 id="city"
                                                 value={formData.address.city}
@@ -254,11 +259,12 @@ const AdminVendorProfile = () => {
                                                     })
                                                 }
                                                 placeholder="Accra"
+                                                className="h-10"
                                             />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="region">Region</Label>
+                                            <Label htmlFor="region" className="text-sm font-medium">Region</Label>
                                             <Input
                                                 id="region"
                                                 value={formData.address.region}
@@ -269,11 +275,12 @@ const AdminVendorProfile = () => {
                                                     })
                                                 }
                                                 placeholder="Greater Accra"
+                                                className="h-10"
                                             />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="postal_code">Postal Code</Label>
+                                            <Label htmlFor="postal_code" className="text-sm font-medium">Postal Code</Label>
                                             <Input
                                                 id="postal_code"
                                                 value={formData.address.postal_code}
@@ -284,6 +291,7 @@ const AdminVendorProfile = () => {
                                                     })
                                                 }
                                                 placeholder="00233"
+                                                className="h-10"
                                             />
                                         </div>
                                     </div>

@@ -3,7 +3,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
+import ProductSkeleton from "./ProductSkeleton";
 import { useFlashSales } from "@/hooks/useFlashSales";
+import { useRef } from "react";
 
 const FlashSales = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -40,6 +42,18 @@ const FlashSales = () => {
   }, []);
 
   const { data: flashProducts = [], isLoading } = useFlashSales();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 400;
+      const newScrollLeft = scrollContainerRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+      scrollContainerRef.current.scrollTo({
+        left: newScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -64,24 +78,46 @@ const FlashSales = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" className="rounded-full">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+            onClick={() => scroll('left')}
+          >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" className="rounded-full">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+            onClick={() => scroll('right')}
+          >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Products */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-        {isLoading ? (
-          <div className="col-span-full text-center text-muted-foreground">Loading flash sales...</div>
-        ) : (
-          flashProducts.map((product) => (
-            <ProductCard key={product.id} {...product} showDiscount />
-          ))
-        )}
+      {/* Products with Horizontal Scroll */}
+      <div
+        ref={scrollContainerRef}
+        className="overflow-x-auto scrollbar-hide pb-4"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
+          {isLoading ? (
+            Array(5).fill(0).map((_, i) => (
+              <div key={i} className="w-[160px] md:w-[220px] lg:w-[240px] flex-shrink-0">
+                <ProductSkeleton />
+              </div>
+            ))
+          ) : (
+            flashProducts.map((product) => (
+              <div key={product.id} className="w-[160px] md:w-[220px] lg:w-[240px] flex-shrink-0">
+                <ProductCard {...product} showDiscount />
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* View All Button */}

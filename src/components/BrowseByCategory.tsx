@@ -47,7 +47,9 @@ const BrowseByCategory = ({ selectedCategory, onSelectCategory }: BrowseByCatego
           <button
             key={category.name}
             onClick={() => handleCategoryClick(category.name)}
-            className={`flex flex-col items-center justify-center gap-2 p-3 border rounded-sm transition-all hover:bg-accent hover:text-accent-foreground hover:border-accent ${selectedCategory === category.name ? "bg-accent text-accent-foreground border-accent" : "border-border"
+            className={`flex flex-col items-center justify-center gap-2 p-3 border rounded-sm transition-all ${selectedCategory === category.name
+              ? "bg-accent text-accent-foreground border-accent"
+              : "border-border md:hover:bg-accent md:hover:text-accent-foreground md:hover:border-accent"
               }`}
           >
             <category.icon className="h-5 w-5 md:h-6 md:w-6" />

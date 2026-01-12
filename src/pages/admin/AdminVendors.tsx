@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, Store, Trash2, UserPlus, UserMinus, Users } from "lucide-react";
+import { Loader2, Plus, Store, Trash2, UserPlus, UserMinus, Users, Eye } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { VendorCreate } from "@/types/vendor";
 import { toast } from "sonner";
 
@@ -90,38 +91,68 @@ const AdminVendors = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold">Vendor Management</h1>
-                    <p className="text-muted-foreground">Manage vendors and their administrators</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold">Vendors</h1>
+                    <p className="text-sm text-muted-foreground">Manage platform vendors and administrators</p>
                 </div>
 
                 <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button>
+                        <Button className="w-full sm:w-auto">
                             <Plus className="w-4 h-4 mr-2" />
                             Add Vendor
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-md">
+                    <DialogContent className="sm:max-w-md w-[95vw] p-4 sm:p-6">
                         <DialogHeader>
                             <DialogTitle>Create New Vendor</DialogTitle>
                             <DialogDescription>
                                 Add a new vendor to the platform
                             </DialogDescription>
                         </DialogHeader>
-                        <form onSubmit={handleCreateVendor} className="space-y-4">
-                            <div>
-                                <Label htmlFor="name">Vendor Name *</Label>
-                                <Input
-                                    id="name"
-                                    value={newVendor.name}
-                                    onChange={(e) => setNewVendor({ ...newVendor, name: e.target.value })}
-                                    required
-                                />
+                        <form onSubmit={handleCreateVendor} className="space-y-4 py-2">
+                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="storeName" className="text-sm font-medium">Store Name</Label>
+                                    <Input
+                                        id="storeName"
+                                        placeholder="Enter store name"
+                                        value={newVendor.name}
+                                        onChange={(e) => setNewVendor({ ...newVendor, name: e.target.value })}
+                                        className="h-10"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email" className="text-sm font-medium">Contact Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        placeholder="contact@example.com"
+                                        value={newVendor.contact_email}
+                                        onChange={(e) => setNewVendor({ ...newVendor, contact_email: e.target.value })}
+                                        className="h-10"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="phone" className="text-sm font-medium">Contact Phone</Label>
+                                    <Input
+                                        id="phone"
+                                        placeholder="+233 ..."
+                                        value={newVendor.contact_phone}
+                                        onChange={(e) => setNewVendor({ ...newVendor, contact_phone: e.target.value })}
+                                        className="h-10"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="currency" className="text-sm font-medium">Currency</Label>
+                                    <Input id="currency" defaultValue="GHS (₵)" className="h-10" disabled />
+                                </div>
                             </div>
-                            <div>
-                                <Label htmlFor="description">Description</Label>
+                            <div className="space-y-2">
+                                <Label htmlFor="description" className="text-sm font-medium">Description</Label>
                                 <Textarea
                                     id="description"
                                     value={newVendor.description}
@@ -129,29 +160,11 @@ const AdminVendors = () => {
                                     rows={3}
                                 />
                             </div>
-                            <div>
-                                <Label htmlFor="email">Contact Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    value={newVendor.contact_email}
-                                    onChange={(e) => setNewVendor({ ...newVendor, contact_email: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <Label htmlFor="phone">Contact Phone</Label>
-                                <Input
-                                    id="phone"
-                                    type="tel"
-                                    value={newVendor.contact_phone}
-                                    onChange={(e) => setNewVendor({ ...newVendor, contact_phone: e.target.value })}
-                                />
-                            </div>
-                            <div className="flex justify-end gap-2">
-                                <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
+                                <Button type="button" variant="outline" className="h-10" onClick={() => setIsCreateDialogOpen(false)}>
                                     Cancel
                                 </Button>
-                                <Button type="submit" disabled={createVendor.isPending}>
+                                <Button type="submit" className="h-10" disabled={createVendor.isPending}>
                                     {createVendor.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                     Create Vendor
                                 </Button>
@@ -163,33 +176,34 @@ const AdminVendors = () => {
 
             {/* Assign Admin Dialog */}
             <Dialog open={!!assignDialogVendorId} onOpenChange={(open) => !open && setAssignDialogVendorId(null)}>
-                <DialogContent className="max-w-md">
+                <DialogContent className="sm:max-w-md w-[95vw] p-4 sm:p-6">
                     <DialogHeader>
-                        <DialogTitle>Manage Vendor Admins</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="text-lg">Manage Vendor Admins</DialogTitle>
+                        <DialogDescription className="text-xs">
                             Assign users to manage this vendor
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="space-y-4">
+                    <div className="space-y-6 pt-2">
                         {/* Current Admins */}
-                        <div>
-                            <Label className="mb-2 block">Current Admins</Label>
+                        <div className="space-y-3">
+                            <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Current Admins</Label>
                             {adminsLoading ? (
-                                <div className="flex items-center justify-center py-4">
-                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                <div className="flex items-center justify-center py-6">
+                                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
                                 </div>
-                            ) : vendorAdmins && vendorAdmins.length > 0 ? (
-                                <div className="space-y-2">
-                                    {vendorAdmins.map((admin: any) => (
-                                        <div key={admin.id} className="flex items-center justify-between p-2 border rounded">
-                                            <div>
-                                                <p className="font-medium text-sm">{admin.full_name || admin.email}</p>
-                                                <p className="text-xs text-muted-foreground">{admin.email}</p>
+                            ) : (vendorAdmins as any[]) && (vendorAdmins as any[]).length > 0 ? (
+                                <div className="space-y-2 overflow-y-auto max-h-[30vh] pr-1">
+                                    {(vendorAdmins as any[]).map((admin: any) => (
+                                        <div key={admin.id} className="flex items-center justify-between p-3 border rounded-xl bg-card hover:bg-muted/30 transition-colors">
+                                            <div className="min-w-0 flex-1 mr-2">
+                                                <p className="font-semibold text-sm truncate">{admin.full_name || admin.email}</p>
+                                                <p className="text-[10px] text-muted-foreground truncate">{admin.email}</p>
                                             </div>
                                             <Button
                                                 variant="ghost"
-                                                size="sm"
+                                                size="icon"
+                                                className="h-8 w-8 text-destructive hover:bg-destructive/10 shrink-0"
                                                 onClick={() => handleRemoveAdmin(admin.id)}
                                             >
                                                 <UserMinus className="w-4 h-4" />
@@ -198,34 +212,43 @@ const AdminVendors = () => {
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-sm text-muted-foreground py-4 text-center">No admins assigned yet</p>
+                                <div className="text-sm text-muted-foreground py-8 text-center border-2 border-dashed rounded-xl">
+                                    No admins assigned yet
+                                </div>
                             )}
                         </div>
 
                         {/* Assign New Admin */}
-                        <div>
-                            <Label htmlFor="user-select" className="mb-2 block">Assign New Admin</Label>
-                            <div className="flex gap-2">
+                        <div className="space-y-3">
+                            <Label htmlFor="user-select" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Assign New Admin</Label>
+                            <div className="flex flex-col sm:flex-row gap-2">
                                 <Select value={selectedUserId} onValueChange={setSelectedUserId}>
-                                    <SelectTrigger className="flex-1">
+                                    <SelectTrigger className="flex-1 h-10">
                                         <SelectValue placeholder="Select a user" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="max-h-[30vh]">
                                         {customers.map((customer: any) => (
                                             <SelectItem key={customer.user_id} value={customer.user_id}>
-                                                {customer.name} ({customer.email})
+                                                <div className="flex flex-col items-start py-0.5">
+                                                    <span className="font-medium text-xs">{customer.name}</span>
+                                                    <span className="text-[10px] opacity-70">{customer.email}</span>
+                                                </div>
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                                 <Button
+                                    className="h-10 shrink-0"
                                     onClick={handleAssignAdmin}
                                     disabled={!selectedUserId || assignVendorAdmin.isPending}
                                 >
                                     {assignVendorAdmin.isPending ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <Loader2 className="w-4 h-4 animate-spin text-white" />
                                     ) : (
-                                        <UserPlus className="w-4 h-4" />
+                                        <>
+                                            <UserPlus className="w-4 h-4 mr-1 sm:mr-0 lg:mr-2" />
+                                            <span className="sm:hidden lg:inline">Assign</span>
+                                        </>
                                     )}
                                 </Button>
                             </div>
@@ -243,48 +266,49 @@ const AdminVendors = () => {
                 <div className="grid gap-4">
                     {vendors.map((vendor) => (
                         <Card key={vendor.id} className={!vendor.is_active ? "opacity-60" : ""}>
-                            <CardHeader>
-                                <div className="flex items-start justify-between">
+                            <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border bg-accent/5 flex items-center justify-center shrink-0">
                                             {vendor.logo_url ? (
                                                 <img src={vendor.logo_url} alt={vendor.name} className="w-full h-full rounded-full object-cover" />
                                             ) : (
-                                                <Store className="w-6 h-6 text-accent" />
+                                                <Store className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
                                             )}
                                         </div>
-                                        <div>
-                                            <CardTitle className="flex items-center gap-2">
+                                        <div className="min-w-0">
+                                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg truncate">
                                                 {vendor.name}
                                                 {!vendor.is_active && (
-                                                    <span className="text-xs bg-destructive/10 text-destructive px-2 py-1 rounded">
-                                                        Inactive
+                                                    <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded tracking-wide font-bold">
+                                                        INACTIVE
                                                     </span>
                                                 )}
                                             </CardTitle>
-                                            <CardDescription>{vendor.description || "No description"}</CardDescription>
+                                            <CardDescription className="text-xs truncate max-w-[200px] sm:max-w-xs">{vendor.description || "No description provided"}</CardDescription>
                                         </div>
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex items-center gap-2 w-full lg:w-auto">
                                         <Button
                                             variant="outline"
-                                            size="sm"
+                                            className="flex-1 sm:flex-none h-9 text-xs"
                                             onClick={() => setAssignDialogVendorId(vendor.id)}
                                         >
-                                            <Users className="w-4 h-4 mr-2" />
-                                            Manage Admins
+                                            <Users className="w-3.5 h-3.5 mr-1.5" />
+                                            Admins
                                         </Button>
                                         <Button
                                             variant="outline"
-                                            size="sm"
+                                            className="flex-1 sm:flex-none h-9 text-xs"
                                             onClick={() => window.open(`/seller/${vendor.slug || vendor.id}`, '_blank')}
                                         >
-                                            View Store
+                                            <Eye className="w-3.5 h-3.5 mr-1.5" />
+                                            Visit
                                         </Button>
                                         {vendor.is_active && (
                                             <Button
                                                 variant="destructive"
-                                                size="sm"
+                                                className="h-9 w-9 p-0 shrink-0"
                                                 onClick={() => handleDeleteVendor(vendor.id, vendor.name)}
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -293,24 +317,24 @@ const AdminVendors = () => {
                                     </div>
                                 </div>
                             </CardHeader>
-                            <CardContent>
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <span className="text-muted-foreground">Email:</span>{" "}
-                                        <span>{vendor.contact_email || "N/A"}</span>
+                            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-4 border-t">
+                                    <div className="flex items-center justify-between sm:justify-start gap-2">
+                                        <span className="text-muted-foreground">Email:</span>
+                                        <span className="font-medium truncate">{vendor.contact_email || "Not set"}</span>
                                     </div>
-                                    <div>
-                                        <span className="text-muted-foreground">Phone:</span>{" "}
-                                        <span>{vendor.contact_phone || "N/A"}</span>
+                                    <div className="flex items-center justify-between sm:justify-start gap-2">
+                                        <span className="text-muted-foreground">Phone:</span>
+                                        <span className="font-medium">{vendor.contact_phone || "Not set"}</span>
                                     </div>
-                                    <div>
-                                        <span className="text-muted-foreground">Created:</span>{" "}
-                                        <span>{new Date(vendor.created_at).toLocaleDateString()}</span>
+                                    <div className="flex items-center justify-between sm:justify-start gap-2">
+                                        <span className="text-muted-foreground">Joined:</span>
+                                        <span className="font-medium">{new Date(vendor.created_at).toLocaleDateString()}</span>
                                     </div>
-                                    <div>
-                                        <span className="text-muted-foreground">Status:</span>{" "}
-                                        <span className={vendor.is_active ? "text-green-600" : "text-destructive"}>
-                                            {vendor.is_active ? "Active" : "Inactive"}
+                                    <div className="flex items-center justify-between sm:justify-start gap-2">
+                                        <span className="text-muted-foreground">Status:</span>
+                                        <span className={cn("font-bold", vendor.is_active ? "text-green-600" : "text-destructive")}>
+                                            {vendor.is_active ? "Active" : "Disabled"}
                                         </span>
                                     </div>
                                 </div>

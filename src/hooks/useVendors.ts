@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Vendor, VendorCreate, VendorUpdate } from "@/types/vendor";
 import { ApiProduct } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
 
@@ -31,6 +32,8 @@ export function useVendors(activeOnly: boolean = true) {
         queryFn: async () => {
             return request<Vendor[]>(`/vendors/?active_only=${activeOnly}`);
         },
+        staleTime: 1000 * 60 * 60, // 1 hour
+        gcTime: 1000 * 60 * 60 * 24, // 24 hours
     });
 }
 
@@ -61,15 +64,15 @@ export function useVendorProducts(vendorId: string | undefined) {
 // Create vendor (super admin only)
 export function useCreateVendor() {
     const queryClient = useQueryClient();
+    const { sessionToken } = useAuth();
 
     return useMutation({
         mutationFn: async (data: VendorCreate) => {
-            const token = localStorage.getItem("token");
             return request<Vendor>("/vendors/", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${sessionToken}`,
                 },
             });
         },
@@ -82,15 +85,15 @@ export function useCreateVendor() {
 // Update vendor
 export function useUpdateVendor(vendorId: string) {
     const queryClient = useQueryClient();
+    const { sessionToken } = useAuth();
 
     return useMutation({
         mutationFn: async (data: VendorUpdate) => {
-            const token = localStorage.getItem("token");
             return request<Vendor>(`/vendors/${vendorId}`, {
                 method: "PUT",
                 body: JSON.stringify(data),
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${sessionToken}`,
                 },
             });
         },
@@ -104,14 +107,14 @@ export function useUpdateVendor(vendorId: string) {
 // Delete/deactivate vendor (super admin only)
 export function useDeleteVendor() {
     const queryClient = useQueryClient();
+    const { sessionToken } = useAuth();
 
     return useMutation({
         mutationFn: async (vendorId: string) => {
-            const token = localStorage.getItem("token");
             return request(`/vendors/${vendorId}`, {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${sessionToken}`,
                 },
             });
         },
@@ -124,14 +127,14 @@ export function useDeleteVendor() {
 // Assign vendor admin
 export function useAssignVendorAdmin(vendorId: string) {
     const queryClient = useQueryClient();
+    const { sessionToken } = useAuth();
 
     return useMutation({
         mutationFn: async (userId: string) => {
-            const token = localStorage.getItem("token");
             return request(`/vendors/${vendorId}/admins?user_id=${userId}`, {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${sessionToken}`,
                 },
             });
         },
@@ -144,14 +147,14 @@ export function useAssignVendorAdmin(vendorId: string) {
 // Remove vendor admin
 export function useRemoveVendorAdmin(vendorId: string) {
     const queryClient = useQueryClient();
+    const { sessionToken } = useAuth();
 
     return useMutation({
         mutationFn: async (userId: string) => {
-            const token = localStorage.getItem("token");
             return request(`/vendors/${vendorId}/admins/${userId}`, {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${sessionToken}`,
                 },
             });
         },
@@ -163,17 +166,18 @@ export function useRemoveVendorAdmin(vendorId: string) {
 
 // Fetch vendor admins
 export function useVendorAdmins(vendorId: string | undefined) {
+    const { sessionToken } = useAuth();
+
     return useQuery({
-        queryKey: ["vendors", vendorId, "admins"],
+        queryKey: ["vendors", vendorId, "admins", sessionToken],
         queryFn: async () => {
             if (!vendorId) throw new Error("Vendor ID is required");
-            const token = localStorage.getItem("token");
             return request(`/vendors/${vendorId}/admins`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${sessionToken}`,
                 },
             });
         },
-        enabled: !!vendorId,
+        enabled: !!vendorId && !!sessionToken,
     });
 }

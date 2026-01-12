@@ -2,8 +2,11 @@ import { useParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import ShareButton from "@/components/ShareButton";
 import { useVendor, useVendorProducts } from "@/hooks/useVendors";
 import { Loader2, Store, Mail, Phone, MapPin } from "lucide-react";
+import SEO from "@/components/SEO";
+
 
 const VendorPage = () => {
     const { vendorId } = useParams<{ vendorId: string }>();
@@ -41,6 +44,26 @@ const VendorPage = () => {
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
+            <SEO
+                title={vendor.name}
+                description={vendor.description || `Shop products from ${vendor.name} on Lumina Ladies.`}
+                ogImage={vendor.logo_url} // Or banner if you prefer
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "Store",
+                    "name": vendor.name,
+                    "image": vendor.logo_url,
+                    "description": vendor.description,
+                    "telephone": vendor.contact_phone,
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": vendor.address?.street_address,
+                        "addressLocality": vendor.address?.city,
+                        "addressRegion": vendor.address?.state,
+                        "addressCountry": vendor.address?.country
+                    }
+                }}
+            />
             <Header />
 
             <main className="flex-grow">
@@ -81,7 +104,19 @@ const VendorPage = () => {
 
                                 {/* Vendor Details */}
                                 <div className="flex-grow">
-                                    <h1 className="font-display text-3xl font-bold mb-2">{vendor.name}</h1>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h1 className="font-display text-3xl font-bold">{vendor.name}</h1>
+                                        <ShareButton
+                                            title={vendor.name}
+                                            text={`Check out ${vendor.name}'s store on Lumina Ladies!`}
+                                            url={window.location.href}
+                                            variant="secondary"
+                                            size="sm"
+                                            showLabel={true}
+                                            label="Share Store"
+                                            className="rounded-full"
+                                        />
+                                    </div>
                                     {vendor.description && (
                                         <p className="text-muted-foreground mb-4">{vendor.description}</p>
                                     )}

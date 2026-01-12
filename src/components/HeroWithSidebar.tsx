@@ -38,7 +38,7 @@ const HeroWithSidebar = () => {
   }, [slides.length]);
 
   return (
-    <section className="container mx-auto px-4 py-8">
+    <section className="container mx-auto px-4 py-4 md:py-8">
       <div className="flex gap-8">
         {/* Left Sidebar - Categories */}
         <aside className="hidden lg:block w-64 border-r border-border pr-8">
@@ -58,30 +58,31 @@ const HeroWithSidebar = () => {
         </aside>
 
         {/* Hero Banner */}
-        <div className="flex-1 bg-foreground rounded-sm overflow-hidden relative">
-          <div className="flex items-center justify-between p-8 md:p-12 min-h-[350px]">
-            <div className="text-background max-w-sm z-10">
+        <div className="flex-1 bg-[#121212] rounded-sm overflow-hidden relative border-b border-white/20">
+          <div className="flex items-center justify-between p-4 md:p-12 min-h-[200px] md:min-h-[350px]">
+            <div className="text-white max-w-sm z-10">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">{slides[currentSlide].logo}</span>
-                <span className="text-sm">{slides[currentSlide].title}</span>
+                <span className="text-sm uppercase tracking-wider">{slides[currentSlide].title}</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-semibold leading-tight mb-6">
+              <h2 className="text-2xl md:text-5xl font-semibold leading-tight mb-6">
                 {slides[currentSlide].subtitle}
               </h2>
               <Link
                 to="/products"
-                className="inline-flex items-center gap-2 text-background border-b border-background pb-1 hover:text-muted-foreground hover:border-muted-foreground transition-colors"
+                className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:text-white/80 hover:border-white/80 transition-colors"
               >
                 Shop Now
                 <span className="text-lg">→</span>
               </Link>
             </div>
-            <div className="hidden md:block absolute right-8 top-1/2 -translate-y-1/2">
+            <div className="absolute inset-0 md:inset-auto md:right-8 md:top-1/2 md:-translate-y-1/2 md:block">
               <img
                 src={slides[currentSlide].image}
                 alt={slides[currentSlide].title}
-                className="w-80 h-auto object-contain"
+                className="w-full h-full md:w-80 md:h-auto object-cover md:object-contain transition-opacity"
               />
+              <div className="absolute inset-0 bg-black/60 md:hidden" />
             </div>
           </div>
 

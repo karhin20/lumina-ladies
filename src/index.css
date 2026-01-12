@@ -37,10 +37,11 @@
     --radius: 0.25rem;
 
     /* Custom tokens */
-    --lampo-red: 0 72% 51%;
-    --lampo-black: 0 0% 0%;
-    --lampo-gray: 0 0% 45%;
-    --lampo-light: 0 0% 96%;
+    --lumigh-red: 0 72% 51%;
+    --lumigh-black: 0 0% 7%;
+    /* #121212 */
+    --lumigh-gray: 0 0% 45%;
+    --lumigh-light: 0 0% 96%;
 
     /* Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(0, 0%, 0%, 0.08);
@@ -62,31 +63,32 @@
 
   .dark {
     --background: 0 0% 7%;
+    /* #121212 */
     --foreground: 0 0% 98%;
 
-    --card: 0 0% 10%;
+    --card: 0 0% 9%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 7%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 7%;
+    --primary-foreground: 240 10% 3.9%;
 
-    --secondary: 0 0% 15%;
+    --secondary: 240 4% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 5% 65%;
 
     --accent: 0 72% 51%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
+    --border: 240 4% 14%;
+    --input: 240 4% 14%;
     --ring: 0 72% 51%;
 
     --sidebar-background: 240 5.9% 10%;
@@ -109,7 +111,12 @@
     @apply bg-background text-foreground font-body antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display;
   }
 }
@@ -141,11 +148,28 @@
     animation: scaleIn 0.5s ease-out forwards;
   }
 
+  .animate-page-entry {
+    animation: ariaFadeInUp 0.6s ease-out forwards;
+  }
+
+  @keyframes ariaFadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @keyframes fadeUp {
     from {
       opacity: 0;
       transform: translateY(30px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -156,6 +180,7 @@
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -166,8 +191,29 @@
       opacity: 0;
       transform: scale(0.95);
     }
+
     to {
       opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.4);
+    }
+
+    100% {
       transform: scale(1);
     }
   }

@@ -7,7 +7,6 @@ export const useProducts = () => {
   return useQuery<ApiProduct[], Error, Product[]>({
     queryKey: ["products"],
     queryFn: api.getProducts,
-    staleTime: 1000 * 60,
     retry: 1,
     select: (data: ApiProduct[]) =>
       data.map((p) => ({
@@ -24,6 +23,10 @@ export const useProducts = () => {
         isFlashSale: p.is_flash_sale,
         isFeatured: p.is_featured,
         salesCount: p.sales_count,
+        vendorId: p.vendor_id,
+        vendorName: p.vendor_name,
+        vendorSlug: p.vendor_slug,
+        videoUrl: p.video_url,
       })),
     placeholderData: allProducts,
   });

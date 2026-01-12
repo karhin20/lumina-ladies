@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,14 @@ import { mockAddresses, Address } from '@/data/mockData';
 import { useMyOrders } from '@/hooks/useMyOrders';
 import { useProducts } from '@/hooks/useProducts';
 import { ApiOrder } from "@/lib/api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { regions, cities } from "@/data/locations";
 
 const AccountPage = () => {
   const { user, isLoading, logout, updateProfile, toggleFavorite } = useAuth();
@@ -23,6 +31,12 @@ const AccountPage = () => {
   const { toast } = useToast();
   const { data: orders = [], isLoading: isLoadingOrders } = useMyOrders();
   const { data: allProducts, isLoading: isLoadingProducts } = useProducts();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'profile';
+
+  const handleTabChange = (value: string) => {
+    setSearchParams({ tab: value });
+  };
 
   // Derived state for wishlist based on user favorites and all products
   const wishlist = user?.favorites && allProducts
@@ -190,7 +204,11 @@ const AccountPage = () => {
 
       <main className="container mx-auto px-4 lg:px-8 py-12">
         <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="profile" className="flex flex-col md:flex-row gap-8 lg:gap-12">
+          <Tabs
+            value={activeTab}
+            onValueChange={handleTabChange}
+            className="flex flex-col md:flex-row gap-8 lg:gap-12"
+          >
 
             {/* Sidebar Navigation */}
             <nav className="w-full md:w-64 flex-shrink-0">
@@ -419,7 +437,7 @@ const AccountPage = () => {
                           />
                           <button
                             onClick={() => handleRemoveFromWishlist(item.id, item.name)}
-                            className="absolute top-3 right-3 p-2 bg-background/90 backdrop-blur-sm rounded-full text-destructive hover:bg-destructive hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+                            className="absolute top-3 right-3 p-2 bg-background/90 backdrop-blur-sm rounded-full text-destructive hover:bg-destructive hover:text-white transition-all shadow-sm opacity-100"
                             title="Remove"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -510,24 +528,53 @@ const AccountPage = () => {
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
                           <div className="space-y-2">
-                            <Label htmlFor="addressCity">City</Label>
-                            <Input
-                              id="addressCity"
-                              value={editAddressCity}
-                              onChange={(e) => setEditAddressCity(e.target.value)}
-                              className="bg-secondary/50"
-                              placeholder="Accra"
-                            />
+                            <Label htmlFor="addressRegion">Region</Label>
+                            <Select
+                              value={editAddressRegion}
+                              onValueChange={(value) => {
+                                setEditAddressRegion(value);
+                                setEditAddressCity("");
+                              }}
+                            >
+                              <SelectTrigger id="addressRegion" className="bg-secondary/50">
+                                <SelectValue placeholder="Select Region" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {regions.map((region) => (
+                                  <SelectItem key={region} value={region}>
+                                    {region}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="addressRegion">Region</Label>
-                            <Input
-                              id="addressRegion"
-                              value={editAddressRegion}
-                              onChange={(e) => setEditAddressRegion(e.target.value)}
-                              className="bg-secondary/50"
-                              placeholder="Greater Accra"
-                            />
+                            <Label htmlFor="addressCity">City / Town</Label>
+                            {editAddressRegion && cities[editAddressRegion] ? (
+                              <Select
+                                value={editAddressCity}
+                                onValueChange={setEditAddressCity}
+                              >
+                                <SelectTrigger id="addressCity" className="bg-secondary/50">
+                                  <SelectValue placeholder="Select City" />
+                                </SelectTrigger>
+                                <SelectContent className="max-h-[300px]">
+                                  {cities[editAddressRegion].map((city) => (
+                                    <SelectItem key={city} value={city}>
+                                      {city}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <Input
+                                id="addressCity"
+                                value={editAddressCity}
+                                onChange={(e) => setEditAddressCity(e.target.value)}
+                                className="bg-secondary/50"
+                                placeholder="Enter City"
+                              />
+                            )}
                           </div>
                         </div>
                         <div className="flex gap-3 pt-2">
@@ -557,7 +604,7 @@ const AccountPage = () => {
                         <div className="h-px bg-border/50 my-3" />
                         <p className="text-sm leading-relaxed">
                           {user.address.street}<br />
-                          {user.address.city}, {user.address.region}
+                          {user.address.region}, {user.address.city}
                         </p>
                       </div>
                     </CardContent>

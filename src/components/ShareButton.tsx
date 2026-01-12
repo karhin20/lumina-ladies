@@ -43,9 +43,20 @@ interface ShareButtonProps {
     className?: string; // Allow button styling
     variant?: "default" | "outline" | "secondary" | "ghost" | "link";
     size?: "default" | "sm" | "lg" | "icon";
+    showLabel?: boolean;
+    label?: string;
 }
 
-const ShareButton = ({ title, text, url = window.location.href, className, variant = "outline", size = "icon" }: ShareButtonProps) => {
+const ShareButton = ({
+    title,
+    text,
+    url = window.location.href,
+    className,
+    variant = "outline",
+    size = "icon",
+    showLabel = false,
+    label = "Share"
+}: ShareButtonProps) => {
     const { toast } = useToast();
 
     const handleShare = async () => {
@@ -100,12 +111,46 @@ const ShareButton = ({ title, text, url = window.location.href, className, varia
         setIsOpen(true);
     };
 
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(url);
-        toast({
-            title: "Link copied",
-            description: "Produce link copied to clipboard",
-        });
+    const copyToClipboard = async () => {
+        try {
+            // Try modern clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(url);
+                toast({
+                    title: "Link copied",
+                    description: "Product link copied to clipboard",
+                });
+            } else {
+                // Fallback for non-secure contexts or older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                if (successful) {
+                    toast({
+                        title: "Link copied",
+                        description: "Product link copied to clipboard",
+                    });
+                } else {
+                    throw new Error('Copy command failed');
+                }
+            }
+        } catch (err) {
+            console.error('Clipboard copy failed:', err);
+            toast({
+                title: "Copy failed",
+                description: "Your browser restricted copying. Please copy manually.",
+                variant: "destructive"
+            });
+        }
         setIsOpen(false);
     };
 
@@ -137,11 +182,12 @@ const ShareButton = ({ title, text, url = window.location.href, className, varia
             <DialogTrigger asChild>
                 <Button
                     variant={variant}
-                    size={size}
+                    size={showLabel ? "default" : size}
                     className={className}
                     onClick={handleClick}
                 >
-                    <Share2 className="w-4 h-4" />
+                    <Share2 className={`${showLabel ? "w-4 h-4 mr-2" : "w-4 h-4"}`} />
+                    {showLabel && <span>{label}</span>}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">

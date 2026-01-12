@@ -18,6 +18,11 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem("lumigh_token");
+      localStorage.removeItem("lumigh_user");
+      window.dispatchEvent(new Event("lumigh_unauthorized"));
+    }
     const text = await res.text();
     throw new Error(text || res.statusText);
   }
@@ -40,6 +45,18 @@ export interface ApiProduct {
   is_featured?: boolean;
   created_at?: string;
   vendor_id?: string;
+  vendor_name?: string;
+  vendor_slug?: string;
+  video_url?: string;
+  rating?: number;
+  reviews_count?: number;
+}
+
+export interface ApiVendorStat {
+  vendor_id: string;
+  vendor_name: string;
+  total_revenue: number;
+  total_sales: number;
 }
 
 export interface ApiAdminSummary {
@@ -48,6 +65,7 @@ export interface ApiAdminSummary {
   total_customers: number;
   total_products: number;
   recent_orders: any[];
+  vendor_stats?: ApiVendorStat[];
 }
 
 export interface ApiUser {
@@ -142,7 +160,27 @@ export interface ApiVendorUpdate {
 }
 
 
+export interface Review {
+  id: string;
+  user_id: string;
+  product_id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  user_metadata?: {
+    full_name: string;
+    avatar_url?: string;
+  };
+}
+
+export interface CreateReviewData {
+  product_id: string;
+  rating: number;
+  comment?: string;
+}
+
 export const api = {
+
   // products
   getProducts: () => request<ApiProduct[]>("/products"),
   getFlashSales: () => request<ApiProduct[]>("/products/flash-sales"),
@@ -182,6 +220,12 @@ export const api = {
       body: formData,
     });
   },
+
+  deleteImage: (filePath: string, token: string) =>
+    request<{ status: string; data: any }>(`/products/storage/image?file_path=${encodeURIComponent(filePath)}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    }),
 
   // admin
   adminSummary: (token: string) =>
@@ -260,5 +304,38 @@ export const api = {
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),
     }),
+
+  // orders
+  createOrder: (payload: { items: ApiOrderItem[]; total: number; shipping: any }, token: string) =>
+    request<ApiOrder>("/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload),
+    }),
+
+  // reviews
+  getReviews: (productId: string) => request<Review[]>(`/reviews/${productId}`),
+
+  createReview: (data: CreateReviewData, token: string) =>
+    request<Review>("/reviews/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
+
+  getGoogleAuthUrl: () => request<{ url: string }>("/auth/google-url"),
+
+  refreshSession: (refreshToken: string) =>
+    request<AuthResponse>("/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    }),
 };
+
 

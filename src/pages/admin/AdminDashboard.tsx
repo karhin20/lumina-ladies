@@ -4,11 +4,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Package, ShoppingCart, Users,
-  LogOut, ArrowLeft, Settings, Menu, Store
+  LogOut, ArrowLeft, Settings, Menu, Store, User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
+import { useVendor } from '@/hooks/useVendor';
 
 const navItems = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
@@ -22,6 +23,7 @@ const navItems = [
 
 const AdminDashboard = () => {
   const { user, isLoading, logout } = useAuth();
+  const { vendor } = useVendor();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -49,7 +51,9 @@ const AdminDashboard = () => {
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
         <h1 className="font-display text-xl font-semibold">Admin Panel</h1>
-        <p className="text-sm text-muted-foreground">Luxe Artisan</p>
+        <p className="text-sm text-muted-foreground truncate">
+          {vendor?.name || (user?.role === 'super_admin' ? 'LumiGh Platform' : 'LumiGh Admin')}
+        </p>
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
@@ -84,6 +88,13 @@ const AdminDashboard = () => {
 
       <div className="p-4 border-t border-border space-y-2">
         <Link
+          to="/account"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <User className="w-5 h-5" />
+          My Account
+        </Link>
+        <Link
           to="/"
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
@@ -111,23 +122,23 @@ const AdminDashboard = () => {
       {/* Mobile Header & Content */}
       <div className="flex-1 flex flex-col">
         {/* Mobile Header */}
-        <header className="lg:hidden border-b border-border bg-card/50 p-4 flex items-center justify-between">
+        <header className="lg:hidden sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md px-4 py-3 flex items-center justify-between">
           <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="h-9 w-9">
                 <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-64">
+            <SheetContent side="left" className="p-0 w-72">
               <SidebarContent />
             </SheetContent>
           </Sheet>
-          <h1 className="font-display text-lg font-semibold">Admin Panel</h1>
-          <div className="w-10" />
+          <h1 className="font-display text-base font-semibold">Admin Panel</h1>
+          <div className="w-9" />
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-auto">
+        <main className="flex-1 p-3 md:p-6 lg:p-8 overflow-auto">
           <Outlet />
         </main>
       </div>

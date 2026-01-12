@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
+import ProductSkeleton from "./ProductSkeleton";
 import { useBestSelling } from "@/hooks/useBestSelling";
 
 const BestSelling = () => {
@@ -27,7 +28,9 @@ const BestSelling = () => {
       {/* Products */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {isLoading ? (
-          <div className="col-span-full text-center text-muted-foreground">Loading products...</div>
+          Array(4).fill(0).map((_, i) => (
+            <ProductSkeleton key={i} />
+          ))
         ) : (
           bestProducts.map((product) => (
             <ProductCard key={product.id} {...product} />

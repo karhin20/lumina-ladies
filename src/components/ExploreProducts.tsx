@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
+import ProductSkeleton from "./ProductSkeleton";
 import { useProducts } from "@/hooks/useProducts";
 import { useRef } from "react";
 
@@ -59,7 +60,11 @@ const ExploreProducts = () => {
       >
         <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
           {isLoading ? (
-            <div className="w-full text-center text-muted-foreground py-8">Loading products...</div>
+            Array(8).fill(0).map((_, i) => (
+              <div key={i} className="w-[160px] md:w-[220px] lg:w-[240px] flex-shrink-0">
+                <ProductSkeleton />
+              </div>
+            ))
           ) : (
             products.slice(0, 12).map((product) => (
               <div key={product.id} className="w-[160px] md:w-[220px] flex-shrink-0">

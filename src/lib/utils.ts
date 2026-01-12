@@ -68,3 +68,37 @@ export function getValidImageUrl(imageSource: string | string[] | null | undefin
 
   return null;
 }
+export function getStoragePathFromUrl(url: string | null | undefined): string | null {
+  if (!url || typeof url !== 'string') return null;
+
+  // Supabase URL pattern: .../storage/v1/object/public/[bucket]/[path]
+  // We want to capture everything after the bucket name
+  const pattern = /\/storage\/v1\/object\/public\/[^\/]+\/(.+)$/;
+  const match = url.match(pattern);
+
+  if (match && match[1]) {
+    // Decode so we handle spaces and special chars correctly
+    return decodeURIComponent(match[1]);
+  }
+
+  return null;
+}
+
+export function getVideoEmbedUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+
+  // YouTube
+  const ytMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/);
+  if (ytMatch && ytMatch[1]) {
+    const videoId = ytMatch[1].split('&')[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+
+  // Vimeo
+  const vimeoMatch = url.match(/(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(.+)/);
+  if (vimeoMatch && vimeoMatch[1]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+
+  return url; // Return as is if it might be a direct MP4
+}
