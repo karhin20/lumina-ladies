@@ -234,13 +234,13 @@ const ProductPage = () => {
 
                 {/* Thumbnails (Images + Video) */}
                 {(product.videoUrl || (product.images && product.images.length > 1)) && (
-                  <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                  <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide">
                     {/* Video Thumbnail */}
                     {product.videoUrl && (
                       <button
                         onClick={() => carouselApi?.scrollTo(0)}
                         className={cn(
-                          "relative w-24 h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 flex items-center justify-center bg-secondary",
+                          "relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 flex items-center justify-center bg-secondary",
                           current === 0 ? "border-accent ring-2 ring-accent/20" : "border-border hover:border-accent/50"
                         )}
                       >
@@ -265,7 +265,7 @@ const ProductPage = () => {
                           key={index}
                           onClick={() => carouselApi?.scrollTo(actualIndex)}
                           className={cn(
-                            "relative w-24 h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0",
+                            "relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0",
                             current === actualIndex ? "border-accent ring-2 ring-accent/20" : "border-border hover:border-accent/50"
                           )}
                         >

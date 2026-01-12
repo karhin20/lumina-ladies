@@ -132,7 +132,7 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
                         {/* Thumbnails (Images + Videos) */}
                         {(product.video_url || (product.images && product.images.length > 1)) && (
-                            <div className="flex gap-2 p-4 overflow-x-auto scrollbar-hide bg-background border-t border-border">
+                            <div className="flex gap-1 sm:gap-2 p-4 overflow-x-auto scrollbar-hide bg-background border-t border-border">
                                 {/* Video Thumbnail */}
                                 {product.video_url && (
                                     <button
