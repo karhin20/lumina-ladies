@@ -184,11 +184,6 @@ const ProductPage = () => {
                       New
                     </span>
                   )}
-                  {product.originalPrice && (
-                    <span className="absolute top-4 left-4 z-10 bg-primary text-primary-foreground text-xs font-bold tracking-wider uppercase px-3 py-1.5 rounded-full translate-y-8">
-                      Sale
-                    </span>
-                  )}
                   <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                     <button
                       onClick={async (e) => {
