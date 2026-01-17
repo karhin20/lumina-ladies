@@ -2,8 +2,7 @@ import type { Config } from "@react-router/dev/config";
 
 export default {
     appDirectory: "src",
-    // Config options...
-    // Server-side generate these paths for SEO
+    // Prerender static paths for SEO
     async prerender() {
         return [
             "/",

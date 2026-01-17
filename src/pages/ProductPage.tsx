@@ -73,11 +73,7 @@ export function meta({ params }: MetaArgs) {
   ];
 }
 
-export async function loader({ params }: any) {
-  // We can eventually replace client-side logic with this loader
-  // For now, returning null or basic params satisfies the router's requirement
-  return { id: params.id };
-}
+
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();

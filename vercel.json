@@ -1,9 +1,6 @@
 {
-    "outputDirectory": "build/client",
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/index.html"
-        }
-    ]
+  "build": {
+    "command": "npm run build",
+    "outputDirectory": ".react-router/client"
+  }
 }
