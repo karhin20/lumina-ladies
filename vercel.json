@@ -1,5 +1,0 @@
-{
-  "dev": "react-router dev",
-  "build": "react-router build",
-  "start": "react-router-serve .react-router/client"
-}
