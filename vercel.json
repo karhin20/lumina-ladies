@@ -1,6 +1,5 @@
 {
-  "build": {
-    "command": "npm run build",
-    "outputDirectory": ".react-router/client"
-  }
+  "dev": "react-router dev",
+  "build": "react-router build",
+  "start": "react-router-serve .react-router/client"
 }
