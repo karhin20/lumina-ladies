@@ -41,6 +41,9 @@ export const allProducts: Product[] = [
       "Dimensions: 18\" diameter x 24\" height",
       "1-year warranty included",
     ],
+    vendorId: "local-vendor-1",
+    vendorName: "Luxe Lighting",
+    vendorSlug: "luxe-lighting",
   },
   {
     id: "blush-ceramic-table-lamp",

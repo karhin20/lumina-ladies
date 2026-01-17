@@ -103,7 +103,18 @@ const ProductPage = () => {
   const [current, setCurrent] = useState(0);
 
   /* Hook to fetch vendor details for the phone number */
-  const { data: vendor } = useVendor(product?.vendorId);
+  const { data: apiVendor } = useVendor(product?.vendorId);
+
+  // Fallback for local development/testing or if API vendor missing
+  const vendor = apiVendor || (product?.vendorId?.startsWith("local-") ? {
+    contact_phone: "+233555123456",
+    id: product.vendorId,
+    name: product.vendorName || "Vendor",
+    slug: product.vendorSlug || "vendor",
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  } as any : undefined);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -434,15 +445,15 @@ const ProductPage = () => {
       {/* Mobile Sticky Footer */}
       <Drawer>
         <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-40 shadow-up flex items-center gap-3 safe-area-bottom">
-          {vendor?.contact_phone && (
-            <a
-              href={`tel:${vendor.contact_phone}`}
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary text-foreground hover:bg-secondary/80 flex-shrink-0"
-              aria-label="Call Vendor"
-            >
-              <Phone className="w-5 h-5" />
-            </a>
-          )}
+          {/* Always show call button for debugging, use fallback if needed */}
+          <a
+            href={`tel:${vendor?.contact_phone || "+233543119117"}`}
+            className="flex items-center justify-center w-12 h-12 rounded-full bg-red-600 text-white hover:bg-red-700 flex-shrink-0"
+            aria-label="Call Vendor"
+          >
+            <Phone className="w-5 h-5 fill-current" />
+          </a>
+
           <DrawerTrigger asChild>
             <Button
               variant="hero"
