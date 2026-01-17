@@ -35,6 +35,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
+const siteUrl = import.meta.env.VITE_SITE_URL || "https://lumina-ladies.vercel.app";
+
 export function meta({ params }: MetaArgs) {
   const product = getProductById(params.id || "");
 
@@ -43,15 +45,25 @@ export function meta({ params }: MetaArgs) {
   }
 
   const imageUrl = getValidImageUrl(product.image) || "";
-  const url = typeof window !== 'undefined' ? window.location.href : '';
+  const productUrl = `${siteUrl}/product/${params.id}`;
 
   return [
     { title: `${product.name} | KelsMall` },
     { name: "description", content: product.description.substring(0, 160) },
+    // Open Graph
     { property: "og:title", content: product.name },
     { property: "og:description", content: product.description.substring(0, 160) },
     { property: "og:image", content: imageUrl },
     { property: "og:type", content: "product" },
+    { property: "og:url", content: productUrl },
+    // Twitter Cards
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: product.name },
+    { name: "twitter:description", content: product.description.substring(0, 160) },
+    { name: "twitter:image", content: imageUrl },
+    // Canonical
+    { tagName: "link", rel: "canonical", href: productUrl },
+    // Structured Data
     {
       "script:ld+json": {
         "@context": "https://schema.org/",
@@ -67,6 +79,7 @@ export function meta({ params }: MetaArgs) {
           "@type": "Offer",
           "priceCurrency": "GHS",
           "price": product.price,
+          "url": productUrl,
         }
       }
     }

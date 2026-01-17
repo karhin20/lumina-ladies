@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lumiere-boutique.com/sitemap.xml
+Sitemap: https://lumina-ladies.vercel.app/sitemap.xml
