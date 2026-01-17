@@ -16,16 +16,16 @@ const siteUrl = import.meta.env.VITE_SITE_URL || "https://lumina-ladies.vercel.a
 export const meta: MetaFunction = () => {
   return [
     { title: "KelsMall | Luxury Lighting, Beauty & Home Essentials" },
-    { name: "description", content: "Discover curated luxury lighting, beauty essentials, and timeless accessories for the modern woman. Shop chandeliers, skincare, jewelry, and home decor." },
+    { name: "description", content: "Discover curated luxury lighting, electronic gadgets, beauty essentials, and timeless accessories for the modern woman. Shop chandeliers, skincare, jewelry, and home decor." },
     // Open Graph
     { property: "og:title", content: "KelsMall | Luxury Lighting, Beauty & Home Essentials" },
-    { property: "og:description", content: "Discover curated luxury lighting, beauty essentials, and timeless accessories for the modern woman." },
+    { property: "og:description", content: "Discover curated luxury lighting, electronic gadgets, beauty essentials, and timeless accessories for the modern woman." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: `${siteUrl}/` },
     // Twitter Cards
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "KelsMall | Luxury Lighting, Beauty & Home Essentials" },
-    { name: "twitter:description", content: "Discover curated luxury lighting, beauty essentials, and timeless accessories for the modern woman." },
+    { name: "twitter:description", content: "Discover curated luxury lighting, electronic gadgets, beauty essentials, and timeless accessories for the modern woman." },
     // Canonical
     { tagName: "link", rel: "canonical", href: `${siteUrl}/` },
   ];
