@@ -1,7 +1,7 @@
 import { Facebook, Instagram, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const Footer = () => {
   return (
@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Lampo */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="font-display text-xl font-bold mb-4 block">LumiGh</Link>
+            <Link to="/" className="font-display text-xl font-bold mb-4 block">KelsMall</Link>
             <p className="font-medium mb-3">Subscribe</p>
             <p className="text-sm text-background/70 mb-4">Get 10% off your first order</p>
             <div className="relative">
@@ -56,8 +56,8 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-background/70">
               <li>Red Okai Street, Achimota<br />Accra, Ghana.</li>
               <li>
-                <a href="mailto:lumigh@gmail.com" className="hover:text-background transition-colors">
-                  lumigh@gmail.com
+                <a href="mailto:kelsmall@gmail.com" className="hover:text-background transition-colors">
+                  kelsmall@gmail.com
                 </a>
               </li>
               <li>
@@ -75,6 +75,7 @@ const Footer = () => {
               <li><Link to="/account" className="hover:text-background transition-colors">My Account</Link></li>
               <li><Link to="/auth" className="hover:text-background transition-colors">Login / Register</Link></li>
               <li><Link to="/products" className="hover:text-background transition-colors">Shop</Link></li>
+              <li><Link to="/blog" className="hover:text-background transition-colors">Blog</Link></li>
               <li><Link to="/account?tab=wishlist" className="hover:text-background transition-colors">Wishlist</Link></li>
               <li><Link to="/account?tab=orders" className="hover:text-background transition-colors">Orders</Link></li>
             </ul>
@@ -97,7 +98,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="border-t border-background/10 py-4">
         <p className="text-center text-sm text-background/40">
-          © Copyright LumiGh {new Date().getFullYear()}. All rights reserved
+          © Copyright KelsMall {new Date().getFullYear()}. All rights reserved
         </p>
       </div>
     </footer>
@@ -105,3 +106,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

@@ -3,6 +3,14 @@ import Footer from "@/components/Footer";
 import VendorCard from "@/components/VendorCard";
 import { useVendors } from "@/hooks/useVendors";
 import { Loader2 } from "lucide-react";
+import type { MetaFunction } from "react-router";
+
+export const meta: MetaFunction = () => {
+    return [
+        { title: "Our Vendors | KelsMall" },
+        { name: "description", content: "Explore our trusted vendors and their unique collections." },
+    ];
+};
 
 const VendorsPage = () => {
     const { data: vendors, isLoading } = useVendors(true);
@@ -46,3 +54,4 @@ const VendorsPage = () => {
 };
 
 export default VendorsPage;
+

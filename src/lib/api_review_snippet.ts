@@ -37,3 +37,4 @@ getReviews: async (productId: string): Promise<Review[]> => {
         if (!response.ok) throw new Error("Failed to create review");
         return response.json();
     },
+

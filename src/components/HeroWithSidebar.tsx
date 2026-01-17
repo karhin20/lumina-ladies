@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useState, useEffect } from "react";
 
 const categories = [
@@ -104,3 +104,4 @@ const HeroWithSidebar = () => {
 };
 
 export default HeroWithSidebar;
+

@@ -113,3 +113,4 @@ export const cities: Record<string, string[]> = {
     "Oti": ["Dambai", "Jasikan", "Kadjebi"],
     "Western North": ["Sefwi Wiawso", "Bibiani", "Enchi"]
 };
+

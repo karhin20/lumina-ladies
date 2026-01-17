@@ -127,3 +127,4 @@ export const categories = ["All", "Lighting", "Beauty", "Jewelry", "Home"];
 export const getProductById = (id: string): Product | undefined => {
   return allProducts.find((product) => product.id === id);
 };
+

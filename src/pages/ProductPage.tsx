@@ -1,5 +1,6 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, ChevronRight, Heart, ShoppingBag, Minus, Plus, Check, Store, Play } from "lucide-react";
+import { useParams, Link, useNavigate } from "react-router";
+import type { MetaArgs } from "react-router";
+import { ArrowLeft, ChevronLeft, ChevronRight, Heart, ShoppingBag, Minus, Plus, Check, Store, Play, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { allProducts, getProductById } from "@/data/products";
@@ -12,17 +13,71 @@ import { getValidImageUrl, cn, getVideoEmbedUrl } from "@/lib/utils";
 import ShareButton from "@/components/ShareButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
-import SEO from "@/components/SEO";
+import { useVendor } from "@/hooks/useVendors";
 import Reviews from "@/components/Reviews";
-
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
+export function meta({ params }: MetaArgs) {
+  const product = getProductById(params.id || "");
+
+  if (!product) {
+    return [{ title: "Product Not Found | KelsMall" }];
+  }
+
+  const imageUrl = getValidImageUrl(product.image) || "";
+  const url = typeof window !== 'undefined' ? window.location.href : '';
+
+  return [
+    { title: `${product.name} | KelsMall` },
+    { name: "description", content: product.description.substring(0, 160) },
+    { property: "og:title", content: product.name },
+    { property: "og:description", content: product.description.substring(0, 160) },
+    { property: "og:image", content: imageUrl },
+    { property: "og:type", content: "product" },
+    {
+      "script:ld+json": {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.name,
+        "image": imageUrl,
+        "description": product.description,
+        "brand": {
+          "@type": "Brand",
+          "name": product.vendorName || "KelsMall"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "GHS",
+          "price": product.price,
+        }
+      }
+    }
+  ];
+}
+
+export async function loader({ params }: any) {
+  // We can eventually replace client-side logic with this loader
+  // For now, returning null or basic params satisfies the router's requirement
+  return { id: params.id };
+}
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,6 +92,9 @@ const ProductPage = () => {
   const { toast } = useToast();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+
+  /* Hook to fetch vendor details for the phone number */
+  const { data: vendor } = useVendor(product?.vendorId);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -74,6 +132,8 @@ const ProductPage = () => {
     );
   }
 
+
+
   const handleAddToCart = () => {
     addToCart(product, quantity);
     setAddedToCart(true);
@@ -85,31 +145,7 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <SEO
-        title={product.name}
-        description={product.description.substring(0, 160)}
-        ogImage={getValidImageUrl(product.image || (product as any).image_url)}
-        ogType="product"
-        jsonLd={{
-          "@context": "https://schema.org/",
-          "@type": "Product",
-          "name": product.name,
-          "image": getValidImageUrl(product.image || (product as any).image_url),
-          "description": product.description,
-          "brand": {
-            "@type": "Brand",
-            "name": product.vendorName || "LumiGh"
-          },
-          "offers": {
-            "@type": "Offer",
-            "priceCurrency": "GHS",
-            "price": product.price,
-            "availability": "https://schema.org/InStock",
-            "url": window.location.href
-          }
-        }}
-      />
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Header />
 
       <main className="pt-24 pb-16">
@@ -219,7 +255,7 @@ const ProductPage = () => {
                     </button>
                     <ShareButton
                       title={product.name}
-                      text={`Check out ${product.name} on Lumina Ladies!`}
+                      text={`Check out ${product.name} on KelsMall!`}
                       className="h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center transition-all group-hover:scale-110 group-hover:text-red-500 shadow-sm border-0"
                       variant="ghost"
                       showLabel={false}
@@ -333,7 +369,7 @@ const ProductPage = () => {
                   </ul>
                 </div>
 
-                {/* Quantity & Add to Cart */}
+                {/* Desktop: Quantity & Add to Cart */}
                 <div className="flex flex-col sm:flex-row gap-4 mt-auto">
                   <div className="flex items-center border border-border rounded-lg">
                     <button
@@ -356,17 +392,17 @@ const ProductPage = () => {
                   </div>
                   <Button
                     variant="hero"
-                    className="flex-1 gap-2"
+                    className="flex-1 gap-2 text-lg h-14 font-bold hidden md:flex"
                     onClick={handleAddToCart}
                   >
                     {addedToCart ? (
                       <>
-                        <Check className="w-5 h-5" />
+                        <Check className="w-6 h-6" />
                         Added!
                       </>
                     ) : (
                       <>
-                        <ShoppingBag className="w-5 h-5" />
+                        <ShoppingBag className="w-6 h-6" />
                         Add to Cart — ₵{(product.price * quantity).toFixed(2)}
                       </>
                     )}
@@ -386,9 +422,99 @@ const ProductPage = () => {
         </div>
       </main>
 
+      {/* Mobile Sticky Footer */}
+      <Drawer>
+        <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-40 shadow-up flex items-center gap-3 safe-area-bottom">
+          {vendor?.contact_phone && (
+            <a
+              href={`tel:${vendor.contact_phone}`}
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary text-foreground hover:bg-secondary/80 flex-shrink-0"
+              aria-label="Call Vendor"
+            >
+              <Phone className="w-5 h-5" />
+            </a>
+          )}
+          <DrawerTrigger asChild>
+            <Button
+              variant="hero"
+              className="flex-1 gap-2 h-12 text-base font-bold shadow-lg"
+            >
+              {addedToCart ? (
+                <>
+                  <Check className="w-5 h-5" />
+                  Added!
+                </>
+              ) : (
+                <>
+                  <ShoppingBag className="w-5 h-5" />
+                  Add to Cart
+                </>
+              )}
+            </Button>
+          </DrawerTrigger>
+        </div>
+        <DrawerContent>
+          <DrawerHeader className="text-left">
+            <DrawerTitle>{product.name}</DrawerTitle>
+            <DrawerDescription>
+              Select quantity and add to cart
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="p-4 pt-0">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-lg font-medium">Quantity</span>
+              <div className="flex items-center border border-border rounded-lg">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="p-3 hover:bg-secondary transition-colors rounded-l-lg"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="px-6 py-3 font-medium min-w-[60px] text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="p-3 hover:bg-secondary transition-colors rounded-r-lg"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-lg font-medium">Total</span>
+              <span className="text-2xl font-bold text-primary">₵{(product.price * quantity).toFixed(2)}</span>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <DrawerClose asChild>
+                <Button
+                  variant="hero"
+                  className="w-full gap-2 h-12 text-base font-bold shadow-lg"
+                  onClick={handleAddToCart}
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  Add to Cart - ₵{(product.price * quantity).toFixed(2)}
+                </Button>
+              </DrawerClose>
+              <DrawerClose asChild>
+                <Button variant="outline" className="w-full h-12">
+                  Continue Shopping
+                </Button>
+              </DrawerClose>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
       <Footer />
     </div>
   );
 };
 
 export default ProductPage;
+
+

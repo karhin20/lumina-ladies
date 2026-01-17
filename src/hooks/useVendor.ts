@@ -36,3 +36,4 @@ export const useVendor = () => {
         isSuperAdmin: user?.role === "super_admin" || user?.role === "admin",
     };
 };
+

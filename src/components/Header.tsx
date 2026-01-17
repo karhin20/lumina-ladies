@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu, X, Search, Heart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProducts } from "@/hooks/useProducts";
 import { getValidImageUrl } from "@/lib/utils";
@@ -51,8 +51,8 @@ const Header = () => {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Shop", href: "/products" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "#contact" },
-    { name: "About", href: "#about" },
   ];
 
   return (
@@ -69,7 +69,7 @@ const Header = () => {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link to="/" className="font-display text-xl md:text-2xl font-bold text-foreground tracking-tight">
-              LumiGh
+              KelsMall
             </Link>
 
             {/* Desktop Navigation */}
@@ -321,3 +321,4 @@ const Header = () => {
 };
 
 export default Header;
+

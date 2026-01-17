@@ -110,3 +110,4 @@ const RelatedProducts = ({ currentProductId, category }: RelatedProductsProps) =
 };
 
 export default RelatedProducts;
+

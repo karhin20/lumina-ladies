@@ -22,6 +22,7 @@ interface QuickViewProps {
         price: number;
         originalPrice?: number;
         images?: string[];
+        image_url?: string | null;
         video_url?: string;
         category: string;
         description?: string;
@@ -265,7 +266,7 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
                                 <ShareButton
                                     title={product.name}
                                     text={`Check out ${product.name} on LumiGh!`}
-                                    url={`${window.location.origin}/product/${product.id}`}
+                                    url={typeof window !== 'undefined' ? `${window.location.origin}/product/${product.id}` : `/product/${product.id}`}
                                     variant="outline"
                                     size="icon"
                                     className="h-14 w-14 rounded-xl border-border hover:border-accent hover:text-accent transition-all active:scale-95"
@@ -280,3 +281,4 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 };
 
 export default QuickView;
+

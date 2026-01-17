@@ -55,86 +55,89 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Check for hash parameters from OAuth redirect
-    const hash = window.location.hash;
-    if (hash && hash.includes("access_token")) {
-      const params = new URLSearchParams(hash.substring(1)); // remove #
-      const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash && hash.includes("access_token")) {
+        const params = new URLSearchParams(hash.substring(1)); // remove #
 
-      if (accessToken) {
-        setSessionToken(accessToken);
-        localStorage.setItem(TOKEN_KEY, accessToken);
-        if (refreshToken) {
-          localStorage.setItem("lumigh_refresh_token", refreshToken);
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+
+        if (accessToken) {
+          setSessionToken(accessToken);
+          localStorage.setItem(TOKEN_KEY, accessToken);
+          if (refreshToken) {
+            localStorage.setItem("lumigh_refresh_token", refreshToken);
+          }
+
+          // Fetch user data immediately
+          api.me(accessToken)
+            .then((remoteUser) => {
+              const mapped = mapUser(remoteUser);
+              setUser(mapped);
+              localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+              // Clear hash from URL
+              window.history.replaceState(null, "", window.location.pathname);
+            })
+            .catch((err) => {
+              console.error("Failed to fetch user after OAuth:", err);
+              toast({
+                title: "Login Failed",
+                description: "Could not verify Google session.",
+                variant: "destructive"
+              });
+            })
+            .finally(() => setIsLoading(false));
+          return; // Skip normal load
         }
+      }
 
-        // Fetch user data immediately
-        api.me(accessToken)
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      const storedUser = localStorage.getItem(USER_KEY);
+
+      if (storedToken) {
+        setSessionToken(storedToken);
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
+        api.me(storedToken)
           .then((remoteUser) => {
             const mapped = mapUser(remoteUser);
             setUser(mapped);
             localStorage.setItem(USER_KEY, JSON.stringify(mapped));
-            // Clear hash from URL
-            window.history.replaceState(null, "", window.location.pathname);
           })
-          .catch((err) => {
-            console.error("Failed to fetch user after OAuth:", err);
-            toast({
-              title: "Login Failed",
-              description: "Could not verify Google session.",
-              variant: "destructive"
-            });
+          .catch(async () => {
+            // If me fails (401), try to refresh if we have a refresh token
+            const refreshToken = localStorage.getItem("lumigh_refresh_token");
+            if (refreshToken) {
+              try {
+                const res = await api.refreshSession(refreshToken);
+                const mapped = mapUser(res.user);
+                setUser(mapped);
+                setSessionToken(res.access_token);
+                localStorage.setItem(TOKEN_KEY, res.access_token);
+                localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+                // Note: We normally get a new refresh token too, but our current backend endpoint 
+                // doesn't explicitly return it in the main body unless we adjust it.
+                // Assuming supabase returns the same or rotated one, we might need to update it.
+              } catch (refreshErr) {
+                // Refresh failed, logout
+                console.error("Refresh failed", refreshErr);
+                // Let the global unauthorized handler take care or manual logout
+                setUser(null);
+                setSessionToken(null);
+                localStorage.removeItem(TOKEN_KEY);
+                localStorage.removeItem(USER_KEY);
+                localStorage.removeItem("lumigh_refresh_token");
+              }
+            } else {
+              setIsLoading(false);
+            }
           })
           .finally(() => setIsLoading(false));
-        return; // Skip normal load
+      } else {
+        setIsLoading(false);
       }
-    }
-
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    const storedUser = localStorage.getItem(USER_KEY);
-
-    if (storedToken) {
-      setSessionToken(storedToken);
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-      api.me(storedToken)
-        .then((remoteUser) => {
-          const mapped = mapUser(remoteUser);
-          setUser(mapped);
-          localStorage.setItem(USER_KEY, JSON.stringify(mapped));
-        })
-        .catch(async () => {
-          // If me fails (401), try to refresh if we have a refresh token
-          const refreshToken = localStorage.getItem("lumigh_refresh_token");
-          if (refreshToken) {
-            try {
-              const res = await api.refreshSession(refreshToken);
-              const mapped = mapUser(res.user);
-              setUser(mapped);
-              setSessionToken(res.access_token);
-              localStorage.setItem(TOKEN_KEY, res.access_token);
-              localStorage.setItem(USER_KEY, JSON.stringify(mapped));
-              // Note: We normally get a new refresh token too, but our current backend endpoint 
-              // doesn't explicitly return it in the main body unless we adjust it.
-              // Assuming supabase returns the same or rotated one, we might need to update it.
-            } catch (refreshErr) {
-              // Refresh failed, logout
-              console.error("Refresh failed", refreshErr);
-              // Let the global unauthorized handler take care or manual logout
-              setUser(null);
-              setSessionToken(null);
-              localStorage.removeItem(TOKEN_KEY);
-              localStorage.removeItem(USER_KEY);
-              localStorage.removeItem("lumigh_refresh_token");
-            }
-          } else {
-            setIsLoading(false);
-          }
-        })
-        .finally(() => setIsLoading(false));
-    } else {
-      setIsLoading(false);
     }
   }, []);
 
@@ -266,3 +269,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

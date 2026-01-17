@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { useLocation } from "react-router";
 
 interface SEOProps {
     title: string;
@@ -9,6 +9,18 @@ interface SEOProps {
     jsonLd?: Record<string, any>;
 }
 
+/**
+ * SEO Component - Note: In React Router v7 framework mode, 
+ * document-level meta tags are handled by the `meta` export in route modules.
+ * This component now returns null and serves as a placeholder.
+ * 
+ * For proper SEO, add a `meta` function export to your route modules:
+ * 
+ * export const meta: MetaFunction = () => [
+ *   { title: "Page Title | KelsMall" },
+ *   { name: "description", content: "Page description" },
+ * ];
+ */
 const SEO = ({
     title,
     description,
@@ -17,40 +29,21 @@ const SEO = ({
     ogType = 'website',
     jsonLd
 }: SEOProps) => {
-    const siteName = 'LumiGh';
-    const fullTitle = `${title} | ${siteName}`;
-    const currentUrl = window.location.href;
+    // In React Router v7 framework mode, meta tags are handled at the route level
+    // This component is kept for backward compatibility but no longer renders anything
+    // Use the `meta` export in route modules instead
 
-    return (
-        <Helmet>
-            {/* Standard Metadata */}
-            <title>{fullTitle}</title>
-            <meta name="description" content={description} />
-            {canonical && <link rel="canonical" href={canonical} />}
+    // For JSON-LD structured data, we can still render a script tag
+    if (jsonLd) {
+        return (
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+        );
+    }
 
-            {/* Open Graph / Facebook */}
-            <meta property="og:type" content={ogType} />
-            <meta property="og:url" content={currentUrl} />
-            <meta property="og:title" content={fullTitle} />
-            <meta property="og:description" content={description} />
-            <meta property="og:image" content={ogImage} />
-            <meta property="og:site_name" content={siteName} />
-
-            {/* Twitter */}
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:url" content={currentUrl} />
-            <meta name="twitter:title" content={fullTitle} />
-            <meta name="twitter:description" content={description} />
-            <meta name="twitter:image" content={ogImage} />
-
-            {/* Structured Data (JSON-LD) */}
-            {jsonLd && (
-                <script type="application/ld+json">
-                    {JSON.stringify(jsonLd)}
-                </script>
-            )}
-        </Helmet>
-    );
+    return null;
 };
 
 export default SEO;

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
+import { useNavigate, Link, Outlet, useLocation } from 'react-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -147,3 +147,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

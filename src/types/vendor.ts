@@ -43,3 +43,4 @@ export interface VendorAdmin {
     user_id: string;
     created_at: string;
 }
+

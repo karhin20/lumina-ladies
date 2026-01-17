@@ -62,3 +62,4 @@ const BrowseByCategory = ({ selectedCategory, onSelectCategory }: BrowseByCatego
 };
 
 export default BrowseByCategory;
+

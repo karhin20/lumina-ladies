@@ -1,6 +1,6 @@
 import { Store } from "lucide-react";
 import { Vendor } from "@/types/vendor";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 interface VendorCardProps extends Vendor { }
 
@@ -50,3 +50,4 @@ const VendorCard = ({ id, name, description, logo_url, banner_url }: VendorCardP
 };
 
 export default VendorCard;
+

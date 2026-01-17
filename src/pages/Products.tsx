@@ -1,14 +1,22 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import type { MetaFunction } from "react-router";
 import ProductCard from "@/components/ProductCard";
-import ProductSkeleton from "@/components/ProductSkeleton";
+
+export const meta: MetaFunction = () => {
+    return [
+        { title: "Shop | KelsMall" },
+        { name: "description", content: "Browse our extensive collection of luxury lighting, beauty products, jewelry and home essentials." },
+    ];
+};
+import { ProductCardSkeleton } from "@/components/skeletons/ProductCardSkeleton";
 import { allProducts } from "@/data/products";
 import { useProducts } from "@/hooks/useProducts";
 import { Separator } from "@/components/ui/separator";
 import BrowseByCategory from "@/components/BrowseByCategory";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 const Products = () => {
     const { data, isLoading } = useProducts();
@@ -83,7 +91,7 @@ const Products = () => {
                 {isLoading ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {[...Array(8)].map((_, i) => (
-                            <ProductSkeleton key={i} />
+                            <ProductCardSkeleton key={i} />
                         ))}
                     </div>
                 ) : (
@@ -108,3 +116,4 @@ const Products = () => {
 };
 
 export default Products;
+

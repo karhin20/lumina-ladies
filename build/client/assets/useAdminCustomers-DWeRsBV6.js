@@ -1,0 +1,1 @@
+import{u as s}from"./useQuery-DJWlbVla.js";import{u as r,a as o}from"./AuthContext-DV30UqFE.js";const t=()=>{const{sessionToken:e}=r();return s({queryKey:["admin-customers",e],enabled:!!e,queryFn:()=>o.adminCustomers(e||""),retry:1})};export{t as u};

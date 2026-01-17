@@ -18,3 +18,4 @@ const ProductSkeleton = () => {
 };
 
 export default ProductSkeleton;
+

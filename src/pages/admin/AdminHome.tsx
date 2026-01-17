@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DollarSign, ShoppingCart, Users, Package, TrendingUp, ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useAdminStats } from '@/hooks/useAdminStats';
@@ -221,3 +221,4 @@ const AdminHome = () => {
 };
 
 export default AdminHome;
+

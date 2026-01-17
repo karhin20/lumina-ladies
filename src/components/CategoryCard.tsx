@@ -35,3 +35,4 @@ const CategoryCard = ({ title, image, productCount, href }: CategoryCardProps) =
 };
 
 export default CategoryCard;
+

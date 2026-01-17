@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
 import ProductSkeleton from "./ProductSkeleton";
@@ -88,3 +88,4 @@ const ExploreProducts = () => {
 };
 
 export default ExploreProducts;
+

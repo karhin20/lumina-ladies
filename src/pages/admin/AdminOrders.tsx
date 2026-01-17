@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,9 +80,18 @@ const AdminOrders = () => {
       bValue = (b as any)[key] ?? '';
     }
 
-    if (aValue < bValue) return direction === 'asc' ? -1 : 1;
     if (aValue > bValue) return direction === 'asc' ? 1 : -1;
     return 0;
+  });
+
+  // Virtualization setup
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: sortedOrders.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 73, // Approximate row height
+    overscan: 5,
   });
 
   const handleSort = (key: string) => {
@@ -179,11 +189,14 @@ const AdminOrders = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {/* Desktop Table View */}
+          {/* Desktop Table View - Virtualized */}
           <div className="hidden md:block">
-            <div className="overflow-x-auto">
+            <div
+              ref={parentRef}
+              className="rounded-md border h-[600px] overflow-auto relative w-full"
+            >
               <Table>
-                <TableHeader>
+                <TableHeader className="sticky top-0 bg-background z-10 shadow-sm">
                   <TableRow>
                     <TableHead
                       className="w-[120px] cursor-pointer hover:bg-muted/50"
@@ -214,86 +227,105 @@ const AdminOrders = () => {
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody
+                  className="relative"
+                  style={{
+                    height: `${rowVirtualizer.getTotalSize()}px`,
+                  }}
+                >
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center text-muted-foreground h-24">
                         Loading orders...
                       </TableCell>
                     </TableRow>
                   ) : sortedOrders.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center text-muted-foreground h-24">
                         No orders found
                       </TableCell>
                     </TableRow>
-                  ) : sortedOrders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex flex-col">
-                          <span className="text-xs text-muted-foreground uppercase tracking-wider">#{order.id.slice(0, 8)}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium text-sm">{order.shipping?.name}</p>
-                          <p className="text-sm text-muted-foreground">{order.shipping?.phone}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <div className="text-xs">
-                          {new Date(order.created_at || '').toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric'
-                          })}
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <div className="flex -space-x-2">
-                          {order.items.slice(0, 3).map((item, idx) => (
-                            <img
-                              key={idx}
-                              src={getValidImageUrl(item.image_url || (item as any).image) || '/placeholder.svg'}
-                              alt={item.name}
-                              className="w-8 h-8 rounded-full border-2 border-background object-cover"
-                            />
-                          ))}
-                          {order.items.length > 3 && (
-                            <span className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs border-2 border-background">
-                              +{order.items.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-bold">₵{order.total.toFixed(2)}</TableCell>
-                      <TableCell>
-                        <Select
-                          value={order.status}
-                          onValueChange={(value: ApiOrder['status']) => handleStatusChange(order.id, value)}
-                        >
-                          <SelectTrigger className="w-[110px] sm:w-32 h-8 px-2 text-xs">
-                            <Badge className={cn(getStatusColor(order.status), "text-[10px] px-1 h-5")}>
-                              {order.status.replace(/_/g, ' ')}
-                            </Badge>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="processing">Processing</SelectItem>
-                            <SelectItem value="out_for_delivery">Out for Delivery</SelectItem>
-                            <SelectItem value="shipped">Shipped</SelectItem>
-                            <SelectItem value="delivered">Delivered</SelectItem>
-                            <SelectItem value="cancelled">Cancelled</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="icon" onClick={() => setSelectedOrder(order)}>
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  ) : (
+                    <>
+                      {rowVirtualizer.getVirtualItems().length > 0 && (
+                        <tr style={{ height: `${rowVirtualizer.getVirtualItems()[0].start}px` }} />
+                      )}
+                      {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                        const order = sortedOrders[virtualRow.index];
+                        return (
+                          <TableRow
+                            key={order.id}
+                            data-index={virtualRow.index}
+                            ref={rowVirtualizer.measureElement}
+                          >
+                            <TableCell className="font-medium">
+                              <div className="flex flex-col">
+                                <span className="text-xs text-muted-foreground uppercase tracking-wider">#{order.id.slice(0, 8)}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                <p className="font-medium text-sm">{order.shipping?.name}</p>
+                                <p className="text-sm text-muted-foreground">{order.shipping?.phone}</p>
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <div className="text-xs">
+                                {new Date(order.created_at || '').toLocaleDateString('en-GB', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric'
+                                })}
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              <div className="flex -space-x-2">
+                                {order.items.slice(0, 3).map((item, idx) => (
+                                  <img
+                                    key={idx}
+                                    src={getValidImageUrl(item.image_url || (item as any).image) || '/placeholder.svg'}
+                                    alt={item.name}
+                                    className="w-8 h-8 rounded-full border-2 border-background object-cover"
+                                  />
+                                ))}
+                                {order.items.length > 3 && (
+                                  <span className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs border-2 border-background">
+                                    +{order.items.length - 3}
+                                  </span>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell className="font-bold">₵{order.total.toFixed(2)}</TableCell>
+                            <TableCell>
+                              <Select
+                                value={order.status}
+                                onValueChange={(value: ApiOrder['status']) => handleStatusChange(order.id, value)}
+                              >
+                                <SelectTrigger className="w-[110px] sm:w-32 h-8 px-2 text-xs">
+                                  <Badge className={cn(getStatusColor(order.status), "text-[10px] px-1 h-5")}>
+                                    {order.status.replace(/_/g, ' ')}
+                                  </Badge>
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="pending">Pending</SelectItem>
+                                  <SelectItem value="processing">Processing</SelectItem>
+                                  <SelectItem value="out_for_delivery">Out for Delivery</SelectItem>
+                                  <SelectItem value="shipped">Shipped</SelectItem>
+                                  <SelectItem value="delivered">Delivered</SelectItem>
+                                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button variant="ghost" size="icon" onClick={() => setSelectedOrder(order)}>
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </>
+                  )}
                 </TableBody>
               </Table>
             </div>
@@ -457,3 +489,4 @@ const AdminOrders = () => {
 };
 
 export default AdminOrders;
+

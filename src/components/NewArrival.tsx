@@ -1,7 +1,7 @@
 import ProductCard from "./ProductCard";
 import ProductSkeleton from "./ProductSkeleton";
 import { useNewArrivals } from "@/hooks/useNewArrivals";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -93,3 +93,4 @@ const NewArrival = () => {
 };
 
 export default NewArrival;
+

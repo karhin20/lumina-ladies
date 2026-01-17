@@ -1,11 +1,12 @@
 import { Heart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { getValidImageUrl } from "@/lib/utils";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import ShareButton from "./ShareButton";
 import QuickView from "./QuickView";
 
@@ -85,10 +86,11 @@ const ProductCard = ({ id, name, price, originalPrice, image_url, images, catego
       <div className="relative aspect-square overflow-hidden rounded-sm bg-secondary mb-3">
         {/* Main Image Link */}
         <Link to={`/product/${id}`} className="block h-full w-full">
-          <img
+          <OptimizedImage
             src={getValidImageUrl(images || image_url) || '/placeholder.svg'}
             alt={name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            aspectRatio="square"
           />
         </Link>
 
@@ -107,7 +109,7 @@ const ProductCard = ({ id, name, price, originalPrice, image_url, images, catego
         )}
 
         {/* Action Buttons */}
-        <div className="absolute right-3 top-3 z-20 flex flex-col items-end gap-2 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-x-4 md:group-hover:translate-x-0">
+        <div className="absolute right-3 top-3 z-30 flex flex-col items-end gap-2 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-x-4 md:group-hover:translate-x-0">
           <Button
             variant="secondary"
             size="icon"
@@ -116,14 +118,16 @@ const ProductCard = ({ id, name, price, originalPrice, image_url, images, catego
           >
             <Heart className={`h-4 w-4 ${isLiked ? "fill-red-500 stroke-red-500" : ""}`} />
           </Button>
-          <ShareButton
-            title={name}
-            text={`Check out ${name} on Lumina Ladies!`}
-            url={`${window.location.origin}/product/${id}`}
-            variant="secondary"
-            size="icon"
-            className="h-8 w-8 rounded-full shadow-sm hover:bg-background transition-all hover:scale-110 active:scale-95"
-          />
+          <div onClick={(e) => e.stopPropagation()}>
+            <ShareButton
+              title={name}
+              text={`Check out ${name} on Lumina Ladies!`}
+              url={typeof window !== 'undefined' ? `${window.location.origin}/product/${id}` : `/product/${id}`}
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 rounded-full shadow-sm hover:bg-background transition-all hover:scale-110 active:scale-95"
+            />
+          </div>
           <Button
             variant="secondary"
             size="icon"
@@ -139,7 +143,7 @@ const ProductCard = ({ id, name, price, originalPrice, image_url, images, catego
         </div>
 
         {/* Add to Cart Button Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
+        <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-30">
           <Button
             className="w-full rounded-none bg-foreground hover:bg-foreground/90 text-background h-10 text-xs font-bold uppercase tracking-wider"
             onClick={handleAddToCart}
@@ -210,3 +214,4 @@ const ProductCard = ({ id, name, price, originalPrice, image_url, images, catego
 };
 
 export default ProductCard;
+

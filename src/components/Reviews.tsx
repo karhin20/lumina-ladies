@@ -174,3 +174,4 @@ const Reviews = ({ productId }: ReviewsProps) => {
 };
 
 export default Reviews;
+

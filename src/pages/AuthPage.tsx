@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { api } from '@/lib/api';
+import type { MetaFunction } from "react-router";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Sign In / Sign Up | KelsMall" },
+    { name: "description", content: "Sign in or create an account to shop at KelsMall." },
+  ];
+};
 
 const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -359,3 +367,4 @@ const AuthPage = () => {
 };
 
 export default AuthPage;
+

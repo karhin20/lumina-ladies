@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import ProductCard from "./ProductCard";
 import ProductSkeleton from "./ProductSkeleton";
 import { useFlashSales } from "@/hooks/useFlashSales";
@@ -140,3 +140,4 @@ const TimeUnit = ({ label, value }: { label: string; value: number }) => (
 );
 
 export default FlashSales;
+

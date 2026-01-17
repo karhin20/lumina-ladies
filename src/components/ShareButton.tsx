@@ -16,7 +16,7 @@ interface ShareButtonProps {
 const ShareButton = ({
     title,
     text,
-    url = window.location.href,
+    url: urlProp,
     className,
     variant = "outline",
     size = "icon",
@@ -24,6 +24,8 @@ const ShareButton = ({
     label = "Share"
 }: ShareButtonProps) => {
     const { toast } = useToast();
+    // Compute URL safely for SSR
+    const url = urlProp || (typeof window !== 'undefined' ? window.location.href : '');
 
     const copyToClipboard = async () => {
         try {
@@ -93,3 +95,4 @@ const ShareButton = ({
 };
 
 export default ShareButton;
+

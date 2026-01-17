@@ -242,3 +242,4 @@ export const mockCustomers = [
   { id: 'user-4', name: 'Ama Owusu', phone: '0551234567', email: 'ama@example.com', orders: 8, totalSpent: 1245.00, joinedAt: '2024-08-10' },
   { id: 'user-5', name: 'Kwame Asante', phone: '0261234567', email: 'kwame@example.com', orders: 1, totalSpent: 125.00, joinedAt: '2024-12-01' },
 ];
+

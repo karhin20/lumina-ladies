@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ShoppingBag, Minus, Plus, Trash2, X } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
@@ -124,3 +124,4 @@ const CartDrawer = () => {
 };
 
 export default CartDrawer;
+

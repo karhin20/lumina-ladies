@@ -1,12 +1,19 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
+import type { MetaFunction } from "react-router";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import ShareButton from "@/components/ShareButton";
 import { useVendor, useVendorProducts } from "@/hooks/useVendors";
 import { Loader2, Store, Mail, Phone, MapPin } from "lucide-react";
-import SEO from "@/components/SEO";
 
+
+export const meta: MetaFunction = () => {
+    return [
+        { title: "Vendor Profile | KelsMall" },
+        { name: "description", content: "Shop products from this vendor on KelsMall." },
+    ];
+};
 
 const VendorPage = () => {
     const { vendorId } = useParams<{ vendorId: string }>();
@@ -44,26 +51,6 @@ const VendorPage = () => {
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
-            <SEO
-                title={vendor.name}
-                description={vendor.description || `Shop products from ${vendor.name} on Lumina Ladies.`}
-                ogImage={vendor.logo_url} // Or banner if you prefer
-                jsonLd={{
-                    "@context": "https://schema.org",
-                    "@type": "Store",
-                    "name": vendor.name,
-                    "image": vendor.logo_url,
-                    "description": vendor.description,
-                    "telephone": vendor.contact_phone,
-                    "address": {
-                        "@type": "PostalAddress",
-                        "streetAddress": vendor.address?.street_address,
-                        "addressLocality": vendor.address?.city,
-                        "addressRegion": vendor.address?.state,
-                        "addressCountry": vendor.address?.country
-                    }
-                }}
-            />
             <Header />
 
             <main className="flex-grow">
@@ -108,8 +95,8 @@ const VendorPage = () => {
                                         <h1 className="font-display text-3xl font-bold">{vendor.name}</h1>
                                         <ShareButton
                                             title={vendor.name}
-                                            text={`Check out ${vendor.name}'s store on Lumina Ladies!`}
-                                            url={window.location.href}
+                                            text={`Check out ${vendor.name}'s store on KelsMall!`}
+                                            url={typeof window !== 'undefined' ? window.location.href : ''}
                                             variant="secondary"
                                             size="sm"
                                             showLabel={true}
@@ -190,3 +177,4 @@ const VendorPage = () => {
 };
 
 export default VendorPage;
+
