@@ -1,0 +1,464 @@
+{
+  "buildManifest": {
+    "serverBundles": {
+      "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0": {
+        "id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+        "file": "build/server/nodejs_eyJydW50aW1lIjoibm9kZWpzIn0/index.js",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    },
+    "routeIdToServerBundleId": {
+      "pages/Index": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/Products": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/ProductPage": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/VendorsPage": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/VendorPage": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/AuthPage": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/CheckoutPage": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/AccountPage": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/admin/AdminHome": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/admin/AdminProducts": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/admin/AdminOrders": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/admin/AdminCustomers": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/admin/AdminVendors": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/admin/AdminVendorProfile": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/admin/AdminSettings": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/blog": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "blog/hello-world": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "blog/sensor-staircase-lights": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "pages/NotFound": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "src/root.tsx",
+        "path": "",
+        "config": {}
+      },
+      "pages/Index": {
+        "id": "pages/Index",
+        "parentId": "root",
+        "file": "src/pages/Index.tsx",
+        "index": true,
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/Products": {
+        "id": "pages/Products",
+        "parentId": "root",
+        "file": "src/pages/Products.tsx",
+        "path": "products",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/ProductPage": {
+        "id": "pages/ProductPage",
+        "parentId": "root",
+        "file": "src/pages/ProductPage.tsx",
+        "path": "product/:id",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/VendorsPage": {
+        "id": "pages/VendorsPage",
+        "parentId": "root",
+        "file": "src/pages/VendorsPage.tsx",
+        "path": "sellers",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/VendorPage": {
+        "id": "pages/VendorPage",
+        "parentId": "root",
+        "file": "src/pages/VendorPage.tsx",
+        "path": "seller/:vendorId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/AuthPage": {
+        "id": "pages/AuthPage",
+        "parentId": "root",
+        "file": "src/pages/AuthPage.tsx",
+        "path": "auth",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/CheckoutPage": {
+        "id": "pages/CheckoutPage",
+        "parentId": "root",
+        "file": "src/pages/CheckoutPage.tsx",
+        "path": "checkout",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/AccountPage": {
+        "id": "pages/AccountPage",
+        "parentId": "root",
+        "file": "src/pages/AccountPage.tsx",
+        "path": "account",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/admin/AdminDashboard": {
+        "id": "pages/admin/AdminDashboard",
+        "parentId": "root",
+        "file": "src/pages/admin/AdminDashboard.tsx",
+        "path": "admin",
+        "config": {}
+      },
+      "pages/admin/AdminHome": {
+        "id": "pages/admin/AdminHome",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "src/pages/admin/AdminHome.tsx",
+        "index": true,
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/admin/AdminProducts": {
+        "id": "pages/admin/AdminProducts",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "src/pages/admin/AdminProducts.tsx",
+        "path": "products",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/admin/AdminOrders": {
+        "id": "pages/admin/AdminOrders",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "src/pages/admin/AdminOrders.tsx",
+        "path": "orders",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/admin/AdminCustomers": {
+        "id": "pages/admin/AdminCustomers",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "src/pages/admin/AdminCustomers.tsx",
+        "path": "customers",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/admin/AdminVendors": {
+        "id": "pages/admin/AdminVendors",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "src/pages/admin/AdminVendors.tsx",
+        "path": "vendors",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/admin/AdminVendorProfile": {
+        "id": "pages/admin/AdminVendorProfile",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "src/pages/admin/AdminVendorProfile.tsx",
+        "path": "vendor-profile",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/admin/AdminSettings": {
+        "id": "pages/admin/AdminSettings",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "src/pages/admin/AdminSettings.tsx",
+        "path": "settings",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/blog": {
+        "id": "routes/blog",
+        "parentId": "root",
+        "file": "src/routes/blog.tsx",
+        "path": "blog",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "blog/hello-world": {
+        "id": "blog/hello-world",
+        "parentId": "root",
+        "file": "src/blog/hello-world.mdx",
+        "path": "blog/hello-world",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "blog/sensor-staircase-lights": {
+        "id": "blog/sensor-staircase-lights",
+        "parentId": "root",
+        "file": "src/blog/sensor-staircase-lights.mdx",
+        "path": "blog/sensor-staircase-lights",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "pages/NotFound": {
+        "id": "pages/NotFound",
+        "parentId": "root",
+        "file": "src/pages/NotFound.tsx",
+        "path": "*",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    }
+  },
+  "reactRouterConfig": {
+    "appDirectory": "C:/Users/user/Desktop/Coding projects/lampo/lumina-ladies/src",
+    "basename": "/",
+    "buildDirectory": "C:/Users/user/Desktop/Coding projects/lampo/lumina-ladies/build",
+    "future": {
+      "unstable_optimizeDeps": false,
+      "unstable_subResourceIntegrity": false,
+      "unstable_trailingSlashAwareDataRequests": false,
+      "v8_middleware": false,
+      "v8_splitRouteModules": false,
+      "v8_viteEnvironmentApi": false
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "root.tsx",
+        "path": ""
+      },
+      "pages/Index": {
+        "id": "pages/Index",
+        "parentId": "root",
+        "file": "pages/Index.tsx",
+        "index": true
+      },
+      "pages/Products": {
+        "id": "pages/Products",
+        "parentId": "root",
+        "file": "pages/Products.tsx",
+        "path": "products"
+      },
+      "pages/ProductPage": {
+        "id": "pages/ProductPage",
+        "parentId": "root",
+        "file": "pages/ProductPage.tsx",
+        "path": "product/:id"
+      },
+      "pages/VendorsPage": {
+        "id": "pages/VendorsPage",
+        "parentId": "root",
+        "file": "pages/VendorsPage.tsx",
+        "path": "sellers"
+      },
+      "pages/VendorPage": {
+        "id": "pages/VendorPage",
+        "parentId": "root",
+        "file": "pages/VendorPage.tsx",
+        "path": "seller/:vendorId"
+      },
+      "pages/AuthPage": {
+        "id": "pages/AuthPage",
+        "parentId": "root",
+        "file": "pages/AuthPage.tsx",
+        "path": "auth"
+      },
+      "pages/CheckoutPage": {
+        "id": "pages/CheckoutPage",
+        "parentId": "root",
+        "file": "pages/CheckoutPage.tsx",
+        "path": "checkout"
+      },
+      "pages/AccountPage": {
+        "id": "pages/AccountPage",
+        "parentId": "root",
+        "file": "pages/AccountPage.tsx",
+        "path": "account"
+      },
+      "pages/admin/AdminDashboard": {
+        "id": "pages/admin/AdminDashboard",
+        "parentId": "root",
+        "file": "pages/admin/AdminDashboard.tsx",
+        "path": "admin"
+      },
+      "pages/admin/AdminHome": {
+        "id": "pages/admin/AdminHome",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "pages/admin/AdminHome.tsx",
+        "index": true
+      },
+      "pages/admin/AdminProducts": {
+        "id": "pages/admin/AdminProducts",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "pages/admin/AdminProducts.tsx",
+        "path": "products"
+      },
+      "pages/admin/AdminOrders": {
+        "id": "pages/admin/AdminOrders",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "pages/admin/AdminOrders.tsx",
+        "path": "orders"
+      },
+      "pages/admin/AdminCustomers": {
+        "id": "pages/admin/AdminCustomers",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "pages/admin/AdminCustomers.tsx",
+        "path": "customers"
+      },
+      "pages/admin/AdminVendors": {
+        "id": "pages/admin/AdminVendors",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "pages/admin/AdminVendors.tsx",
+        "path": "vendors"
+      },
+      "pages/admin/AdminVendorProfile": {
+        "id": "pages/admin/AdminVendorProfile",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "pages/admin/AdminVendorProfile.tsx",
+        "path": "vendor-profile"
+      },
+      "pages/admin/AdminSettings": {
+        "id": "pages/admin/AdminSettings",
+        "parentId": "pages/admin/AdminDashboard",
+        "file": "pages/admin/AdminSettings.tsx",
+        "path": "settings"
+      },
+      "routes/blog": {
+        "id": "routes/blog",
+        "parentId": "root",
+        "file": "routes/blog.tsx",
+        "path": "blog"
+      },
+      "blog/hello-world": {
+        "id": "blog/hello-world",
+        "parentId": "root",
+        "file": "blog/hello-world.mdx",
+        "path": "blog/hello-world"
+      },
+      "blog/sensor-staircase-lights": {
+        "id": "blog/sensor-staircase-lights",
+        "parentId": "root",
+        "file": "blog/sensor-staircase-lights.mdx",
+        "path": "blog/sensor-staircase-lights"
+      },
+      "pages/NotFound": {
+        "id": "pages/NotFound",
+        "parentId": "root",
+        "file": "pages/NotFound.tsx",
+        "path": "*"
+      }
+    },
+    "routeDiscovery": {
+      "mode": "lazy",
+      "manifestPath": "/__manifest"
+    },
+    "serverBuildFile": "index.js",
+    "serverModuleFormat": "esm",
+    "ssr": true,
+    "allowedActionOrigins": false,
+    "unstable_routeConfig": [
+      {
+        "id": "root",
+        "path": "",
+        "file": "root.tsx",
+        "children": [
+          {
+            "file": "pages/Index.tsx",
+            "index": true
+          },
+          {
+            "file": "pages/Products.tsx",
+            "path": "products"
+          },
+          {
+            "file": "pages/ProductPage.tsx",
+            "path": "product/:id"
+          },
+          {
+            "file": "pages/VendorsPage.tsx",
+            "path": "sellers"
+          },
+          {
+            "file": "pages/VendorPage.tsx",
+            "path": "seller/:vendorId"
+          },
+          {
+            "file": "pages/AuthPage.tsx",
+            "path": "auth"
+          },
+          {
+            "file": "pages/CheckoutPage.tsx",
+            "path": "checkout"
+          },
+          {
+            "file": "pages/AccountPage.tsx",
+            "path": "account"
+          },
+          {
+            "file": "pages/admin/AdminDashboard.tsx",
+            "children": [
+              {
+                "file": "pages/admin/AdminHome.tsx",
+                "index": true
+              },
+              {
+                "file": "pages/admin/AdminProducts.tsx",
+                "path": "products"
+              },
+              {
+                "file": "pages/admin/AdminOrders.tsx",
+                "path": "orders"
+              },
+              {
+                "file": "pages/admin/AdminCustomers.tsx",
+                "path": "customers"
+              },
+              {
+                "file": "pages/admin/AdminVendors.tsx",
+                "path": "vendors"
+              },
+              {
+                "file": "pages/admin/AdminVendorProfile.tsx",
+                "path": "vendor-profile"
+              },
+              {
+                "file": "pages/admin/AdminSettings.tsx",
+                "path": "settings"
+              }
+            ],
+            "path": "admin"
+          },
+          {
+            "file": "routes/blog.tsx",
+            "path": "blog"
+          },
+          {
+            "file": "blog/hello-world.mdx",
+            "path": "blog/hello-world"
+          },
+          {
+            "file": "blog/sensor-staircase-lights.mdx",
+            "path": "blog/sensor-staircase-lights"
+          },
+          {
+            "file": "pages/NotFound.tsx",
+            "path": "*"
+          }
+        ]
+      }
+    ]
+  },
+  "viteConfig": {
+    "build": {
+      "assetsDir": "assets"
+    }
+  }
+}
