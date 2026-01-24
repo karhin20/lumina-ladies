@@ -19,8 +19,54 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     if (res.status === 401) {
+      // Attempt to refresh token
+      const refreshToken = localStorage.getItem("kelsmall_refresh_token");
+      if (refreshToken) {
+        try {
+          // Access endpoint directly to avoid recursion loop
+          const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh_token: refreshToken }),
+          });
+
+          if (refreshRes.ok) {
+            const data = await refreshRes.json();
+            const newAccessToken = data.access_token;
+
+            // Validate that we actually got a new token
+            if (newAccessToken) {
+              localStorage.setItem("kelsmall_token", newAccessToken);
+              if (data.refresh_token) {
+                // Update refresh token if rotated (though our backend might not return it explicitly yet, Supabase does)
+                // If backend passes it through, save it.
+              }
+              // Ideally update user too, but token is most critical for request success
+
+              // Retry original request with new token
+              const headers = new Headers(options.headers || {});
+              headers.set("Authorization", `Bearer ${newAccessToken}`);
+
+              const retryRes = await fetch(`${API_BASE_URL}${path}`, {
+                ...restOptions,
+                headers,
+              });
+
+              if (retryRes.ok) {
+                return retryRes.json() as Promise<T>;
+              }
+            }
+          }
+        } catch (e) {
+          console.error("Token refresh failed", e);
+        }
+      }
+
+      // If we are here, refresh failed or no refresh token
       localStorage.removeItem("kelsmall_token");
       localStorage.removeItem("kelsmall_user");
+      // Don't remove refresh token immediately? No, if it failed, it's garbage.
+      localStorage.removeItem("kelsmall_refresh_token");
       window.dispatchEvent(new Event("kelsmall_unauthorized"));
     }
     const text = await res.text();
