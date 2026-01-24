@@ -1,48 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
+import { Link } from "react-router"; // Use react-router-dom if that's what the project uses, but file had react-router
 import ProductCard from "./ProductCard";
 import ProductSkeleton from "./ProductSkeleton";
 import { useFlashSales } from "@/hooks/useFlashSales";
-import { useRef } from "react";
+import CountdownTimer from "./CountdownTimer";
 
 const FlashSales = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 3,
-    hours: 23,
-    minutes: 19,
-    seconds: 56,
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { days, hours, minutes, seconds } = prev;
-        seconds--;
-        if (seconds < 0) {
-          seconds = 59;
-          minutes--;
-        }
-        if (minutes < 0) {
-          minutes = 59;
-          hours--;
-        }
-        if (hours < 0) {
-          hours = 23;
-          days--;
-        }
-        if (days < 0) {
-          return { days: 3, hours: 23, minutes: 19, seconds: 56 };
-        }
-        return { days, hours, minutes, seconds };
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const { data: flashProducts = [], isLoading } = useFlashSales();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [endTime, setEndTime] = useState<string | Date>(new Date());
+
+  useEffect(() => {
+    if (flashProducts.length > 0) {
+      // Find the soonest ending flash sale to show the timer for, or the latest?
+      // Usually "Flash Sales ending in..." implies the event end. 
+      // If products have different end times, we might pick the minimum (soonest to expire) to create urgency.
+      // Let's look for the first valid flash_sale_end_time.
+      const durations = flashProducts
+        .map(p => p.flash_sale_end_time ? new Date(p.flash_sale_end_time).getTime() : 0)
+        .filter(t => t > Date.now());
+
+      if (durations.length > 0) {
+        // Sort to find the soonest ending one? Or max? 
+        // Let's use the one that is furthest out to keep the section alive? 
+        // Or soonest to show "Hurry"?
+        // Let's go with the minimum of the valid future dates seems most logical for "Ending in".
+        const minDuration = Math.min(...durations);
+        setEndTime(new Date(minDuration));
+      } else {
+        // Fallback to 24h from now if no data
+        setEndTime(new Date(Date.now() + 1000 * 60 * 60 * 24));
+      }
+    }
+  }, [flashProducts]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -55,6 +47,10 @@ const FlashSales = () => {
     }
   };
 
+  if (!isLoading && flashProducts.length === 0) {
+    return null; // Don't show section if no flash sales
+  }
+
   return (
     <section className="container mx-auto px-4 py-12">
       {/* Section Header */}
@@ -65,17 +61,9 @@ const FlashSales = () => {
 
       {/* Title and Timer */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div className="flex items-center gap-8">
+        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
           <h2 className="font-display text-2xl md:text-3xl font-semibold">Flash Sales</h2>
-          <div className="flex items-center gap-4">
-            <TimeUnit label="Days" value={timeLeft.days} />
-            <span className="text-accent text-2xl font-bold">:</span>
-            <TimeUnit label="Hours" value={timeLeft.hours} />
-            <span className="text-accent text-2xl font-bold">:</span>
-            <TimeUnit label="Minutes" value={timeLeft.minutes} />
-            <span className="text-accent text-2xl font-bold">:</span>
-            <TimeUnit label="Seconds" value={timeLeft.seconds} />
-          </div>
+          <CountdownTimer targetDate={endTime} />
         </div>
         <div className="flex gap-2">
           <Button
@@ -122,7 +110,7 @@ const FlashSales = () => {
 
       {/* View All Button */}
       <div className="text-center mt-10">
-        <Link to="/products">
+        <Link to="/flash-sales">
           <Button className="bg-accent hover:bg-accent/90 text-accent-foreground px-12">
             View All Products
           </Button>
@@ -131,13 +119,6 @@ const FlashSales = () => {
     </section>
   );
 };
-
-const TimeUnit = ({ label, value }: { label: string; value: number }) => (
-  <div className="text-center">
-    <p className="text-[10px] text-muted-foreground font-medium">{label}</p>
-    <p className="text-2xl md:text-3xl font-bold">{String(value).padStart(2, "0")}</p>
-  </div>
-);
 
 export default FlashSales;
 

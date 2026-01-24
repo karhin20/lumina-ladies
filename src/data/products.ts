@@ -17,6 +17,7 @@ export interface Product {
   details: string[];
   images?: string[];
   isFlashSale?: boolean;
+  flashSaleEndTime?: string;
   isFeatured?: boolean;
   salesCount?: number;
   vendorId?: string;
@@ -44,6 +45,8 @@ export const allProducts: Product[] = [
     vendorId: "local-vendor-1",
     vendorName: "Luxe Lighting",
     vendorSlug: "luxe-lighting",
+    isFlashSale: true,
+    flashSaleEndTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString(), // 3 days from now
   },
   {
     id: "blush-ceramic-table-lamp",
@@ -60,6 +63,8 @@ export const allProducts: Product[] = [
       "Dimensions: 12\" diameter x 22\" height",
       "UL listed for safety",
     ],
+    isFlashSale: true,
+    flashSaleEndTime: new Date(Date.now() + 1000 * 60 * 60 * 5).toISOString(), // 5 hours from now
   },
   {
     id: "arc-floor-lamp",

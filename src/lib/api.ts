@@ -41,6 +41,7 @@ export interface ApiProduct {
   image_url?: string | null;
   images?: string[];
   is_flash_sale?: boolean;
+  flash_sale_end_time?: string;
   sales_count?: number;
   is_featured?: boolean;
   created_at?: string;
