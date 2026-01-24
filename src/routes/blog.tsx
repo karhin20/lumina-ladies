@@ -20,7 +20,7 @@ const blogPosts = [
         excerpt: "Learn how sensor staircase lights work, their benefits, installation tips, and why they're a must-have for modern homes in Ghana.",
         date: "January 16, 2026",
         category: "Home & Living",
-        image: "/placeholder.svg",
+        image: "/placeholder.png",
     },
     {
         slug: "hello-world",
@@ -28,7 +28,7 @@ const blogPosts = [
         excerpt: "Welcome to the KelsMall blog! This is our first post using MDX and React Router v7.",
         date: "January 16, 2026",
         category: "Announcements",
-        image: "/placeholder.svg",
+        image: "/placeholder.png",
     },
 ];
 

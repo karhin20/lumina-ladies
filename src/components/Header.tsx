@@ -110,7 +110,7 @@ const Header = () => {
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder="What are you looking for?"
+                  placeholder="Search KelsMall..."
                   className="w-64 pr-10 bg-secondary border-0 text-sm h-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -217,7 +217,7 @@ const Header = () => {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search products & vendors..."
+                placeholder="Search KelsMall..."
                 className="w-full pr-10 bg-secondary border-0 text-sm h-11"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

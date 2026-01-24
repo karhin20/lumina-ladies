@@ -503,7 +503,7 @@ const AdminProducts = () => {
                     <TableRow key={product.id}>
                       <TableCell>
                         <img
-                          src={getValidImageUrl(product.image) || '/placeholder.svg'}
+                          src={getValidImageUrl(product.image) || '/placeholder.png'}
                           alt={product.name}
                           className="w-10 h-10 rounded-md object-cover border border-border"
                         />

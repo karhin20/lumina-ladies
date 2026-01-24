@@ -450,7 +450,7 @@ const AdminCustomers = () => {
                   {selectedOrder.items?.map((item: any, index: number) => (
                     <div key={index} className="flex items-center gap-3 bg-muted/30 p-2 rounded-lg border border-border/40">
                       <img
-                        src={getValidImageUrl(item.image_url || item.image) || '/placeholder.svg'}
+                        src={getValidImageUrl(item.image_url || item.image) || '/placeholder.png'}
                         alt={item.name}
                         className="w-10 h-10 rounded-md object-cover border border-border"
                       />

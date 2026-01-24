@@ -87,7 +87,7 @@ const ProductCard = ({ id, name, price, originalPrice, image_url, images, catego
         {/* Main Image Link */}
         <Link to={`/product/${id}`} className="block h-full w-full">
           <OptimizedImage
-            src={getValidImageUrl(images || image_url) || '/placeholder.svg'}
+            src={getValidImageUrl(images || image_url) || '/placeholder.png'}
             alt={name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             aspectRatio="square"

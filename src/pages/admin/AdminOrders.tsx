@@ -285,7 +285,7 @@ const AdminOrders = () => {
                                 {order.items.slice(0, 3).map((item, idx) => (
                                   <img
                                     key={idx}
-                                    src={getValidImageUrl(item.image_url || (item as any).image) || '/placeholder.svg'}
+                                    src={getValidImageUrl(item.image_url || (item as any).image) || '/placeholder.png'}
                                     alt={item.name}
                                     className="w-8 h-8 rounded-full border-2 border-background object-cover"
                                   />

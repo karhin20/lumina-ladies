@@ -123,7 +123,7 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
                                 </Carousel>
                             ) : (
                                 <img
-                                    src={getValidImageUrl(product.images || (product as any).image_url) || '/placeholder.svg'}
+                                    src={getValidImageUrl(product.images || (product as any).image_url) || '/placeholder.png'}
                                     alt={product.name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />

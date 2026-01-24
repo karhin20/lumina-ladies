@@ -229,7 +229,7 @@ const ProductPage = () => {
                     </Carousel>
                   ) : (
                     <img
-                      src={getValidImageUrl(product.image || (product as any).image_url) || "/placeholder.svg"}
+                      src={getValidImageUrl(product.image || (product as any).image_url) || "/placeholder.png"}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />
