@@ -47,11 +47,11 @@ const AdminSettings = () => {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="storeName">Store Name</Label>
-              <Input id="storeName" defaultValue="LumiGh" />
+              <Input id="storeName" defaultValue="KelsMall" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Contact Email</Label>
-              <Input id="email" type="email" defaultValue="support@lumigh.com" />
+              <Input id="email" type="email" defaultValue="support@kelsmall.com" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Contact Phone</Label>

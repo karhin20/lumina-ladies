@@ -37,11 +37,11 @@
     --radius: 0.25rem;
 
     /* Custom tokens */
-    --lumigh-red: 0 72% 51%;
-    --lumigh-black: 0 0% 7%;
+    --kelsmall-red: 0 72% 51%;
+    --kelsmall-black: 0 0% 7%;
     /* #121212 */
-    --lumigh-gray: 0 0% 45%;
-    --lumigh-light: 0 0% 96%;
+    --kelsmall-gray: 0 0% 45%;
+    --kelsmall-light: 0 0% 96%;
 
     /* Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(0, 0%, 0%, 0.08);

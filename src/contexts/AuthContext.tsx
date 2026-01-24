@@ -33,8 +33,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const TOKEN_KEY = "lumigh_token";
-const USER_KEY = "lumigh_user";
+const TOKEN_KEY = "kelsmall_token";
+const USER_KEY = "kelsmall_user";
 
 const mapUser = (u: ApiUser): User => ({
   id: u.id,
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setSessionToken(accessToken);
           localStorage.setItem(TOKEN_KEY, accessToken);
           if (refreshToken) {
-            localStorage.setItem("lumigh_refresh_token", refreshToken);
+            localStorage.setItem("kelsmall_refresh_token", refreshToken);
           }
 
           // Fetch user data immediately
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           })
           .catch(async () => {
             // If me fails (401), try to refresh if we have a refresh token
-            const refreshToken = localStorage.getItem("lumigh_refresh_token");
+            const refreshToken = localStorage.getItem("kelsmall_refresh_token");
             if (refreshToken) {
               try {
                 const res = await api.refreshSession(refreshToken);
@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setSessionToken(null);
                 localStorage.removeItem(TOKEN_KEY);
                 localStorage.removeItem(USER_KEY);
-                localStorage.removeItem("lumigh_refresh_token");
+                localStorage.removeItem("kelsmall_refresh_token");
               }
             } else {
               setIsLoading(false);
@@ -160,11 +160,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSessionToken(null);
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      localStorage.removeItem("lumigh_refresh_token");
+      localStorage.removeItem("kelsmall_refresh_token");
     };
 
-    window.addEventListener("lumigh_unauthorized", handleUnauthorized);
-    return () => window.removeEventListener("lumigh_unauthorized", handleUnauthorized);
+    window.addEventListener("kelsmall_unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("kelsmall_unauthorized", handleUnauthorized);
   }, [user, sessionToken]);
 
   const login = async (email: string, password: string) => {

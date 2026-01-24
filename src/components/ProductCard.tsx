@@ -121,7 +121,7 @@ const ProductCard = ({ id, name, price, originalPrice, image_url, images, catego
           <div onClick={(e) => e.stopPropagation()}>
             <ShareButton
               title={name}
-              text={`Check out ${name} on Lumina Ladies!`}
+              text={`Check out ${name} on KelsMall!`}
               url={typeof window !== 'undefined' ? `${window.location.origin}/product/${id}` : `/product/${id}`}
               variant="secondary"
               size="icon"

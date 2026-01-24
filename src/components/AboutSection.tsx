@@ -41,7 +41,7 @@ const AboutSection = () => {
             </h2>
             <div className="space-y-4 text-muted-foreground mb-8">
               <p>
-                Founded in 2019, LumiGh was born from a desire to bring together the finest lightning designs with curated gadgets and apparel for the modern lifestyle.
+                Founded in 2019, KelsMall was born from a desire to bring together the finest lightning designs with curated gadgets and apparel for the modern lifestyle.
               </p>
               <p>
                 We believe that every piece in your home should tell a story. From our hand-selected chandeliers to our artisanal skincare collections, each item reflects our commitment to quality, elegance, and timeless beauty.

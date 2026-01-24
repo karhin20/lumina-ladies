@@ -265,7 +265,7 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
                                 <ShareButton
                                     title={product.name}
-                                    text={`Check out ${product.name} on LumiGh!`}
+                                    text={`Check out ${product.name} on KelsMall!`}
                                     url={typeof window !== 'undefined' ? `${window.location.origin}/product/${product.id}` : `/product/${product.id}`}
                                     variant="outline"
                                     size="icon"

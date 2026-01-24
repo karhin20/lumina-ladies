@@ -89,7 +89,7 @@ const AuthPage = () => {
     if (result.success) {
       toast({
         title: 'Account created!',
-        description: 'Welcome to LumiGh.',
+        description: 'Welcome to KelsMall.',
       });
       navigate('/account');
     } else {
@@ -122,7 +122,7 @@ const AuthPage = () => {
           {!isSignup ? (
             <>
               <h1 className="font-display text-3xl lg:text-4xl font-semibold text-foreground mb-2">
-                Log in to LumiGh
+                Log in to KelsMall
               </h1>
               <p className="text-muted-foreground mb-8">
                 Enter your details below

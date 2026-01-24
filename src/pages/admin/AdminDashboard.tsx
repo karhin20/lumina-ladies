@@ -53,7 +53,7 @@ const AdminDashboard = () => {
       <div className="p-4 border-b border-border">
         <h1 className="font-display text-xl font-semibold">Admin Panel</h1>
         <p className="text-sm text-muted-foreground truncate">
-          {vendor?.name || (user?.role === 'super_admin' ? 'LumiGh Platform' : 'LumiGh Admin')}
+          {vendor?.name || (user?.role === 'super_admin' ? 'KelsMall Platform' : 'KelsMall Admin')}
         </p>
       </div>
 

@@ -19,9 +19,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     if (res.status === 401) {
-      localStorage.removeItem("lumigh_token");
-      localStorage.removeItem("lumigh_user");
-      window.dispatchEvent(new Event("lumigh_unauthorized"));
+      localStorage.removeItem("kelsmall_token");
+      localStorage.removeItem("kelsmall_user");
+      window.dispatchEvent(new Event("kelsmall_unauthorized"));
     }
     const text = await res.text();
     throw new Error(text || res.statusText);
