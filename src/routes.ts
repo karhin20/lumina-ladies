@@ -11,6 +11,9 @@ export default [
     // Protected routes will be handled by the components themselves or we can wrap them
     route("checkout", "pages/CheckoutPage.tsx"),
     route("account", "pages/AccountPage.tsx"),
+    route("privacy-policy", "pages/PrivacyPolicy.tsx"),
+    route("terms", "pages/TermsOfUse.tsx"),
+    route("faq", "pages/FAQ.tsx"),
 
     // Admin routes - nested
     route("admin", "pages/admin/AdminDashboard.tsx", [

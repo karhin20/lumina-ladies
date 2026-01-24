@@ -26,13 +26,43 @@ import {
 import { regions, cities } from "@/data/locations";
 
 const AccountPage = () => {
-  const { user, isLoading, logout, updateProfile, toggleFavorite } = useAuth();
+  const { user, isLoading, logout, updateProfile, toggleFavorite, sessionToken } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { data: orders = [], isLoading: isLoadingOrders } = useMyOrders();
   const { data: allProducts, isLoading: isLoadingProducts } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'profile';
+  // Delete account state
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const { api } = require("@/lib/api"); // Dynamically require to avoid circular dependency if any, or just import top level
+
+  const handleDeleteAccount = async () => {
+    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
+
+    setIsDeletingAccount(true);
+    try {
+      if (sessionToken) {
+        // We import api at top level but let's use the object
+        const { api } = await import("@/lib/api");
+        await api.deleteAccount(sessionToken);
+        await logout();
+        toast({
+          title: "Account Deleted",
+          description: "Your account has been permanently deleted.",
+        });
+        navigate("/");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete account.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
 
   const handleTabChange = (value: string) => {
     setSearchParams({ tab: value });
@@ -327,6 +357,29 @@ const AccountPage = () => {
                         </div>
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+
+                {/* Danger Zone */}
+                <Card className="border-destructive/30 shadow-sm bg-destructive/5">
+                  <CardHeader className="pb-4 border-b border-destructive/20">
+                    <CardTitle className="text-xl text-destructive">Danger Zone</CardTitle>
+                    <CardDescription>Irreversible account actions.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Delete Account</p>
+                        <p className="text-sm text-muted-foreground">Permanently remove your account and all data.</p>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        onClick={handleDeleteAccount}
+                        disabled={isDeletingAccount}
+                      >
+                        {isDeletingAccount ? "Deleting..." : "Delete Account"}
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>

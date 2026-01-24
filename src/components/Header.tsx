@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Menu, X, Search, Heart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { getValidImageUrl } from "@/lib/utils";
 import CartDrawer from "@/components/CartDrawer";
 import { ThemeToggle } from "./ThemeToggle";
 import { useVendors } from "@/hooks/useVendors";
+import Fuse from 'fuse.js';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,14 +19,33 @@ const Header = () => {
   const { data: vendors = [] } = useVendors(); // Fetch active vendors
   const navigate = useNavigate();
 
-  // Combine products and vendors for search
-  const productResults = searchQuery.trim()
-    ? products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    : [];
+  // Configure Fuse for Products
+  const productFuse = useMemo(() => {
+    return new Fuse(products, {
+      keys: ['name', 'category', 'description'],
+      threshold: 0.4, // Lower is stricter (0.0 = exact), 0.4 allows for typos
+      distance: 100,
+    });
+  }, [products]);
 
-  const vendorResults = searchQuery.trim()
-    ? vendors.filter(v => v.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    : [];
+  // Configure Fuse for Vendors
+  const vendorFuse = useMemo(() => {
+    return new Fuse(vendors, {
+      keys: ['name'],
+      threshold: 0.4,
+    });
+  }, [vendors]);
+
+  // Perform search
+  const productResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return productFuse.search(searchQuery).map(result => result.item);
+  }, [searchQuery, productFuse]);
+
+  const vendorResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return vendorFuse.search(searchQuery).map(result => result.item);
+  }, [searchQuery, vendorFuse]);
 
   // Flatten results for display (prioritize vendors or mix them? - let's show both)
   // For the dropdown, we'll limit both
@@ -197,7 +217,7 @@ const Header = () => {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search products & sellers..."
+                placeholder="Search products & vendors..."
                 className="w-full pr-10 bg-secondary border-0 text-sm h-11"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

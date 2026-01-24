@@ -337,6 +337,19 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ refresh_token: refreshToken }),
     }),
+
+  // subscriptions
+  subscribe: (email: string) =>
+    request<{ id: string; email: string; created_at: string }>("/subscriptions", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+
+  deleteAccount: (token: string) =>
+    request("/auth/me", {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    }),
 };
 
 

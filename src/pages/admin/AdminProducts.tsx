@@ -64,6 +64,7 @@ const AdminProducts = () => {
     original_price: '',
     is_new: false,
     is_flash_sale: false,
+    flash_sale_end_time: '',
     is_featured: false,
     sales_count: '0',
     details: '', // Comma separated
@@ -84,6 +85,7 @@ const AdminProducts = () => {
     setFormData({
       name: '', description: '', category: '', price: '',
       original_price: '', is_new: false, is_flash_sale: false,
+      flash_sale_end_time: '',
       is_featured: false, sales_count: '0', details: '',
       video_url: ''
     });
@@ -99,6 +101,16 @@ const AdminProducts = () => {
 
   const handleOpenEdit = (product: Product) => {
     setEditingProduct(product);
+    // Format date for datetime-local input (YYYY-MM-DDTHH:mm)
+    let formattedDate = '';
+    if (product.flashSaleEndTime) {
+      const date = new Date(product.flashSaleEndTime);
+      // Adjust to local ISO string for input
+      // This simple hack ensures we get YYYY-MM-DDTHH:mm format roughly correct for local time
+      const offset = date.getTimezoneOffset() * 60000;
+      formattedDate = new Date(date.getTime() - offset).toISOString().slice(0, 16);
+    }
+
     setFormData({
       name: product.name,
       description: product.description,
@@ -107,6 +119,7 @@ const AdminProducts = () => {
       original_price: product.originalPrice?.toString() || '',
       is_new: product.isNew || false,
       is_flash_sale: product.isFlashSale || false,
+      flash_sale_end_time: formattedDate,
       is_featured: product.isFeatured || false,
       sales_count: (product.salesCount || 0).toString(),
       details: (product.details || []).join('. '),
@@ -191,6 +204,7 @@ const AdminProducts = () => {
         original_price: formData.original_price ? parseFloat(formData.original_price) : undefined,
         is_new: formData.is_new,
         is_flash_sale: formData.is_flash_sale,
+        flash_sale_end_time: formData.is_flash_sale && formData.flash_sale_end_time ? new Date(formData.flash_sale_end_time).toISOString() : undefined,
         is_featured: formData.is_featured,
         sales_count: parseInt(formData.sales_count) || 0,
         details: formData.details.split('.').map(s => s.trim()).filter(Boolean),
@@ -326,15 +340,29 @@ const AdminProducts = () => {
                 />
                 <Label htmlFor="is_new" className="cursor-pointer font-medium">Mark as New</Label>
               </div>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
-                  id="is_flash_sale"
-                  checked={formData.is_flash_sale}
-                  onChange={e => setFormData({ ...formData, is_flash_sale: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 accent-primary"
-                />
-                <Label htmlFor="is_flash_sale" className="cursor-pointer font-medium">Flash Sale Item</Label>
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="is_flash_sale"
+                    checked={formData.is_flash_sale}
+                    onChange={e => setFormData({ ...formData, is_flash_sale: e.target.checked })}
+                    className="w-5 h-5 rounded border-gray-300 accent-primary"
+                  />
+                  <Label htmlFor="is_flash_sale" className="cursor-pointer font-medium">Flash Sale Item</Label>
+                </div>
+                {formData.is_flash_sale && (
+                  <div className="pl-8 animate-in fade-in slide-in-from-top-1">
+                    <Label htmlFor="flash_sale_end_time" className="text-xs text-muted-foreground mb-1 block">End Time</Label>
+                    <Input
+                      id="flash_sale_end_time"
+                      type="datetime-local"
+                      value={formData.flash_sale_end_time}
+                      onChange={e => setFormData({ ...formData, flash_sale_end_time: e.target.value })}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex items-center space-x-3">
                 <input
