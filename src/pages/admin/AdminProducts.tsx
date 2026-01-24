@@ -340,40 +340,45 @@ const AdminProducts = () => {
                 />
                 <Label htmlFor="is_new" className="cursor-pointer font-medium">Mark as New</Label>
               </div>
-              <div className="flex flex-col space-y-2">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="is_flash_sale"
-                    checked={formData.is_flash_sale}
-                    onChange={e => setFormData({ ...formData, is_flash_sale: e.target.checked })}
-                    className="w-5 h-5 rounded border-gray-300 accent-primary"
-                  />
-                  <Label htmlFor="is_flash_sale" className="cursor-pointer font-medium">Flash Sale Item</Label>
-                </div>
-                {formData.is_flash_sale && (
-                  <div className="pl-8 animate-in fade-in slide-in-from-top-1">
-                    <Label htmlFor="flash_sale_end_time" className="text-xs text-muted-foreground mb-1 block">End Time</Label>
-                    <Input
-                      id="flash_sale_end_time"
-                      type="datetime-local"
-                      value={formData.flash_sale_end_time}
-                      onChange={e => setFormData({ ...formData, flash_sale_end_time: e.target.value })}
-                      className="h-8 text-xs"
-                    />
+
+              {!isVendorAdmin && (
+                <>
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        id="is_flash_sale"
+                        checked={formData.is_flash_sale}
+                        onChange={e => setFormData({ ...formData, is_flash_sale: e.target.checked })}
+                        className="w-5 h-5 rounded border-gray-300 accent-primary"
+                      />
+                      <Label htmlFor="is_flash_sale" className="cursor-pointer font-medium">Flash Sale Item</Label>
+                    </div>
+                    {formData.is_flash_sale && (
+                      <div className="pl-8 animate-in fade-in slide-in-from-top-1">
+                        <Label htmlFor="flash_sale_end_time" className="text-xs text-muted-foreground mb-1 block">End Time</Label>
+                        <Input
+                          id="flash_sale_end_time"
+                          type="datetime-local"
+                          value={formData.flash_sale_end_time}
+                          onChange={e => setFormData({ ...formData, flash_sale_end_time: e.target.value })}
+                          className="h-8 text-xs"
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
-                  id="is_featured"
-                  checked={formData.is_featured}
-                  onChange={e => setFormData({ ...formData, is_featured: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 accent-primary"
-                />
-                <Label htmlFor="is_featured" className="cursor-pointer font-medium">Featured (New Arrivals)</Label>
-              </div>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="is_featured"
+                      checked={formData.is_featured}
+                      onChange={e => setFormData({ ...formData, is_featured: e.target.checked })}
+                      className="w-5 h-5 rounded border-gray-300 accent-primary"
+                    />
+                    <Label htmlFor="is_featured" className="cursor-pointer font-medium">Featured (New Arrivals)</Label>
+                  </div>
+                </>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="sales_count">Sales Count</Label>
                 <Input
