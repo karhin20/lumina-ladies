@@ -51,6 +51,7 @@ export interface ApiProduct {
   video_url?: string;
   rating?: number;
   reviews_count?: number;
+  status?: string;
 }
 
 export interface ApiVendorStat {
@@ -65,8 +66,14 @@ export interface ApiAdminSummary {
   total_orders: number;
   total_customers: number;
   total_products: number;
+  revenue_change: number;
+  orders_change: number;
+  customers_change: number;
+  products_change: number;
   recent_orders: any[];
   vendor_stats?: ApiVendorStat[];
+  top_products?: { name: string; sales: number; revenue: number }[];
+  daily_stats?: { date: string; revenue: number; orders: number }[];
 }
 
 export interface ApiUser {
@@ -350,6 +357,20 @@ export const api = {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     }),
+
+  updateProductStatus: (id: string, status: string, token: string) =>
+    request<ApiProduct>(`/products/${id}/status?status=${status}`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+
+  getAuditLogs: (token: string, resourceType?: string) => {
+    let url = "/audit/logs";
+    if (resourceType) url += `?resource_type=${resourceType}`;
+    return request<any[]>(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
 };
 
 

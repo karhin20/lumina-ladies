@@ -159,7 +159,9 @@ const AdminOrders = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <CardTitle>All Orders</CardTitle>
-              <CardDescription>{orders.length} total orders</CardDescription>
+              <CardDescription>
+                {orders.length} total orders {isVendorAdmin && "(filtered to your products)"}
+              </CardDescription>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -454,7 +456,7 @@ const AdminOrders = () => {
                 </p>
               </div>
               <div className="grid grid-cols-2 items-center gap-4">
-                <p className="text-muted-foreground">Total Amount:</p>
+                <p className="text-muted-foreground">{isVendorAdmin ? "Your Subtotal:" : "Total Amount:"}</p>
                 <p className="font-bold text-right">₵{selectedOrder.total.toFixed(2)}</p>
               </div>
               <div className="grid grid-cols-2 items-center gap-4">

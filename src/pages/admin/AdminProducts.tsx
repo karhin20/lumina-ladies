@@ -29,7 +29,8 @@ import { cn } from '@/lib/utils';
 import {
   Search, Plus, MoreVertical, Edit, Trash2,
   Copy, Filter, ChevronLeft, ChevronRight,
-  TrendingUp, Download, Eye, Upload, X
+  TrendingUp, Download, Eye, Upload, X,
+  CheckCircle, XCircle, Clock
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useProducts } from '@/hooks/useProducts';
@@ -250,6 +251,24 @@ const AdminProducts = () => {
     }
   };
 
+  const handleStatusUpdate = async (productId: string, newStatus: string) => {
+    if (!sessionToken) return;
+    try {
+      await api.updateProductStatus(productId, newStatus, sessionToken);
+      toast({
+        title: `Product ${newStatus === 'published' ? 'approved' : newStatus}`,
+        description: `Status updated to ${newStatus}`
+      });
+      refetch();
+    } catch (error: any) {
+      toast({
+        title: "Update failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -463,6 +482,7 @@ const AdminProducts = () => {
                     <TableHead>Category</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Badges</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -510,6 +530,17 @@ const AdminProducts = () => {
                         </div>
                       </TableCell>
                       <TableCell>
+                        {(() => {
+                          const status = product.status || 'pending';
+                          switch (status) {
+                            case 'published': return <Badge className="bg-green-500/10 text-green-600 border-green-500/20 capitalize">Published</Badge>;
+                            case 'rejected': return <Badge className="bg-red-500/10 text-red-600 border-red-500/20 capitalize">Rejected</Badge>;
+                            case 'draft': return <Badge className="bg-slate-500/10 text-slate-600 border-slate-500/20 capitalize">Draft</Badge>;
+                            default: return <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 capitalize">Pending</Badge>;
+                          }
+                        })()}
+                      </TableCell>
+                      <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {product.isFlashSale && (
                             <Badge variant="destructive" className="text-[10px] h-4 px-1">Flash</Badge>
@@ -524,6 +555,28 @@ const AdminProducts = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
+                          {!isVendorAdmin && product.status !== 'published' && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                              onClick={() => handleStatusUpdate(product.id, 'published')}
+                              title="Approve"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                          )}
+                          {!isVendorAdmin && product.status !== 'rejected' && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              onClick={() => handleStatusUpdate(product.id, 'rejected')}
+                              title="Reject"
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"

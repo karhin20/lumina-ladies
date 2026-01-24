@@ -23,6 +23,7 @@ export default [
         route("customers", "pages/admin/AdminCustomers.tsx"),
         route("vendors", "pages/admin/AdminVendors.tsx"),
         route("vendor-profile", "pages/admin/AdminVendorProfile.tsx"),
+        route("logs", "pages/admin/AdminLogs.tsx"),
         route("settings", "pages/admin/AdminSettings.tsx"),
     ]),
 

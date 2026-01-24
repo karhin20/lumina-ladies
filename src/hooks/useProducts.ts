@@ -27,6 +27,7 @@ export const useProducts = () => {
         vendorName: p.vendor_name,
         vendorSlug: p.vendor_slug,
         videoUrl: p.video_url,
+        status: p.status,
       })),
     placeholderData: allProducts,
   });

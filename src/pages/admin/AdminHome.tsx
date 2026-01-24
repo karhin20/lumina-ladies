@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import { useAdminStats } from '@/hooks/useAdminStats';
 import { useAuth } from '@/contexts/AuthContext';
 import { api, ApiVendorStat } from '@/lib/api';
+import { AnalyticsChart, OrdersChart } from '@/components/admin/AnalyticsChart';
+import { cn } from '@/lib/utils';
 
 const AdminHome = () => {
   const { user, sessionToken } = useAuth();
@@ -37,35 +39,49 @@ const AdminHome = () => {
     totalProducts: stats?.total_products ?? 0,
     recentOrders: stats?.recent_orders ?? [],
     vendorStats: stats?.vendor_stats ?? [],
-    topProducts: [], // API doesn't seem to return top_products in summary yet, or it's named differently
+    topProducts: stats?.top_products ?? [],
+    dailyStats: stats?.daily_stats ?? [],
+    revenueChange: stats?.revenue_change ?? 0,
+    ordersChange: stats?.orders_change ?? 0,
+    customersChange: stats?.customers_change ?? 0,
+    productsChange: stats?.products_change ?? 0,
+  };
+
+  const formatChange = (val: number) => {
+    const prefix = val > 0 ? '+' : '';
+    return `${prefix}${val.toFixed(1)}%`;
   };
 
   const statCards = [
     {
       title: 'Total Revenue',
       value: `₵${(safeStats.totalRevenue || 0).toLocaleString()}`,
-      change: '+12.5%',
+      change: formatChange(safeStats.revenueChange),
+      isNegative: safeStats.revenueChange < 0,
       icon: DollarSign,
       color: 'text-green-600 bg-green-100',
     },
     {
       title: 'Total Orders',
       value: (safeStats.totalOrders || 0).toString(),
-      change: '+8.2%',
+      change: formatChange(safeStats.ordersChange),
+      isNegative: safeStats.ordersChange < 0,
       icon: ShoppingCart,
       color: 'text-blue-600 bg-blue-100',
     },
     {
       title: 'Customers',
       value: (safeStats.totalCustomers || 0).toString(),
-      change: '+15.3%',
+      change: formatChange(safeStats.customersChange),
+      isNegative: safeStats.customersChange < 0,
       icon: Users,
       color: 'text-purple-600 bg-purple-100',
     },
     {
       title: 'Products',
       value: (safeStats.totalProducts || 0).toString(),
-      change: '+2',
+      change: formatChange(safeStats.productsChange),
+      isNegative: safeStats.productsChange < 0,
       icon: Package,
       color: 'text-orange-600 bg-orange-100',
     },
@@ -86,7 +102,11 @@ const AdminHome = () => {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl lg:text-3xl font-semibold">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome back! Here's what's happening with your store.</p>
+        <p className="text-muted-foreground">
+          {user?.role === 'vendor_admin'
+            ? "Track your store's performance and manage your inventory."
+            : "Welcome back! Here's what's happening across the platform."}
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -98,9 +118,16 @@ const AdminHome = () => {
                 <div className={`p-1.5 sm:p-2 rounded-lg ${stat.color} flex-shrink-0`}>
                   <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <span className="flex items-center text-[10px] sm:text-xs text-green-600 font-bold whitespace-nowrap">
+                <span className={cn(
+                  "flex items-center text-[10px] sm:text-xs font-bold whitespace-nowrap",
+                  stat.isNegative ? "text-red-600" : "text-green-600"
+                )}>
                   {stat.change}
-                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5" />
+                  {stat.isNegative ? (
+                    <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5 rotate-90" />
+                  ) : (
+                    <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5" />
+                  )}
                 </span>
               </div>
               <div className="mt-3 sm:mt-4">
@@ -110,6 +137,20 @@ const AdminHome = () => {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Analytics Charts */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <AnalyticsChart
+          data={safeStats.dailyStats}
+          title="Revenue Growth"
+          description="Daily revenue over the last 30 days"
+        />
+        <OrdersChart
+          data={safeStats.dailyStats}
+          title="Order Trends"
+          description="Daily order volume"
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">

@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Package, ShoppingCart, Users,
-  LogOut, ArrowLeft, Settings, Menu, Store, User
+  LogOut, ArrowLeft, Settings, Menu, Store, User, History
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -17,6 +17,7 @@ const navItems = [
   { href: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
   { href: '/admin/customers', icon: Users, label: 'Customers', superAdminOnly: true },
   { href: '/admin/vendors', icon: Store, label: 'Vendors', superAdminOnly: true },
+  { href: '/admin/logs', icon: History, label: 'Logs', superAdminOnly: true },
   { href: '/admin/vendor-profile', icon: Store, label: 'My Store', vendorAdminOnly: true },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
 ];

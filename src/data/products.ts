@@ -24,6 +24,7 @@ export interface Product {
   vendorName?: string;
   vendorSlug?: string;
   videoUrl?: string;
+  status?: string;
 }
 
 export const allProducts: Product[] = [
