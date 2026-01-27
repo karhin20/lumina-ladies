@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api, ApiProduct } from "@/lib/api";
-import { allProducts, Product } from "@/data/products";
+import { Product } from "@/data/products";
 import { getValidImageUrl } from "@/lib/utils";
 
 export const useProducts = () => {
@@ -29,7 +29,6 @@ export const useProducts = () => {
         videoUrl: p.video_url,
         status: p.status,
       })),
-    placeholderData: allProducts,
   });
 };
 

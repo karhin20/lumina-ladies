@@ -3,7 +3,6 @@ import type { MetaArgs } from "react-router";
 import { ArrowLeft, ChevronLeft, ChevronRight, Heart, ShoppingBag, Minus, Plus, Check, Store, Play, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { allProducts, getProductById } from "@/data/products";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -21,7 +20,6 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
 import {
@@ -38,60 +36,18 @@ import {
 const siteUrl = import.meta.env.VITE_SITE_URL || "https://lumina-ladies.vercel.app";
 
 export function meta({ params }: MetaArgs) {
-  const product = getProductById(params.id || "");
-
-  if (!product) {
-    return [{ title: "Product Not Found | KelsMall" }];
-  }
-
-  const imageUrl = getValidImageUrl(product.image) || "";
-  const productUrl = `${siteUrl}/product/${params.id}`;
-
+  // Mock data usage removed. Returning generic meta tags or we'd need to fetch data here if this was a loader.
+  // Since we rely on client-side fetching in the component, we can't easily pre-render specific product meta 
+  // without a backend loader or passing data differently.
   return [
-    { title: `${product.name} | KelsMall` },
-    { name: "description", content: product.description.substring(0, 160) },
-    // Open Graph
-    { property: "og:title", content: product.name },
-    { property: "og:description", content: product.description.substring(0, 160) },
-    { property: "og:image", content: imageUrl },
-    { property: "og:type", content: "product" },
-    { property: "og:url", content: productUrl },
-    // Twitter Cards
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: product.name },
-    { name: "twitter:description", content: product.description.substring(0, 160) },
-    { name: "twitter:image", content: imageUrl },
-    // Canonical
-    { tagName: "link", rel: "canonical", href: productUrl },
-    // Structured Data
-    {
-      "script:ld+json": {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        "name": product.name,
-        "image": imageUrl,
-        "description": product.description,
-        "brand": {
-          "@type": "Brand",
-          "name": product.vendorName || "KelsMall"
-        },
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "GHS",
-          "price": product.price,
-          "url": productUrl,
-        }
-      }
-    }
+    { title: "Product Details | KelsMall" },
+    { name: "description", content: "View product details on KelsMall." },
   ];
 }
-
-
-
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: products = [], isLoading } = useProducts();
-  const product = products.find((p) => p.id === id) || getProductById(id || "");
+  const product = products.find((p) => p.id === id);
   const [quantity, setQuantity] = useState(1);
   const { user, toggleFavorite } = useAuth();
   const { addToCart } = useCart();

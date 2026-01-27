@@ -10,7 +10,7 @@ export const meta: MetaFunction = () => {
     ];
 };
 import { ProductCardSkeleton } from "@/components/skeletons/ProductCardSkeleton";
-import { allProducts } from "@/data/products";
+
 import { useProducts } from "@/hooks/useProducts";
 import { Separator } from "@/components/ui/separator";
 import BrowseByCategory from "@/components/BrowseByCategory";
@@ -45,7 +45,7 @@ const Products = () => {
     // So we should use a useEffect to sync URL param to state if it changes externally.
 
     // Ensure we have a valid array even if data is still loading or undefined
-    const allItems = (data || allProducts) as any[];
+    const allItems = data || [];
 
     const products = allItems.filter(p => {
         const matchesCategory = selectedCategory ? p.category === selectedCategory : true;

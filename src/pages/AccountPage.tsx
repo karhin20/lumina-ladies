@@ -15,7 +15,7 @@ import {
 import { mockAddresses, Address } from '@/data/mockData';
 import { useMyOrders } from '@/hooks/useMyOrders';
 import { useProducts } from '@/hooks/useProducts';
-import { ApiOrder } from "@/lib/api";
+import { ApiOrder, api } from "@/lib/api";
 import {
   Select,
   SelectContent,
@@ -34,8 +34,8 @@ const AccountPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'profile';
   // Delete account state
+
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-  const { api } = require("@/lib/api"); // Dynamically require to avoid circular dependency if any, or just import top level
 
   const handleDeleteAccount = async () => {
     if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
@@ -43,8 +43,6 @@ const AccountPage = () => {
     setIsDeletingAccount(true);
     try {
       if (sessionToken) {
-        // We import api at top level but let's use the object
-        const { api } = await import("@/lib/api");
         await api.deleteAccount(sessionToken);
         await logout();
         toast({
