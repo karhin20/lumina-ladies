@@ -3,10 +3,10 @@ import { api, ApiProduct } from "@/lib/api";
 import { Product } from "@/data/products";
 import { getValidImageUrl } from "@/lib/utils";
 
-export const useProducts = () => {
+export const useProducts = (filters?: { vendorId?: string }) => {
   return useQuery<ApiProduct[], Error, Product[]>({
-    queryKey: ["products"],
-    queryFn: api.getProducts,
+    queryKey: ["products", filters],
+    queryFn: () => api.getProducts({ vendor_id: filters?.vendorId }),
     retry: 1,
     select: (data: ApiProduct[]) =>
       data.map((p) => ({

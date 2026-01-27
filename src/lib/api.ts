@@ -236,7 +236,13 @@ export interface CreateReviewData {
 export const api = {
 
   // products
-  getProducts: () => request<ApiProduct[]>("/products"),
+  // products
+  getProducts: (params?: { vendor_id?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.vendor_id) searchParams.append("vendor_id", params.vendor_id);
+    const queryString = searchParams.toString();
+    return request<ApiProduct[]>(`/products${queryString ? `?${queryString}` : ""}`);
+  },
   getFlashSales: () => request<ApiProduct[]>("/products/flash-sales"),
   getBestSelling: () => request<ApiProduct[]>("/products/best-selling"),
   getNewArrivals: () => request<ApiProduct[]>("/products/new-arrivals"),

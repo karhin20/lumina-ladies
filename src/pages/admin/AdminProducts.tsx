@@ -44,12 +44,9 @@ const AdminProducts = () => {
   const { toast } = useToast();
   const { sessionToken } = useAuth();
   const { vendor, isVendorAdmin } = useVendor();
-  const { data: allProducts = [], isLoading, refetch } = useProducts();
-
-  // Filter products by vendor for vendor_admin users
-  const products = isVendorAdmin && vendor
-    ? allProducts.filter(p => (p as any).vendor_id === vendor.id)
-    : allProducts;
+  const { data: products = [], isLoading, refetch } = useProducts({
+    vendorId: isVendorAdmin && vendor ? vendor.id : undefined
+  });
 
   // Dialog State
   const [isDialogOpen, setIsDialogOpen] = useState(false);
