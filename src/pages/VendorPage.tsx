@@ -16,9 +16,9 @@ export const meta: MetaFunction = () => {
 };
 
 const VendorPage = () => {
-    const { vendorId } = useParams<{ vendorId: string }>();
-    const { data: vendor, isLoading: vendorLoading } = useVendor(vendorId);
-    const { data: products, isLoading: productsLoading } = useVendorProducts(vendorId);
+    const { slug } = useParams<{ slug: string }>();
+    const { data: vendor, isLoading: vendorLoading } = useVendor(slug);
+    const { data: products, isLoading: productsLoading } = useVendorProducts(slug);
 
     const isLoading = vendorLoading || productsLoading;
 

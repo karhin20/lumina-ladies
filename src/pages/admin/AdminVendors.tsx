@@ -300,7 +300,7 @@ const AdminVendors = () => {
                                         <Button
                                             variant="outline"
                                             className="flex-1 sm:flex-none h-9 text-xs"
-                                            onClick={() => window.open(`/seller/${vendor.slug || vendor.id}`, '_blank')}
+                                            onClick={() => window.open(`/${vendor.slug || vendor.id}`, '_blank')}
                                         >
                                             <Eye className="w-3.5 h-3.5 mr-1.5" />
                                             Visit

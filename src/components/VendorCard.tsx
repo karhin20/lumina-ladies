@@ -4,9 +4,9 @@ import { Link } from "react-router";
 
 interface VendorCardProps extends Vendor { }
 
-const VendorCard = ({ id, name, description, logo_url, banner_url }: VendorCardProps) => {
+const VendorCard = ({ id, name, slug, description, logo_url, banner_url }: VendorCardProps) => {
     return (
-        <Link to={`/seller/${id}`} className="group">
+        <Link to={`/${slug || id}`} className="group">
             <div className="border border-border rounded-sm overflow-hidden hover:shadow-lg transition-shadow">
                 {/* Banner */}
                 <div className="h-32 bg-gradient-to-br from-accent/20 to-accent/5 relative">

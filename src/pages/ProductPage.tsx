@@ -344,7 +344,7 @@ const ProductPage = () => {
                 {/* Vendor Info */}
                 {product.vendorName && product.vendorSlug && (
                   <Link
-                    to={`/seller/${product.vendorSlug}`}
+                    to={`/${product.vendorSlug}`}
                     className="inline-flex items-center gap-2 mt-2 mb-3 text-sm text-muted-foreground hover:text-foreground transition-colors group w-fit"
                   >
                     <Store className="w-4 h-4" />

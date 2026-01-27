@@ -6,7 +6,6 @@ export default [
     route("flash-sales", "pages/FlashSalesPage.tsx"),
     route("product/:id", "pages/ProductPage.tsx"),
     route("sellers", "pages/VendorsPage.tsx"),
-    route("seller/:vendorId", "pages/VendorPage.tsx"),
     route("auth", "pages/AuthPage.tsx"),
     // Protected routes will be handled by the components themselves or we can wrap them
     route("checkout", "pages/CheckoutPage.tsx"),
@@ -31,6 +30,9 @@ export default [
     route("blog", "routes/blog.tsx"),
     route("blog/hello-world", "blog/hello-world.mdx"),
     route("blog/sensor-staircase-lights", "blog/sensor-staircase-lights.mdx"),
+
+    // Vendor User Page (Direct URL)
+    route(":slug", "pages/VendorPage.tsx"),
 
     // 404
     route("*", "pages/NotFound.tsx"),

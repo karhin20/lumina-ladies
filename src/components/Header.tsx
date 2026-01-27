@@ -128,7 +128,7 @@ const Header = () => {
                     {displayVendorResults.map((vendor) => (
                       <Link
                         key={vendor.id}
-                        to={`/seller/${vendor.id}`}
+                        to={`/${vendor.slug || vendor.id}`}
                         className="flex items-center gap-3 p-3 hover:bg-secondary transition-colors border-b border-border/50 last:border-0"
                         onClick={() => setSearchQuery("")}
                       >
@@ -234,7 +234,7 @@ const Header = () => {
                   {displayVendorResults.map((vendor) => (
                     <Link
                       key={vendor.id}
-                      to={`/seller/${vendor.id}`}
+                      to={`/${vendor.slug || vendor.id}`}
                       className="flex items-center gap-3 p-3 hover:bg-secondary transition-colors border-b border-border/50 last:border-0"
                       onClick={() => setSearchQuery("")}
                     >
