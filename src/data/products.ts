@@ -47,7 +47,7 @@ export const allProducts: Product[] = [
     vendorName: "Luxe Lighting",
     vendorSlug: "luxe-lighting",
     isFlashSale: true,
-    flashSaleEndTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString(), // 3 days from now
+    flashSaleEndTime: "2026-12-31T23:59:59.999Z", // Fixed future date
   },
   {
     id: "blush-ceramic-table-lamp",
@@ -65,7 +65,7 @@ export const allProducts: Product[] = [
       "UL listed for safety",
     ],
     isFlashSale: true,
-    flashSaleEndTime: new Date(Date.now() + 1000 * 60 * 60 * 5).toISOString(), // 5 hours from now
+    flashSaleEndTime: "2026-12-31T23:59:59.999Z", // Fixed future date
   },
   {
     id: "arc-floor-lamp",

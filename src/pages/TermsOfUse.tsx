@@ -79,7 +79,7 @@ const TermsOfUse = () => {
                         </p>
                         <address className="not-italic">
                             <strong>KelsMall</strong><br />
-                            Email: <a href="mailto:kelsmall@gmail.com" className="text-primary hover:underline">kelsmall@gmail.com</a><br />
+                            Email: <a href="mailto:earlyraintech@gmail.com" className="text-primary hover:underline">earlyraintech@gmail.com</a><br />
                             Phone: +233 543119117<br />
                             Address: Red Okai Street, Achimota, Accra, Ghana.
                         </address>

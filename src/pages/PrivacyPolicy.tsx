@@ -78,7 +78,7 @@ const PrivacyPolicy = () => {
                         </p>
                         <ul className="list-disc pl-6 space-y-2 mb-4">
                             <li>Navigating to your Account Settings page and clicking "Delete Account".</li>
-                            <li>Contacting our support team at <a href="mailto:kelsmall@gmail.com" className="text-primary hover:underline">kelsmall@gmail.com</a>.</li>
+                            <li>Contacting our support team at <a href="mailto:earlyraintech@gmail.com" className="text-primary hover:underline">earlyraintech@gmail.com</a>.</li>
                         </ul>
                         <p className="mb-4">
                             Upon receiving a deletion request, we will permanently delete your account and personal information from our active databases within 30 days, unless we are required to retain it for legal reasons (e.g., transaction history for tax purposes).
@@ -99,7 +99,7 @@ const PrivacyPolicy = () => {
                         </p>
                         <address className="not-italic">
                             <strong>KelsMall</strong><br />
-                            Email: <a href="mailto:kelsmall@gmail.com" className="text-primary hover:underline">kelsmall@gmail.com</a><br />
+                            Email: <a href="mailto:earlyraintech@gmail.com" className="text-primary hover:underline">earlyraintech@gmail.com</a><br />
                             Phone: +233 543119117<br />
                             Address: Red Okai Street, Achimota, Accra, Ghana.
                         </address>

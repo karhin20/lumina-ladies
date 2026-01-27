@@ -74,7 +74,7 @@ const FAQ = () => {
                             Can't find the answer you're looking for? Please chat to our friendly team.
                         </p>
                         <a
-                            href="mailto:kelsmall@gmail.com"
+                            href="mailto:earlyraintech@gmail.com"
                             className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                         >
                             Contact Support
