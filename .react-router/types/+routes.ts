@@ -17,6 +17,9 @@ type Pages = {
   "/products": {
     params: {};
   };
+  "/flash-sales": {
+    params: {};
+  };
   "/product/:id": {
     params: {
       "id": string;
@@ -25,11 +28,6 @@ type Pages = {
   "/sellers": {
     params: {};
   };
-  "/seller/:vendorId": {
-    params: {
-      "vendorId": string;
-    };
-  };
   "/auth": {
     params: {};
   };
@@ -37,6 +35,15 @@ type Pages = {
     params: {};
   };
   "/account": {
+    params: {};
+  };
+  "/privacy-policy": {
+    params: {};
+  };
+  "/terms": {
+    params: {};
+  };
+  "/faq": {
     params: {};
   };
   "/admin": {
@@ -57,6 +64,9 @@ type Pages = {
   "/admin/vendor-profile": {
     params: {};
   };
+  "/admin/logs": {
+    params: {};
+  };
   "/admin/settings": {
     params: {};
   };
@@ -69,6 +79,11 @@ type Pages = {
   "/blog/sensor-staircase-lights": {
     params: {};
   };
+  "/:slug": {
+    params: {
+      "slug": string;
+    };
+  };
   "/*": {
     params: {
       "*": string;
@@ -79,7 +94,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/products" | "/product/:id" | "/sellers" | "/seller/:vendorId" | "/auth" | "/checkout" | "/account" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/customers" | "/admin/vendors" | "/admin/vendor-profile" | "/admin/settings" | "/blog" | "/blog/hello-world" | "/blog/sensor-staircase-lights" | "/*";
+    page: "/" | "/products" | "/flash-sales" | "/product/:id" | "/sellers" | "/auth" | "/checkout" | "/account" | "/privacy-policy" | "/terms" | "/faq" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/customers" | "/admin/vendors" | "/admin/vendor-profile" | "/admin/logs" | "/admin/settings" | "/blog" | "/blog/hello-world" | "/blog/sensor-staircase-lights" | "/:slug" | "/*";
   };
   "pages/Index.tsx": {
     id: "pages/Index";
@@ -89,6 +104,10 @@ type RouteFiles = {
     id: "pages/Products";
     page: "/products";
   };
+  "pages/FlashSalesPage.tsx": {
+    id: "pages/FlashSalesPage";
+    page: "/flash-sales";
+  };
   "pages/ProductPage.tsx": {
     id: "pages/ProductPage";
     page: "/product/:id";
@@ -96,10 +115,6 @@ type RouteFiles = {
   "pages/VendorsPage.tsx": {
     id: "pages/VendorsPage";
     page: "/sellers";
-  };
-  "pages/VendorPage.tsx": {
-    id: "pages/VendorPage";
-    page: "/seller/:vendorId";
   };
   "pages/AuthPage.tsx": {
     id: "pages/AuthPage";
@@ -113,9 +128,21 @@ type RouteFiles = {
     id: "pages/AccountPage";
     page: "/account";
   };
+  "pages/PrivacyPolicy.tsx": {
+    id: "pages/PrivacyPolicy";
+    page: "/privacy-policy";
+  };
+  "pages/TermsOfUse.tsx": {
+    id: "pages/TermsOfUse";
+    page: "/terms";
+  };
+  "pages/FAQ.tsx": {
+    id: "pages/FAQ";
+    page: "/faq";
+  };
   "pages/admin/AdminDashboard.tsx": {
     id: "pages/admin/AdminDashboard";
-    page: "/admin" | "/admin/products" | "/admin/orders" | "/admin/customers" | "/admin/vendors" | "/admin/vendor-profile" | "/admin/settings";
+    page: "/admin" | "/admin/products" | "/admin/orders" | "/admin/customers" | "/admin/vendors" | "/admin/vendor-profile" | "/admin/logs" | "/admin/settings";
   };
   "pages/admin/AdminHome.tsx": {
     id: "pages/admin/AdminHome";
@@ -141,6 +168,10 @@ type RouteFiles = {
     id: "pages/admin/AdminVendorProfile";
     page: "/admin/vendor-profile";
   };
+  "pages/admin/AdminLogs.tsx": {
+    id: "pages/admin/AdminLogs";
+    page: "/admin/logs";
+  };
   "pages/admin/AdminSettings.tsx": {
     id: "pages/admin/AdminSettings";
     page: "/admin/settings";
@@ -157,6 +188,10 @@ type RouteFiles = {
     id: "blog/sensor-staircase-lights";
     page: "/blog/sensor-staircase-lights";
   };
+  "pages/VendorPage.tsx": {
+    id: "pages/VendorPage";
+    page: "/:slug";
+  };
   "pages/NotFound.tsx": {
     id: "pages/NotFound";
     page: "/*";
@@ -167,12 +202,15 @@ type RouteModules = {
   "root": typeof import("./src/root.tsx");
   "pages/Index": typeof import("./src/pages/Index.tsx");
   "pages/Products": typeof import("./src/pages/Products.tsx");
+  "pages/FlashSalesPage": typeof import("./src/pages/FlashSalesPage.tsx");
   "pages/ProductPage": typeof import("./src/pages/ProductPage.tsx");
   "pages/VendorsPage": typeof import("./src/pages/VendorsPage.tsx");
-  "pages/VendorPage": typeof import("./src/pages/VendorPage.tsx");
   "pages/AuthPage": typeof import("./src/pages/AuthPage.tsx");
   "pages/CheckoutPage": typeof import("./src/pages/CheckoutPage.tsx");
   "pages/AccountPage": typeof import("./src/pages/AccountPage.tsx");
+  "pages/PrivacyPolicy": typeof import("./src/pages/PrivacyPolicy.tsx");
+  "pages/TermsOfUse": typeof import("./src/pages/TermsOfUse.tsx");
+  "pages/FAQ": typeof import("./src/pages/FAQ.tsx");
   "pages/admin/AdminDashboard": typeof import("./src/pages/admin/AdminDashboard.tsx");
   "pages/admin/AdminHome": typeof import("./src/pages/admin/AdminHome.tsx");
   "pages/admin/AdminProducts": typeof import("./src/pages/admin/AdminProducts.tsx");
@@ -180,9 +218,11 @@ type RouteModules = {
   "pages/admin/AdminCustomers": typeof import("./src/pages/admin/AdminCustomers.tsx");
   "pages/admin/AdminVendors": typeof import("./src/pages/admin/AdminVendors.tsx");
   "pages/admin/AdminVendorProfile": typeof import("./src/pages/admin/AdminVendorProfile.tsx");
+  "pages/admin/AdminLogs": typeof import("./src/pages/admin/AdminLogs.tsx");
   "pages/admin/AdminSettings": typeof import("./src/pages/admin/AdminSettings.tsx");
   "routes/blog": typeof import("./src/routes/blog.tsx");
   "blog/hello-world": typeof import("./src/blog/hello-world.mdx");
   "blog/sensor-staircase-lights": typeof import("./src/blog/sensor-staircase-lights.mdx");
+  "pages/VendorPage": typeof import("./src/pages/VendorPage.tsx");
   "pages/NotFound": typeof import("./src/pages/NotFound.tsx");
 };
