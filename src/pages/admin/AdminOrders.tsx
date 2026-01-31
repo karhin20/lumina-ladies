@@ -43,17 +43,8 @@ const AdminOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState<ApiOrder | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
-  // Get vendor product IDs for filtering
-  const vendorProductIds = isVendorAdmin && vendor
-    ? new Set(products.filter(p => (p as any).vendor_id === vendor.id).map(p => p.id))
-    : null;
-
-  // Filter orders by vendor for vendor_admin users
-  const orders = isVendorAdmin && vendorProductIds
-    ? allOrders.filter(order =>
-      order.items.some(item => vendorProductIds.has(item.product_id))
-    )
-    : allOrders;
+  // Backend handles isolation, so we can trust allOrders
+  const orders = allOrders;
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
