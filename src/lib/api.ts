@@ -391,6 +391,12 @@ export const api = {
 
   getGoogleAuthUrl: () => request<{ url: string }>("/auth/google-url"),
 
+  googleCodeExchange: (code: string) =>
+    request<AuthResponse>("/auth/google-callback", {
+      method: "POST",
+      body: JSON.stringify({ code }),
+    }),
+
   refreshSession: (refreshToken: string) =>
     request<AuthResponse>("/auth/refresh", {
       method: "POST",

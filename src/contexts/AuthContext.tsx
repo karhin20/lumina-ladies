@@ -54,8 +54,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for hash parameters from OAuth redirect
+    // Check for OAuth callback parameters
     if (typeof window !== "undefined") {
+      // First, check for PKCE code parameter (newer flow)
+      const urlParams = new URLSearchParams(window.location.search);
+      const authCode = urlParams.get("code");
+
+      if (authCode) {
+        // PKCE flow: Exchange code for tokens
+        setIsLoading(true);
+        api.googleCodeExchange(authCode)
+          .then((res) => {
+            const mapped = mapUser(res.user);
+            setUser(mapped);
+            setSessionToken(res.access_token);
+            localStorage.setItem(TOKEN_KEY, res.access_token);
+            localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+
+            // Clear code from URL
+            window.history.replaceState(null, "", window.location.pathname);
+
+            toast({
+              title: "Welcome!",
+              description: "You have successfully signed in with Google.",
+            });
+          })
+          .catch((err) => {
+            console.error("Failed to exchange OAuth code:", err);
+            toast({
+              title: "Login Failed",
+              description: "Could not complete Google sign-in.",
+              variant: "destructive"
+            });
+          })
+          .finally(() => setIsLoading(false));
+        return; // Skip normal load
+      }
+
+      // Fallback to implicit flow (hash parameters)
       const hash = window.location.hash;
       if (hash && hash.includes("access_token")) {
         const params = new URLSearchParams(hash.substring(1)); // remove #
