@@ -7,7 +7,6 @@ export default [
     route("product/:id", "pages/ProductPage.tsx"),
     route("sellers", "pages/VendorsPage.tsx"),
     route("auth", "pages/AuthPage.tsx"),
-    route("auth/callback", "pages/AuthCallbackPage.tsx"),
     // Protected routes will be handled by the components themselves or we can wrap them
     route("checkout", "pages/CheckoutPage.tsx"),
     route("account", "pages/AccountPage.tsx"),
