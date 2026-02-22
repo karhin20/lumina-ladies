@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { api, ApiProduct } from "@/lib/api";
 import { Product } from "@/data/products";
 import { getValidImageUrl } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useProducts = (filters?: { vendorId?: string }) => {
+  const { sessionToken } = useAuth();
   return useQuery<ApiProduct[], Error, Product[]>({
-    queryKey: ["products", filters],
-    queryFn: () => api.getProducts({ vendor_id: filters?.vendorId }),
+    queryKey: ["products", filters, sessionToken],
+    queryFn: () => api.getProducts({ vendor_id: filters?.vendorId }, sessionToken ?? undefined),
     retry: 1,
     select: (data: ApiProduct[]) =>
       data.map((p) => ({

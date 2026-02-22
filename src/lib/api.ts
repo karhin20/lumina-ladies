@@ -237,11 +237,13 @@ export const api = {
 
   // products
   // products
-  getProducts: (params?: { vendor_id?: string }) => {
+  getProducts: (params?: { vendor_id?: string }, token?: string) => {
     const searchParams = new URLSearchParams();
     if (params?.vendor_id) searchParams.append("vendor_id", params.vendor_id);
     const queryString = searchParams.toString();
-    return request<ApiProduct[]>(`/products${queryString ? `?${queryString}` : ""}`);
+    return request<ApiProduct[]>(`/products${queryString ? `?${queryString}` : ""}`, {
+      ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
+    });
   },
   getFlashSales: () => request<ApiProduct[]>("/products/flash-sales"),
   getBestSelling: () => request<ApiProduct[]>("/products/best-selling"),
