@@ -6,9 +6,13 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export const useProducts = (filters?: { vendorId?: string }) => {
   const { sessionToken } = useAuth();
+  console.log("[useProducts] sessionToken exists:", !!sessionToken, "Filters:", filters);
   return useQuery<ApiProduct[], Error, Product[]>({
     queryKey: ["products", filters, sessionToken],
-    queryFn: () => api.getProducts({ vendor_id: filters?.vendorId }, sessionToken ?? undefined),
+    queryFn: () => {
+      console.log("[useProducts] Fetching products with token:", !!sessionToken);
+      return api.getProducts({ vendor_id: filters?.vendorId }, sessionToken ?? undefined);
+    },
     retry: 1,
     select: (data: ApiProduct[]) =>
       data.map((p) => ({
