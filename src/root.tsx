@@ -48,6 +48,8 @@ const persister = createSyncStoragePersister({
 import BackToTop from "./components/BackToTop";
 import ScrollProgress from "./components/ScrollProgress";
 
+import { Analytics } from "@vercel/analytics/react";
+
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
@@ -78,6 +80,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </PersistQueryClientProvider>
                 <ScrollRestoration />
                 <Scripts />
+                <Analytics />
             </body>
         </html>
     );
