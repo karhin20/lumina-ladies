@@ -43,15 +43,15 @@ const Contact = () => {
 
                         {/* Phone call */}
                         <a
-                            href="tel:+233534571994"
+                            href="tel:+233543119117"
                             className="bg-card hover:bg-accent/50 border border-border rounded-xl p-8 flex flex-col items-center text-center transition-all group"
                         >
                             <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                                 <Phone className="h-8 w-8 text-primary" />
                             </div>
                             <h3 className="font-semibold text-xl mb-2">Call Us</h3>
-                            <p className="text-muted-foreground mb-4">Mon-Fri from 8am to 5pm</p>
-                            <span className="font-medium text-primary">053 457 1994</span>
+                            <p className="text-muted-foreground mb-4">Mon - Sat from 8am to 5pm</p>
+                            <span className="font-medium text-primary">0543119117</span>
                         </a>
 
                         {/* Email */}
