@@ -36,6 +36,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
+        <h1 className="sr-only">KelsMall: Premium Smart Lighting, Beauty & Home Essentials</h1>
         <HeroWithSidebar />
         <FlashSales />
         <BestSelling />

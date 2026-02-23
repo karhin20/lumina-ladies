@@ -17,16 +17,16 @@ const HeroWithSidebar = () => {
 
   const slides = [
     {
-      logo: "🍎",
-      title: "iPhone 14 Series",
-      subtitle: "Up to 10% off Voucher",
-      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&q=80",
+      logo: "💡",
+      title: "Smart Lighting",
+      subtitle: "Sensor Lights & Luxury Pendants",
+      image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=500&q=80",
     },
     {
-      logo: "💻",
-      title: "MacBook Pro",
-      subtitle: "Up to 15% off Voucher",
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&q=80",
+      logo: "✨",
+      title: "Beauty Essentials",
+      subtitle: "Discover Your Radiant Glow",
+      image: "https://images.unsplash.com/photo-1596462502278-27bf85033e5a?w=500&q=80",
     },
   ];
 
