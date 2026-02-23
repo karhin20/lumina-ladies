@@ -56,7 +56,7 @@ const Contact = () => {
 
                         {/* Email */}
                         <a
-                            href="mailto:support@kelsmall.com"
+                            href="mailto:kelsmallghana@gmail.com"
                             className="bg-card hover:bg-accent/50 border border-border rounded-xl p-8 flex flex-col items-center text-center transition-all group"
                         >
                             <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -64,7 +64,7 @@ const Contact = () => {
                             </div>
                             <h3 className="font-semibold text-xl mb-2">Email</h3>
                             <p className="text-muted-foreground mb-4">We usually reply within 24 hours</p>
-                            <span className="font-medium text-primary">support@kelsmall.com</span>
+                            <span className="font-medium text-primary break-all">kelsmallghana@gmail.com</span>
                         </a>
 
                         {/* Location */}
@@ -74,7 +74,8 @@ const Contact = () => {
                             </div>
                             <h3 className="font-semibold text-xl mb-2">Office</h3>
                             <p className="text-muted-foreground">
-                                Accra, Ghana
+                                07 Red Okai Street<br />
+                                Greater Accra, Achimota
                             </p>
                         </div>
                     </div>

@@ -96,10 +96,10 @@ const Footer = () => {
           <div>
             <h4 className="font-medium mb-4">Support</h4>
             <ul className="space-y-3 text-sm text-background/70">
-              <li>Red Okai Street, Achimota<br />Accra, Ghana.</li>
+              <li>07 Red Okai Street, Achimota<br />Greater Accra.</li>
               <li>
-                <a href="mailto:earlyraintech@gmail.com" className="hover:text-background transition-colors">
-                  earlyraintech@gmail.com
+                <a href="mailto:kelsmallghana@gmail.com" className="hover:text-background transition-colors">
+                  kelsmallghana@gmail.com
                 </a>
               </li>
               <li>
