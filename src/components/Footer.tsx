@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Send, Loader2 } from "lucide-react";
+import { Facebook, Instagram, Send, Loader2, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
@@ -88,6 +88,15 @@ const Footer = () => {
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="https://whatsapp.com/channel/0029VbCLNSRJ3juwrjRjmV1w"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-background/70 hover:text-background transition-colors"
+                aria-label="WhatsApp Channel"
+              >
+                <MessageCircle className="h-5 w-5" />
               </a>
             </div>
           </div>

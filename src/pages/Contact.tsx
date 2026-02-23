@@ -17,13 +17,13 @@ const Contact = () => {
             <Header />
 
             <main className="flex-1 w-full max-w-[1440px] mx-auto px-4 md:px-8 py-12 pt-32">
-                <div className="max-w-3xl mx-auto">
+                <div className="max-w-5xl mx-auto">
                     <h1 className="font-display text-4xl font-bold mb-4 text-center">Contact Us</h1>
-                    <p className="text-muted-foreground text-center mb-12">
+                    <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
                         Have a question about an order or a product? We're here to help. Reach out to us through any of the channels below.
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                         {/* WhatsApp (Primary) */}
                         <a
                             href="https://wa.link/6bwalt"
@@ -34,10 +34,27 @@ const Contact = () => {
                             <div className="h-16 w-16 bg-green-500 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-green-500/20">
                                 <MessageCircle className="h-8 w-8 text-white" />
                             </div>
-                            <h3 className="font-semibold text-xl mb-2 text-green-900 dark:text-green-400">WhatsApp</h3>
+                            <h3 className="font-semibold text-xl mb-2 text-green-900 dark:text-green-400">WhatsApp Chat</h3>
                             <p className="text-green-800/80 dark:text-green-500/80 mb-4">Fastest way to reach us</p>
                             <span className="font-medium text-green-600 flex items-center gap-1">
                                 Chat with us <span className="group-hover:translate-x-1 transition-transform">→</span>
+                            </span>
+                        </a>
+
+                        {/* WhatsApp Channel */}
+                        <a
+                            href="https://whatsapp.com/channel/0029VbCLNSRJ3juwrjRjmV1w"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-green-50 hover:bg-green-100 border border-green-200 dark:bg-green-950/30 dark:border-green-800 rounded-xl p-8 flex flex-col items-center text-center transition-all group lg:col-start-2 lg:row-start-1"
+                        >
+                            <div className="h-16 w-16 bg-green-500 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-green-500/20">
+                                <MessageCircle className="h-8 w-8 text-white" />
+                            </div>
+                            <h3 className="font-semibold text-xl mb-2 text-green-900 dark:text-green-400">WhatsApp Channel</h3>
+                            <p className="text-green-800/80 dark:text-green-500/80 mb-4">Join for updates and deals</p>
+                            <span className="font-medium text-green-600 flex items-center gap-1">
+                                Follow Channel <span className="group-hover:translate-x-1 transition-transform">→</span>
                             </span>
                         </a>
 

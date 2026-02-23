@@ -18,12 +18,12 @@ const Newsletter = () => {
             Join Our WhatsApp Channel
           </h2>
           <p className="text-white/70 text-lg mb-10">
-            Be the first to know about new arrivals, flash sales, and exclusive deals. Join our community of over 5,000+ happy shoppers!
+            Be the first to know about new arrivals, flash sales, and exclusive deals. Join our community of happy shoppers!
           </p>
 
           <div className="max-w-md mx-auto">
             <a
-              href="https://whatsapp.com/channel/your-channel-id"
+              href="https://whatsapp.com/channel/0029VbCLNSRJ3juwrjRjmV1w"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center w-full h-14 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg transition-all group shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_25px_rgba(34,197,94,0.5)] active:scale-95"

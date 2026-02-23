@@ -30,17 +30,15 @@ const FlashSales = () => {
         const minDuration = Math.min(...durations);
         setEndTime(new Date(minDuration));
       } else {
-        // Fallback to persisted timer or 24h from now
-        const storedEndTime = localStorage.getItem('flashSaleEndTime');
-        const now = Date.now();
-
-        if (storedEndTime && new Date(storedEndTime).getTime() > now) {
-          setEndTime(new Date(storedEndTime));
-        } else {
-          const newEndTime = new Date(now + 1000 * 60 * 60 * 24); // 24 hours
-          localStorage.setItem('flashSaleEndTime', newEndTime.toISOString());
-          setEndTime(newEndTime);
-        }
+        // Global fallback: End of the current day in UTC
+        const now = new Date();
+        const endOfDayUTC = new Date(Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate(),
+          23, 59, 59, 999
+        ));
+        setEndTime(endOfDayUTC);
       }
     }
   }, [flashProducts]);
