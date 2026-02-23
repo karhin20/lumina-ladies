@@ -13,6 +13,7 @@ export default [
     route("privacy-policy", "pages/PrivacyPolicy.tsx"),
     route("terms", "pages/TermsOfUse.tsx"),
     route("faq", "pages/FAQ.tsx"),
+    route("contact", "pages/Contact.tsx"),
 
     // Admin routes - nested
     route("admin", "pages/admin/AdminDashboard.tsx", [
