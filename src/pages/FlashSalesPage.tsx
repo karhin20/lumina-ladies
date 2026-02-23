@@ -6,6 +6,15 @@ import ProductSkeleton from "@/components/ProductSkeleton";
 import { useFlashSales } from "@/hooks/useFlashSales";
 import CountdownTimer from "@/components/CountdownTimer";
 import { useEffect, useState } from "react";
+import type { MetaFunction } from "react-router";
+
+export const meta: MetaFunction = () => {
+    return [
+        { title: "Flash Sales | KelsMall" },
+        { name: "description", content: "Grab limited-time deals before they're gone! Discounts up to 70% off on selected items." },
+        { tagName: "link", rel: "canonical", href: "https://www.kelsmall.com/flash-sales" },
+    ];
+};
 
 const FlashSalesPage = () => {
     const { data: flashProducts = [], isLoading } = useFlashSales();

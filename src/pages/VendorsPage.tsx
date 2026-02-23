@@ -9,6 +9,7 @@ export const meta: MetaFunction = () => {
     return [
         { title: "Our Vendors | KelsMall" },
         { name: "description", content: "Explore our trusted vendors and their unique collections." },
+        { tagName: "link", rel: "canonical", href: "https://www.kelsmall.com/sellers" },
     ];
 };
 

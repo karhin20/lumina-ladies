@@ -33,7 +33,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-const siteUrl = import.meta.env.VITE_SITE_URL || "https://lumina-ladies.vercel.app";
+const siteUrl = import.meta.env.VITE_SITE_URL || "https://www.kelsmall.com";
 
 export function meta({ params }: MetaArgs) {
   // Mock data usage removed. Returning generic meta tags or we'd need to fetch data here if this was a loader.

@@ -7,6 +7,7 @@ export const meta: MetaFunction = () => {
     return [
         { title: "Shop | KelsMall" },
         { name: "description", content: "Browse our extensive collection of Smart Sensor lights, beauty products, jewelry and home essentials." },
+        { tagName: "link", rel: "canonical", href: "https://www.kelsmall.com/products" },
     ];
 };
 import { ProductCardSkeleton } from "@/components/skeletons/ProductCardSkeleton";
