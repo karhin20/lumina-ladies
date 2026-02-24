@@ -305,6 +305,7 @@ const AdminProducts = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Electronics">Electronics</SelectItem>
+                    <SelectItem value="Lighting">Lighting</SelectItem>
                     <SelectItem value="Fashion">Fashion</SelectItem>
                     <SelectItem value="Home">Home</SelectItem>
                     <SelectItem value="Beauty">Beauty</SelectItem>
