@@ -212,9 +212,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSessionToken(res.access_token);
       localStorage.setItem(TOKEN_KEY, res.access_token);
       localStorage.setItem(USER_KEY, JSON.stringify(mapped));
-      // Store refresh token if available from response (api currently returns access_token & user)
-      // Supabase python client returns session which has refresh_token, we should update backend to return it if possible
-      // For standard email login, backend might need adjustment if we want persistent refresh logic here too.
+      if (res.refresh_token) {
+        localStorage.setItem("kelsmall_refresh_token", res.refresh_token);
+      }
       return { success: true, user: mapped };
     } catch (error: any) {
       return { success: false, error: error.message || "Unable to sign in" };
@@ -229,6 +229,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSessionToken(res.access_token);
       localStorage.setItem(TOKEN_KEY, res.access_token);
       localStorage.setItem(USER_KEY, JSON.stringify(mapped));
+      if (res.refresh_token) {
+        localStorage.setItem("kelsmall_refresh_token", res.refresh_token);
+      }
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.message || "Unable to sign up" };

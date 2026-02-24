@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { getValidImageUrl, cn, getVideoEmbedUrl } from "@/lib/utils";
+import { getValidImageUrl, cn, getVideoEmbedUrl, getYoutubeVideoId } from "@/lib/utils";
 import ShareButton from "./ShareButton";
 import {
     Carousel,
@@ -147,7 +147,7 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
                                             <Play className="w-6 h-6 text-white fill-white" />
                                         </div>
                                         <img
-                                            src={`https://img.youtube.com/vi/${product.video_url.match(/(?:watch\?v=)?(.+)/)?.[1]?.split('&')[0]}/0.jpg`}
+                                            src={getYoutubeVideoId(product.video_url) ? `https://img.youtube.com/vi/${getYoutubeVideoId(product.video_url)}/0.jpg` : '/placeholder.png'}
                                             alt="Video thumbnail"
                                             className="w-full h-full object-cover"
                                             onError={(e) => {

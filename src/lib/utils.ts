@@ -84,14 +84,31 @@ export function getStoragePathFromUrl(url: string | null | undefined): string | 
   return null;
 }
 
+export function getYoutubeVideoId(url: string | null | undefined): string | null {
+  if (!url) return null;
+
+  // Extract ID from YouTube Shorts
+  const shortsMatch = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^?&]+)/);
+  if (shortsMatch && shortsMatch[1]) return shortsMatch[1];
+
+  // Extract ID from standard YouTube watch or youtu.be
+  const ytMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+  if (ytMatch && ytMatch[1]) return ytMatch[1];
+
+  // If we get here and it contains youtube.com but didn't match, try a fallback parsing
+  const fallback = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^&?\/]+)/);
+  if (fallback && fallback[1] && fallback[1] !== 'shorts') return fallback[1];
+
+  return null;
+}
+
 export function getVideoEmbedUrl(url: string | null | undefined): string | null {
   if (!url) return null;
 
   // YouTube
-  const ytMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/);
-  if (ytMatch && ytMatch[1]) {
-    const videoId = ytMatch[1].split('&')[0];
-    return `https://www.youtube.com/embed/${videoId}`;
+  const ytId = getYoutubeVideoId(url);
+  if (ytId) {
+    return `https://www.youtube.com/embed/${ytId}`;
   }
 
   // Vimeo
