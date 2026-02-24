@@ -90,8 +90,8 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-4xl p-0 overflow-hidden sm:rounded-2xl border-none bg-background shadow-2xl">
-                <div className="grid md:grid-cols-2 gap-0">
+            <DialogContent className="max-w-4xl p-0 max-h-[90vh] overflow-y-auto scrollbar-hide sm:rounded-2xl border-none bg-background shadow-2xl">
+                <div className="grid md:grid-cols-2 gap-0 h-full">
                     {/* Left Side: Photo & Thumbnails */}
                     <div className="flex flex-col bg-secondary/50">
                         <div className="relative aspect-square group overflow-hidden bg-secondary">
