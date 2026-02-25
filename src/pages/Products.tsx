@@ -49,7 +49,9 @@ const Products = () => {
     const allItems = data || [];
 
     const products = allItems.filter(p => {
-        const matchesCategory = selectedCategory ? p.category === selectedCategory : true;
+        const matchesCategory = selectedCategory
+            ? p.category?.toLowerCase() === selectedCategory.toLowerCase()
+            : true;
         const matchesSearch = searchQuery ? p.name.toLowerCase().includes(searchQuery) : true;
         return matchesCategory && matchesSearch;
     });

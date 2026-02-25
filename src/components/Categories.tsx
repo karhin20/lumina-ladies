@@ -9,25 +9,25 @@ const categories = [
     title: "Lighting",
     image: productLamp1,
     productCount: 48,
-    href: "#lighting",
+    href: "/products?category=Lighting",
   },
   {
     title: "Beauty",
     image: productSkincare,
     productCount: 124,
-    href: "#beauty",
+    href: "/products?category=Beauty",
   },
   {
     title: "Jewelry",
     image: productJewelry,
     productCount: 86,
-    href: "#jewelry",
+    href: "/products?category=Jewelry",
   },
   {
     title: "Home",
     image: productCandles,
     productCount: 62,
-    href: "#home",
+    href: "/products?category=Home",
   },
 ];
 

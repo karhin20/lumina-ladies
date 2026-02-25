@@ -2,7 +2,7 @@ import { Zap, Sparkles, Home, Glasses, Smartphone, Grid, Gem, Car } from "lucide
 import { Button } from "@/components/ui/button";
 
 const categories = [
-  { name: "Lightning", icon: Zap },
+  { name: "Lighting", icon: Zap },
   { name: "Beauty", icon: Sparkles },
   { name: "Home", icon: Home },
   { name: "Accessory", icon: Glasses },
