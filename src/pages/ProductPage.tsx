@@ -142,29 +142,29 @@ const ProductPage = () => {
               <ChevronRight className="h-4 w-4" />
               <Link to="/products" className="hover:text-accent transition-colors">Shop</Link>
               <ChevronRight className="h-4 w-4" />
-              <span className="hover:text-accent transition-colors cursor-pointer whitespace-nowrap">{product.category}</span>
-              <ChevronRight className="h-4 w-4 flex-shrink-0" />
-              <span className="text-foreground font-medium break-words leading-tight">{product.name}</span>
+              <span className="hover:text-accent transition-colors cursor-pointer">{product.category}</span>
+              <ChevronRight className="h-4 w-4" />
+              <span className="text-foreground font-medium truncate">{product.name}</span>
             </div>
 
             {/* Product Section */}
-            <div className="grid md:grid-cols-2 gap-8 lg:gap-16 min-w-0">
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
 
 
               {/* Product Images */}
               <div className="flex flex-col gap-6">
                 {/* Product Images & Video */}
-                <div className="relative aspect-video md:aspect-square rounded-2xl overflow-hidden bg-card group w-full max-w-full">
+                <div className="relative aspect-square rounded-2xl overflow-hidden bg-card group">
                   {(product.videoUrl || (product.images && product.images.length > 1)) ? (
                     <Carousel setApi={setCarouselApi} className="w-full h-full">
-                      <CarouselContent className="h-full ml-0">
+                      <CarouselContent>
                         {/* Video First if exists */}
                         {product.videoUrl && (
-                          <CarouselItem className="h-full pl-0">
-                            <div className="h-full w-full relative aspect-video md:aspect-square overflow-hidden">
+                          <CarouselItem>
+                            <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
                               <iframe
                                 src={getVideoEmbedUrl(product.videoUrl) || ''}
-                                className="absolute inset-0 w-full h-full border-0"
+                                className="absolute inset-0 w-full h-full"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                               ></iframe>
@@ -173,8 +173,8 @@ const ProductPage = () => {
                         )}
                         {/* Images */}
                         {product.images?.map((img, index) => (
-                          <CarouselItem key={index} className="h-full pl-0">
-                            <div className="h-full w-full relative aspect-video md:aspect-square">
+                          <CarouselItem key={index} className="h-full">
+                            <div className="h-full w-full relative aspect-square">
                               <img src={img} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
                             </div>
                           </CarouselItem>
