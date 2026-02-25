@@ -133,6 +133,13 @@
   .section-label {
     @apply text-accent font-semibold text-sm;
   }
+
+  .view-all-btn {
+    @apply transition-all duration-300 transform active:scale-95;
+    @apply bg-accent text-accent-foreground;
+    @apply hover:shadow-lg hover:scale-105;
+    @apply md:px-12 px-8 py-3 rounded-full font-medium;
+  }
 }
 
 @layer utilities {

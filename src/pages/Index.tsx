@@ -4,6 +4,7 @@ import type { MetaFunction } from "react-router";
 import HeroWithSidebar from "@/components/HeroWithSidebar";
 import FlashSales from "@/components/FlashSales";
 import BestSelling from "@/components/BestSelling";
+import PromoBanner from "@/components/PromoBanner";
 import ExploreProducts from "@/components/ExploreProducts";
 import NewArrival from "@/components/NewArrival";
 import Services from "@/components/Services";
@@ -39,6 +40,7 @@ const Index = () => {
         <HeroWithSidebar />
         <FlashSales />
         <BestSelling />
+        <PromoBanner />
         <ExploreProducts />
         <NewArrival />
         <Services />

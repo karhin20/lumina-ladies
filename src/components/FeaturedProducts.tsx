@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import ProductCard from "./ProductCard";
 import { allProducts } from "@/data/products";
 import { useProducts } from "@/hooks/useProducts";
@@ -18,15 +19,15 @@ const FeaturedProducts = () => {
               Featured Products
             </h2>
           </div>
-          <a
-            href="#shop"
-            className="text-sm font-medium text-primary hover:text-accent transition-colors tracking-wide uppercase flex items-center gap-2"
+          <Link
+            to="/products"
+            className="text-sm font-medium text-primary transition-all duration-300 hover:scale-105 tracking-wide uppercase flex items-center gap-2"
           >
             View All Products
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
           {isLoading ? (

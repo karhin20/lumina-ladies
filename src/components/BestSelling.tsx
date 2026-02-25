@@ -19,7 +19,7 @@ const BestSelling = () => {
       <div className="flex items-center justify-between mb-8">
         <h2 className="font-display text-2xl md:text-3xl font-semibold">Best Selling Products</h2>
         <Link to="/products">
-          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
+          <Button className="view-all-btn px-6 py-2">
             View All
           </Button>
         </Link>

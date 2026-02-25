@@ -154,17 +154,17 @@ const ProductPage = () => {
               {/* Product Images */}
               <div className="flex flex-col gap-6">
                 {/* Product Images & Video */}
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-card group">
+                <div className="relative aspect-video md:aspect-square rounded-2xl overflow-hidden bg-card group">
                   {(product.videoUrl || (product.images && product.images.length > 1)) ? (
                     <Carousel setApi={setCarouselApi} className="w-full h-full">
                       <CarouselContent>
                         {/* Video First if exists */}
                         {product.videoUrl && (
                           <CarouselItem className="h-full">
-                            <div className="h-full w-full relative aspect-square">
+                            <div className="h-full w-full relative aspect-video md:aspect-square">
                               <iframe
                                 src={getVideoEmbedUrl(product.videoUrl) || ''}
-                                className="w-full h-full"
+                                className="w-full h-full border-0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                               ></iframe>

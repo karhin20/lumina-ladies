@@ -166,7 +166,7 @@ const Header = () => {
                     ))}
                     <button
                       onClick={() => handleSearch()}
-                      className="w-full p-2 text-xs font-medium text-accent hover:bg-secondary transition-colors border-t border-border"
+                      className="w-full p-3 text-xs font-semibold text-accent transition-all duration-300 hover:scale-[1.02] border-t border-border"
                     >
                       View all results
                     </button>

@@ -94,17 +94,17 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
                 <div className="grid md:grid-cols-2 gap-0 h-full">
                     {/* Left Side: Photo & Thumbnails */}
                     <div className="flex flex-col bg-secondary/50">
-                        <div className="relative aspect-square group overflow-hidden bg-secondary">
+                        <div className="relative aspect-video md:aspect-square group overflow-hidden bg-secondary">
                             {(product.video_url || (product.images && product.images.length > 1)) ? (
                                 <Carousel setApi={setCarouselApi} className="w-full h-full">
                                     <CarouselContent className="h-full">
                                         {/* Video First if exists */}
                                         {product.video_url && (
                                             <CarouselItem className="h-full">
-                                                <div className="h-full w-full relative aspect-square">
+                                                <div className="h-full w-full relative aspect-video md:aspect-square">
                                                     <iframe
                                                         src={getVideoEmbedUrl(product.video_url) || ''}
-                                                        className="w-full h-full"
+                                                        className="w-full h-full border-0"
                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                         allowFullScreen
                                                     ></iframe>

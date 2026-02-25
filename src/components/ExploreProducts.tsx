@@ -78,7 +78,7 @@ const ExploreProducts = () => {
       {/* View All Button */}
       <div className="text-center mt-10">
         <Link to="/products">
-          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground px-12">
+          <Button className="view-all-btn">
             View All Products
           </Button>
         </Link>
