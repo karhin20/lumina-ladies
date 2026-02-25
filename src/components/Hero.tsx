@@ -1,15 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
 import heroImage from "@/assets/hero-image.jpg";
-import lampImage1 from "@/assets/product-lamp-1.jpg";
-import lampImage2 from "@/assets/product-lamp-2.jpg";
-import lampImage3 from "@/assets/product-lamp-3.jpg";
+import staircaseImage from "@/assets/automatic-staircase-led-light-controller-1000x1000.webp";
 
 const heroSlides = [
-  { image: heroImage, alt: "Elegant luxury lifestyle with pendant lamp and home decor" },
-  { image: lampImage1, alt: "Modern pendant lamp illuminating elegant space" },
-  { image: lampImage2, alt: "Designer lighting for contemporary interiors" },
-  { image: lampImage3, alt: "Artisan crafted lamp with warm ambiance" },
+  { image: heroImage, alt: "Elegant luxury lifestyle with smart lighting and home decor" },
+  { image: staircaseImage, alt: "Automatic smart staircase LED lighting controller" },
 ];
 
 const Hero = () => {
