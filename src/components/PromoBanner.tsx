@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 import promoImage from "@/assets/promo.webp";
 
 const PromoBanner = () => {
@@ -20,9 +21,11 @@ const PromoBanner = () => {
             Transform your desk into a sanctuary of productivity and style. Discover our premium lighting solutions for the modern achiever.
           </p>
 
-          <Button variant="hero" className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 h-12">
-            Explore Collection
-          </Button>
+          <Link to="/products?category=Lighting">
+            <Button variant="hero" className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 h-12">
+              Explore Collection
+            </Button>
+          </Link>
         </div>
 
         <div className="relative z-10">

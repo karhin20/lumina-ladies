@@ -1,9 +1,11 @@
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
+import heroImage from "@/assets/hero-image.jpg";
+import staircaseImage from "@/assets/automatic-staircase-led-light-controller-1000x1000.webp";
 
 const categories = [
-  "Lightning",
+  "Lighting",
   "Beauty",
   "Home",
   "Accessory",
@@ -17,16 +19,16 @@ const HeroWithSidebar = () => {
 
   const slides = [
     {
-      logo: "💡",
-      title: "Smart Lighting",
-      subtitle: "Sensor Lights & Luxury Pendants",
-      image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=500&q=80",
+      logo: "🏠",
+      title: "Smart Living",
+      subtitle: "Illuminate Your Elegance",
+      image: heroImage,
     },
     {
-      logo: "✨",
-      title: "Beauty Essentials",
-      subtitle: "Discover Your Radiant Glow",
-      image: "https://images.unsplash.com/photo-1596462502278-27bf85033e5a?w=500&q=80",
+      logo: "💡",
+      title: "Smart Lighting",
+      subtitle: "Automatic Staircase LED Solutions",
+      image: staircaseImage,
     },
   ];
 
