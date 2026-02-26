@@ -1,17 +1,17 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Zap, Sparkles, Home, Glasses, Smartphone, Grid, Gem } from "lucide-react";
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import heroImage from "@/assets/hero-image.jpg";
 import staircaseImage from "@/assets/automatic-staircase-led-light-controller-1000x1000.webp";
 
 const categories = [
-  "Lighting",
-  "Beauty",
-  "Home",
-  "Accessory",
-  "Electronics",
-  "Jewelry",
-  "Other",
+  { name: "Lighting", icon: Zap },
+  { name: "Beauty", icon: Sparkles },
+  { name: "Home", icon: Home },
+  { name: "Accessory", icon: Glasses },
+  { name: "Electronics", icon: Smartphone },
+  { name: "Jewelry", icon: Gem },
+  { name: "Other", icon: Grid },
 ];
 
 const HeroWithSidebar = () => {
@@ -46,12 +46,15 @@ const HeroWithSidebar = () => {
         <aside className="hidden lg:block w-64 border-r border-border pr-8">
           <ul className="space-y-3">
             {categories.map((category) => (
-              <li key={category}>
+              <li key={category.name}>
                 <Link
-                  to={`/products?category=${category}`}
+                  to={`/products?category=${category.name}`}
                   className="flex items-center justify-between text-sm text-foreground hover:text-accent transition-colors py-1"
                 >
-                  {category}
+                  <span className="flex items-center gap-2">
+                    <category.icon className="h-4 w-4" />
+                    {category.name}
+                  </span>
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </li>

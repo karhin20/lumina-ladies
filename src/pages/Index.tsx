@@ -5,6 +5,7 @@ import HeroWithSidebar from "@/components/HeroWithSidebar";
 import FlashSales from "@/components/FlashSales";
 import BestSelling from "@/components/BestSelling";
 import PromoBanner from "@/components/PromoBanner";
+import HomepageCategories from "@/components/HomepageCategories";
 import ExploreProducts from "@/components/ExploreProducts";
 import NewArrival from "@/components/NewArrival";
 import Services from "@/components/Services";
@@ -39,6 +40,7 @@ const Index = () => {
         <h1 className="sr-only">KelsMall: Premium Smart Lighting, Beauty & Home Essentials</h1>
         <HeroWithSidebar />
         <FlashSales />
+        <HomepageCategories />
         <BestSelling />
         <PromoBanner />
         <ExploreProducts />

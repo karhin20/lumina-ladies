@@ -154,20 +154,22 @@ const ProductPage = () => {
               {/* Product Images */}
               <div className="flex flex-col gap-4 sm:gap-6">
                 {/* Product Images & Video */}
-                <div className={`relative rounded-2xl overflow-hidden bg-card group ${product.videoUrl ? 'aspect-video md:aspect-square' : 'aspect-square'}`}>
+                <div className="relative aspect-square rounded-2xl overflow-hidden bg-card group">
                   {(product.videoUrl || (product.images && product.images.length > 1)) ? (
                     <Carousel setApi={setCarouselApi} className="w-full h-full">
                       <CarouselContent>
                         {/* Video First if exists */}
                         {product.videoUrl && (
                           <CarouselItem className="h-full">
-                            <div className="h-full w-full flex items-center justify-center bg-black">
-                              <iframe
-                                src={getVideoEmbedUrl(product.videoUrl) || ''}
-                                className="w-full h-full"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                              ></iframe>
+                            <div className="h-full w-full overflow-y-auto bg-black">
+                              <div className="w-full" style={{ aspectRatio: '16/9', minHeight: '100%' }}>
+                                <iframe
+                                  src={getVideoEmbedUrl(product.videoUrl) || ''}
+                                  className="w-full h-full"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                ></iframe>
+                              </div>
                             </div>
                           </CarouselItem>
                         )}
