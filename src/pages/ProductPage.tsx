@@ -152,19 +152,19 @@ const ProductPage = () => {
 
 
               {/* Product Images */}
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 sm:gap-6">
                 {/* Product Images & Video */}
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-card group">
+                <div className={`relative rounded-2xl overflow-hidden bg-card group ${product.videoUrl ? 'aspect-[4/3] md:aspect-square' : 'aspect-square'}`}>
                   {(product.videoUrl || (product.images && product.images.length > 1)) ? (
                     <Carousel setApi={setCarouselApi} className="w-full h-full">
                       <CarouselContent>
                         {/* Video First if exists */}
                         {product.videoUrl && (
-                          <CarouselItem>
-                            <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+                          <CarouselItem className="h-full">
+                            <div className="h-full w-full flex items-center justify-center bg-black">
                               <iframe
                                 src={getVideoEmbedUrl(product.videoUrl) || ''}
-                                className="absolute inset-0 w-full h-full"
+                                className="w-full h-full"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                               ></iframe>
@@ -241,13 +241,13 @@ const ProductPage = () => {
 
                 {/* Thumbnails (Images + Video) */}
                 {(product.videoUrl || (product.images && product.images.length > 1)) && (
-                  <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                  <div className="flex gap-1.5 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide">
                     {/* Video Thumbnail */}
                     {product.videoUrl && (
                       <button
                         onClick={() => carouselApi?.scrollTo(0)}
                         className={cn(
-                          "relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 flex items-center justify-center bg-secondary",
+                          "relative w-16 h-16 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 flex items-center justify-center bg-secondary",
                           current === 0 ? "border-accent ring-2 ring-accent/20" : "border-border hover:border-accent/50"
                         )}
                       >
@@ -272,7 +272,7 @@ const ProductPage = () => {
                           key={index}
                           onClick={() => carouselApi?.scrollTo(actualIndex)}
                           className={cn(
-                            "relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0",
+                            "relative w-16 h-16 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0",
                             current === actualIndex ? "border-accent ring-2 ring-accent/20" : "border-border hover:border-accent/50"
                           )}
                         >

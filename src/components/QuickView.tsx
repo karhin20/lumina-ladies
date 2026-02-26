@@ -26,6 +26,8 @@ interface QuickViewProps {
         video_url?: string;
         category: string;
         description?: string;
+        rating?: number;
+        reviews_count?: number;
     };
     isOpen: boolean;
     onClose: () => void;
@@ -75,18 +77,8 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
         await toggleFavorite(product.id);
     };
 
-    // Generate stable rating based on product ID
-    const hashCode = (str: string) => {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = ((hash << 5) - hash) + str.charCodeAt(i);
-            hash = hash & hash;
-        }
-        return Math.abs(hash);
-    };
-    const hash = hashCode(product.id);
-    const rating = 5.0; // Set all ratings to 5.0
-    const reviewCount = 50 + (hash % 150);
+    // Removed mock rating logic to use real data from props
+
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -194,16 +186,18 @@ const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
                             </DialogTitle>
 
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-1">
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <Star
-                                            key={star}
-                                            className={`w-4 h-4 ${star <= Math.floor(rating) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`}
-                                        />
-                                    ))}
-                                    <span className="text-sm text-muted-foreground ml-1">({reviewCount} Reviews)</span>
-                                </div>
-                                <div className="h-4 w-[1px] bg-border" />
+                                {product.rating !== undefined && product.rating > 0 && (
+                                    <div className="flex items-center gap-1">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <Star
+                                                key={star}
+                                                className={`w-4 h-4 ${star <= Math.floor(product.rating || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`}
+                                            />
+                                        ))}
+                                        <span className="text-sm text-muted-foreground ml-1">({product.reviews_count || 0} Reviews)</span>
+                                    </div>
+                                )}
+                                {product.rating !== undefined && product.rating > 0 && <div className="h-4 w-[1px] bg-border" />}
                                 <span className="text-green-500 text-sm font-medium">In Stock</span>
                             </div>
                         </DialogHeader>
