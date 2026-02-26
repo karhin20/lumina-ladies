@@ -1,4 +1,4 @@
-import { ChevronRight, Zap, Sparkles, Home, Glasses, Smartphone, Grid, Gem } from "lucide-react";
+import { ChevronRight, Zap, Sparkles, Home, Glasses, Smartphone, Grid, Gem, Car } from "lucide-react";
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import heroImage from "@/assets/hero-image.jpg";
@@ -10,6 +10,7 @@ const categories = [
   { name: "Home", icon: Home },
   { name: "Accessory", icon: Glasses },
   { name: "Electronics", icon: Smartphone },
+  { name: "Automotive", icon: Car },
   { name: "Jewelry", icon: Gem },
   { name: "Other", icon: Grid },
 ];

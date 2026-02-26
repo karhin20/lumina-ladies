@@ -1,14 +1,15 @@
-import { Zap, Sparkles, Home, Glasses, Smartphone, Grid, Gem } from "lucide-react";
+import { Zap, Sparkles, Home, Glasses, Smartphone, Grid, Gem, Car } from "lucide-react";
 import { Link } from "react-router";
 
 const categories = [
-    { name: "Lighting", icon: Zap, color: "text-yellow-500" },
-    { name: "Beauty", icon: Sparkles, color: "text-pink-500" },
-    { name: "Home", icon: Home, color: "text-blue-500" },
-    { name: "Accessory", icon: Glasses, color: "text-purple-500" },
-    { name: "Electronics", icon: Smartphone, color: "text-green-500" },
-    { name: "Jewelry", icon: Gem, color: "text-amber-500" },
-    { name: "Other", icon: Grid, color: "text-gray-500" },
+    { name: "Lighting", icon: Zap },
+    { name: "Beauty", icon: Sparkles },
+    { name: "Home", icon: Home },
+    { name: "Accessory", icon: Glasses },
+    { name: "Electronics", icon: Smartphone },
+    { name: "Automotive", icon: Car },
+    { name: "Jewelry", icon: Gem },
+    { name: "Other", icon: Grid },
 ];
 
 const HomepageCategories = () => {
@@ -31,12 +32,12 @@ const HomepageCategories = () => {
                     <Link
                         key={category.name}
                         to={`/products?category=${category.name}`}
-                        className="flex flex-col items-center justify-center gap-2 p-4 md:p-6 border border-border rounded-lg transition-all duration-300 hover:border-accent hover:shadow-md hover:scale-105 group bg-card"
+                        className="flex flex-col items-center justify-center gap-2 p-3 md:p-4 border border-border rounded-lg transition-all duration-300 hover:border-accent hover:shadow-md hover:scale-105 group bg-card"
                     >
-                        <div className={`p-2 rounded-full bg-secondary/50 group-hover:bg-accent/10 transition-colors ${category.color}`}>
-                            <category.icon className="h-6 w-6 md:h-7 md:w-7" />
+                        <div className="p-2 rounded-full bg-secondary/50 group-hover:bg-accent/10 transition-colors text-muted-foreground group-hover:text-accent">
+                            <category.icon className="h-5 w-5 md:h-6 md:w-6" />
                         </div>
-                        <span className="text-[11px] md:text-sm font-medium text-center leading-tight">{category.name}</span>
+                        <span className="text-[10px] md:text-xs font-medium text-center leading-tight">{category.name}</span>
                     </Link>
                 ))}
             </div>
