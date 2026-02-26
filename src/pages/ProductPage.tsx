@@ -32,6 +32,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const siteUrl = import.meta.env.VITE_SITE_URL || "https://www.kelsmall.com";
 
@@ -57,6 +63,7 @@ const ProductPage = () => {
   const { toast } = useToast();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   /* Hook to fetch vendor details for the phone number */
   const { data: apiVendor } = useVendor(product?.vendorId);
@@ -176,7 +183,10 @@ const ProductPage = () => {
                         {/* Images */}
                         {product.images?.map((img, index) => (
                           <CarouselItem key={index} className="h-full">
-                            <div className="h-full w-full relative aspect-square">
+                            <div
+                              className="h-full w-full relative aspect-square cursor-zoom-in"
+                              onClick={() => setSelectedImage(img)}
+                            >
                               <img src={img} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
                             </div>
                           </CarouselItem>
@@ -186,11 +196,16 @@ const ProductPage = () => {
                       <CarouselNext className="right-2" />
                     </Carousel>
                   ) : (
-                    <img
-                      src={getValidImageUrl(product.image || (product as any).image_url) || "/placeholder.png"}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
+                    <div
+                      className="cursor-zoom-in"
+                      onClick={() => setSelectedImage(getValidImageUrl(product.image || (product as any).image_url) || "/placeholder.png")}
+                    >
+                      <img
+                        src={getValidImageUrl(product.image || (product as any).image_url) || "/placeholder.png"}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   )}
 
                   {product.isNew && (
@@ -273,6 +288,7 @@ const ProductPage = () => {
                         <button
                           key={index}
                           onClick={() => carouselApi?.scrollTo(actualIndex)}
+                          onDoubleClick={() => setSelectedImage(img)}
                           className={cn(
                             "relative w-16 h-16 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0",
                             current === actualIndex ? "border-accent ring-2 ring-accent/20" : "border-border hover:border-accent/50"
@@ -487,6 +503,29 @@ const ProductPage = () => {
           </div>
         </DrawerContent>
       </Drawer>
+
+      <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden bg-black/90 border-none">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Product Image Viewer</DialogTitle>
+          </DialogHeader>
+          <div className="relative w-full h-[90vh] flex items-center justify-center p-4">
+            {selectedImage && (
+              <img
+                src={selectedImage}
+                alt="Product Full View"
+                className="max-w-full max-h-full object-contain"
+              />
+            )}
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+            >
+              <Check className="w-6 h-6 rotate-45" /> {/* Using Check rotated as a close button or could use X if available */}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>

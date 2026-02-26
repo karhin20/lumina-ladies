@@ -14,7 +14,7 @@ const categories = [
 
 const HomepageCategories = () => {
     return (
-        <section className="container mx-auto px-4 py-12 border-t border-border">
+        <section className="container mx-auto px-4 py-12 border-t border-border lg:hidden">
             {/* Section Header */}
             <div className="flex items-center gap-3 mb-4">
                 <div className="w-4 h-8 bg-accent rounded-sm" />
@@ -27,7 +27,7 @@ const HomepageCategories = () => {
             </div>
 
             {/* Categories Grid */}
-            <div className="grid grid-cols-4 md:grid-cols-7 gap-3 md:gap-4">
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
                 {categories.map((category) => (
                     <Link
                         key={category.name}
