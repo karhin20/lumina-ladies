@@ -154,7 +154,7 @@ const ProductPage = () => {
               {/* Product Images */}
               <div className="flex flex-col gap-4 sm:gap-6">
                 {/* Product Images & Video */}
-                <div className={`relative rounded-2xl overflow-hidden bg-card group ${product.videoUrl ? 'aspect-[4/3] md:aspect-square' : 'aspect-square'}`}>
+                <div className={`relative rounded-2xl overflow-hidden bg-card group ${product.videoUrl ? 'aspect-video md:aspect-square' : 'aspect-square'}`}>
                   {(product.videoUrl || (product.images && product.images.length > 1)) ? (
                     <Carousel setApi={setCarouselApi} className="w-full h-full">
                       <CarouselContent>
