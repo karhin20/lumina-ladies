@@ -79,8 +79,7 @@ const Header = () => {
     <>
       {/* Top Banner */}
       <div className="bg-[#121212] text-white text-center py-2 text-xs md:text-sm border-b border-white/20">
-        <span>New Year Discounted Sale - OFF 30%!</span>
-        <Link to="/products" className="underline ml-2 font-semibold hover:text-white/80 transition-colors">ShopNow</Link>
+        <span>Call <a href="tel:0543119117" className="underline font-semibold hover:text-white/80 transition-colors">0543 119 117</a> to order</span>
       </div>
 
       {/* Main Header */}
